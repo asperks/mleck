@@ -1,3 +1,3 @@
 # mleck
-Market Living Entities.
+Market Living Entities.  Artificial Life Cryptocurrency Meanderings.
 
