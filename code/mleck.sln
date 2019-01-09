@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mleck", "doco\mleck.vcxproj", "{BE2CBB14-6DF2-4857-B071-DA87BFC5DA58}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mleck", "mleck.vcxproj", "{BE2CBB14-6DF2-4857-B071-DA87BFC5DA58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0E9D70B7-85D1-4E2F-9D03-D33A16235B02}
+		SolutionGuid = {39B0AA3A-DC04-435D-B99E-6CC883871ED9}
 	EndGlobalSection
 EndGlobal
