@@ -1,5 +1,5 @@
 // logic
 
 #include "pch.h"
-#include "settings.h"
+#include "..\shared\settings.h"
 

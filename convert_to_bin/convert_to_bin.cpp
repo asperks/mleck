@@ -3,8 +3,8 @@
 //	This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "pch.h"
-#include "settings.h"
+#include "..\shared\pch.h"
+#include "..\shared\settings.h"
 
 #include <cstdlib>
 #include <memory>
