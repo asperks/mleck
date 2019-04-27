@@ -6,8 +6,19 @@
 
 #include <iostream>
 
-int main() {
-	std::cout << "Hello World!\n";
+int main(int argc, char** argv) {
+	std::cout << "program start : " << argc << " arguments:" << "\n";
+
+	
+
+
+	for (int i = 0; i < argc; ++i) {
+		std::cout << argv[i] << "\n";
+	}
+
+
+
+	std::cout << "program end";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
