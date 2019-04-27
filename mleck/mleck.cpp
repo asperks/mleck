@@ -1,8 +1,7 @@
 // mleck.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "..\shared\pch.h"
-#include "..\shared\settings.h"
+#include "settings.h"
 
 #include <iostream>
 
