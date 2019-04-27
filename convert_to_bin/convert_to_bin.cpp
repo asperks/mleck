@@ -2,53 +2,68 @@
 //
 //	This file contains the 'main' function. Program execution begins and ends there.
 //
-
+//
+//	--path_scripture	Path where the source text files from poloniex have been stored.
+//
+//	--path_bin			Path where the binary files created from the scripture is stored.
+//
 
 #include "settings.h"
 
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <vector>
 
-//#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
 
 
 int main(int argc, char** argv) {
-	std::cout << "program start : " << argc << " arguments:" << "\n";
+	std::cout << "program start : " << argc << " arguments\n";
 
 	vector<string> vec_args;
 	for (int i = 0; i < argc; ++i) {
 		vec_args.push_back(argv[i]);
-		std::cout << argv[i] << "\n";
 	}
 
 	settings s;
 	for (int i = 0; i < vec_args.size(); ++i) {
-		if (vec_args.at(i) == "--path_scripture") { s.set_prop_str(vec_args.at(i), vec_args.at(i + 1)); }
-		if (vec_args.at(i) == "--path_bin") { s.set_prop_str(vec_args.at(i), vec_args.at(i + 1)); }
+		if (vec_args.at(i) == "--path_scripture") {
+			string str_temp = vec_args.at(i + 1);
+			// Remove quotes from paths
+			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
+			s.set_prop_str(vec_args.at(i), str_temp);
+		}
+		if (vec_args.at(i) == "--path_bin") { 
+			string str_temp = vec_args.at(i + 1);
+			// Remove quotes from paths
+			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
+			s.set_prop_str(vec_args.at(i), str_temp);
+		}
 	}
 
+	// List all of the directories in the scripture directory
+	std::cout << "read folders\n";
+	vector<string> vec_dir;
+	if (boost::filesystem::is_directory(s.get_prop_str("--path_scripture"))) {
+		for (auto& di : boost::make_iterator_range(boost::filesystem::directory_iterator(s.get_prop_str("--path_scripture")), {})) {
+			vec_dir.push_back(di.path().string());
+		}
+	}
 
+	if (vec_dir.size() > 0) {
+		for (int i = 0; i < vec_dir.size(); ++i) {
+			boost::filesystem::path p(vec_dir.at(i));
+			boost::filesystem::path dir = p.filename();
+			string str_dir = dir.string();
 
-	//std::vector <boost::filesystem::directory_entry> ItDir;
+			std::cout << "process scripture = " + str_dir + "\n";
+		}
+	}
 
-	//std::copy(boost::filesystem::directory_iterator(DirectoryPath, boost::filesystem::directory_iterator(), back_inserter(ItDir));
-
-
-	std::cout << "program end";
+	std::cout << "program end\n";
 }
 
 
 
-
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
