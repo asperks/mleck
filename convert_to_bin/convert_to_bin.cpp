@@ -7,6 +7,10 @@
 //
 //	--path_bin			Path where the binary files created from the scripture is stored.
 //
+//	--gen					If the user passes a gen, the program builds that bin,
+//							instead of processing all of the folders in the path_scripture
+//							directory
+//
 
 #include "settings.h"
 
@@ -27,6 +31,7 @@ int main(int argc, char** argv) {
 		vec_args.push_back(argv[i]);
 	}
 
+	// Add arguments to a settings class for access later on.
 	settings s;
 	for (int i = 0; i < vec_args.size(); ++i) {
 		if (vec_args.at(i) == "--path_scripture") {
@@ -34,8 +39,14 @@ int main(int argc, char** argv) {
 			// Remove quotes from paths
 			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
 			s.set_prop_str(vec_args.at(i), str_temp);
-		}
-		if (vec_args.at(i) == "--path_bin") { 
+
+		} else if (vec_args.at(i) == "--path_bin") {
+			string str_temp = vec_args.at(i + 1);
+			// Remove quotes from paths
+			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
+			s.set_prop_str(vec_args.at(i), str_temp);
+
+		} else if (vec_args.at(i) == "--gen") {
 			string str_temp = vec_args.at(i + 1);
 			// Remove quotes from paths
 			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
@@ -52,13 +63,23 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	if (vec_dir.size() > 0) {
-		for (int i = 0; i < vec_dir.size(); ++i) {
-			boost::filesystem::path p(vec_dir.at(i));
-			boost::filesystem::path dir = p.filename();
-			string str_dir = dir.string();
+	if (s.get_prop_str("--gen") == "") {
+		// create bins for every folder in the scripture
+		if (vec_dir.size() > 0) {
+			for (int i = 0; i < vec_dir.size(); ++i) {
+				// Loop through each folder in the scripture directory.
+				boost::filesystem::path p(vec_dir.at(i));
+				boost::filesystem::path dir = p.filename();
+				string str_dir = dir.string();
 
-			std::cout << "process scripture = " + str_dir + "\n";
+				std::cout << "process scripture = " + str_dir + "\n";
+			}
+		}
+	} else {
+		// create bins for only the --gen folder.
+		if (std::find(vec_dir.begin(), vec_dir.end(), s.get_prop_str("--gen")) != vec_dir.end()) {
+			// This folder exists in the scriptures directory list.
+
 		}
 	}
 
