@@ -162,9 +162,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="convert_to_bin.cpp" />
+    <ClCompile Include="instrument_gen.cpp" />
+    <ClCompile Include="polo_gen.cpp" />
     <ClCompile Include="settings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="instrument_gen.h" />
+    <ClInclude Include="polo_gen.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

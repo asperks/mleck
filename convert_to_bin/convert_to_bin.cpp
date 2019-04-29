@@ -7,12 +7,16 @@
 //
 //	--path_bin			Path where the binary files created from the scripture is stored.
 //
-//	--gen					If the user passes a gen, the program builds that bin,
-//							instead of processing all of the folders in the path_scripture
+//	--gen					A pipe (|) delimited string of all gens to process
+//							if empty all of the folders in the path_scripture
 //							directory
+//
+//	--instruments		A pipe (|) delimited string of all instruments to process into
+//							binaries.
 //
 
 #include "settings.h"
+#include "polo_gen.h"
 
 #include <iostream>
 #include <iterator>
@@ -21,6 +25,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/algorithm/string.hpp> 
 
 
 int main(int argc, char** argv) {
@@ -51,37 +56,34 @@ int main(int argc, char** argv) {
 			// Remove quotes from paths
 			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
 			s.set_prop_str(vec_args.at(i), str_temp);
+
+		} else if (vec_args.at(i) == "--instruments") {
+			string str_temp = vec_args.at(i + 1);
+			// Remove quotes from paths
+			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
+			s.set_prop_str(vec_args.at(i), str_temp);
 		}
 	}
 
-	// List all of the directories in the scripture directory
-	std::cout << "read folders\n";
-	vector<string> vec_dir;
-	if (boost::filesystem::is_directory(s.get_prop_str("--path_scripture"))) {
-		for (auto& di : boost::make_iterator_range(boost::filesystem::directory_iterator(s.get_prop_str("--path_scripture")), {})) {
-			vec_dir.push_back(di.path().string());
-		}
+
+
+	string str_instruments = s.get_prop_str("--instruments");
+	vector<string> vec_instrument;
+	if (str_instruments != "") {
+		boost::split(vec_instrument, str_instruments, boost::is_any_of("|"));
 	}
 
-	if (s.get_prop_str("--gen") == "") {
-		// create bins for every folder in the scripture
-		if (vec_dir.size() > 0) {
-			for (int i = 0; i < vec_dir.size(); ++i) {
-				// Loop through each folder in the scripture directory.
-				boost::filesystem::path p(vec_dir.at(i));
-				boost::filesystem::path dir = p.filename();
-				string str_dir = dir.string();
 
-				std::cout << "process scripture = " + str_dir + "\n";
-			}
-		}
-	} else {
-		// create bins for only the --gen folder.
-		if (std::find(vec_dir.begin(), vec_dir.end(), s.get_prop_str("--gen")) != vec_dir.end()) {
-			// This folder exists in the scriptures directory list.
-
-		}
+	string str_gens = s.get_prop_str("--gen");
+	vector<string> vec_gen;
+	if (str_instruments != "") {
+		boost::split(vec_gen, str_gens, boost::is_any_of("|"));
 	}
+
+	polo_gen pg;
+	pg.init(vec_gen, vec_instrument, s.get_prop_str("--path_scripture"));
+
+
 
 	std::cout << "program end\n";
 }

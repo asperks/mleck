@@ -1,4 +1,4 @@
-// logic
+// refer settings.h for details
 
 #include "settings.h"
 
