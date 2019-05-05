@@ -66,7 +66,6 @@ int main(int argc, char** argv) {
 	}
 
 
-
 	string str_instruments = s.get_prop_str("--instruments");
 	vector<string> vec_instrument;
 	if (str_instruments != "") {
