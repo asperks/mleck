@@ -3,6 +3,10 @@
 //		Reads the poloniex data text files.
 //		Creates binary representations of that data, one for each instrument.
 //		Populates a class for access.
+//
+//	There is a single function that sucks the data out of the folders.  I might want
+//	to change that later.  
+//
 
 #pragma once
 
@@ -21,6 +25,7 @@ using namespace std;
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/algorithm/string.hpp> 
 
 class polo_gen {
 private:
@@ -48,6 +53,8 @@ private:
 	string str_filename_orderbook_prefix = "4.instrument.order_book.";
 	string str_filename_orderbook_suffix = ".asc";
 
+	string str_ticker_record = "last|quoteVolume|high24hr|highestBid|percentChange|low24hr|lowestAsk";
+	vector<string> vec_ticker_record;
 
 public:
 

@@ -76,9 +76,10 @@ int main(int argc, char** argv) {
 
 	string str_gens = s.get_prop_str("--gen");
 	vector<string> vec_gen;
-	if (str_instruments != "") {
+	if (str_gens != "") {
 		boost::split(vec_gen, str_gens, boost::is_any_of("|"));
 	}
+
 
 	polo_gen pg;
 	pg.init(vec_gen, vec_instrument, s.get_prop_str("--path_scripture"));
