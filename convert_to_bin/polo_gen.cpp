@@ -25,9 +25,9 @@ int polo_gen::init(vector<string> vec_gen
 	}
 
 	if (vec_gen.size() == 0) {
-		for (int i = 0; i < vec_dir.size(); ++i) {
+		for (size_t i = 0; i < vec_dir.size(); ++i) {
 			// Loop through each folder in the scripture directory.
-			boost::filesystem::path p(vec_dir.at(i));
+			boost::filesystem::path p(vec_dir.at(static_cast<int>(i)));
 			boost::filesystem::path dir = p.filename();
 			string str_dir = dir.string();
 			vec_gen.push_back(str_dir);
@@ -37,8 +37,8 @@ int polo_gen::init(vector<string> vec_gen
 	if (vec_gen.size() == 0) {
 		vec_errors.push_back("No gens found for processing!");
 	} else {
-		for (int i_gen_nth = 0; i_gen_nth < vec_gen.size(); ++i_gen_nth) {
-			string str_gen = vec_gen.at(i_gen_nth);
+		for (size_t i_gen_nth = 0; i_gen_nth < vec_gen.size(); ++i_gen_nth) {
+			string str_gen = vec_gen.at(static_cast<int>(i_gen_nth));
 			string str_gen_path = str_path_scripture + "\\" + str_gen;
 
 			std::cout << "process scripture gen path = " + str_gen_path + "\n";
@@ -48,6 +48,9 @@ int polo_gen::init(vector<string> vec_gen
 			// Only lines that meet the vec_instruments critiria are included.
 			vector<string> vec_data_instruments;
 			map<string, map<string, string>> map_map_ticker;
+
+			map<string, vector<tuple<double, double, double, double, double, double, double, double>>> map_vec_candle300;
+			map<string, vector<tuple<double, double, double, double, double, double, double, double>>> map_vec_candle14400;
 
 
 			boost::split(vec_ticker_record, str_ticker_record, boost::is_any_of("|"));
@@ -86,7 +89,7 @@ int polo_gen::init(vector<string> vec_gen
 								vec_instrument.push_back(str_line2);
 							} else {
 								// For some reason, the tradional find method didn't work on this one.  Meh.  Algorithm works.
-								for (int i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
+								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
 									if (str_line2.compare(vec_instrument_user.at(i_gen_nth2)) == 0) {
 										std::cout << " found instrument : " << str_line2 << "\n";
 										vec_data_instruments.push_back(str_line2);
@@ -120,7 +123,7 @@ int polo_gen::init(vector<string> vec_gen
 							if (i_instrument_count == 0) {
 								b_add_value = true;
 							} else {
-								for (int i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
+								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
 									if (vec_ticker.at(0).compare(vec_instrument_user.at(i_gen_nth2)) == 0) {
 										b_add_value = true;
 										break;
@@ -129,7 +132,7 @@ int polo_gen::init(vector<string> vec_gen
 							}
 
 							bool b_found2 = false;
-							for (int i = 0; i < vec_ticker_record.size(); ++i) {
+							for (size_t i = 0; i < vec_ticker_record.size(); ++i) {
 								if (vec_ticker.at(1).compare(vec_ticker_record.at(i)) == 0) {
 									b_found2 = true;
 									break;
@@ -154,30 +157,37 @@ int polo_gen::init(vector<string> vec_gen
 					}
 				}
 
-
 				string str_candle_filepath = "";
 
-				// Read the candle data into an an 
-				//	vector<string> vec_files_candle_300;
-				//string str_filepath_ticker = str_path_scripture + "\\" + str_gen + "\\" + str_filename_candle_prefix ;
-				//process_candle_file();
+				// Read the candle data 300 into an a map vs instruments
 				if (vec_data_instruments.size() > 0) {
-					for (int i = 0; i < vec_data_instruments.size(); ++i) {
+					for (size_t i = 0; i < vec_data_instruments.size(); ++i) {
 						str_candle_filepath = str_path_scripture + "\\" + str_gen + "\\"
-																						+ str_filename_candle_prefix
-																						+ vec_data_instruments.at(i)
-																						+ str_filename_candle_300_suffix;
-						// Going to have to think about the best way to do this.
-						if (boost::filesystem::is_regular_file(str_candle_filepath) == false) {
-							process_candle_file(str_candle_filepath);
+							+ str_filename_candle_prefix
+							+ vec_data_instruments.at(i)
+							+ str_filename_candle_300_suffix;
+						if (boost::filesystem::is_regular_file(str_candle_filepath) == true) {
+							vector<tuple<double, double, double, double, double, double, double, double>> vec_candle;
+							process_candle_file(str_candle_filepath, & vec_candle);
+							map_vec_candle300.emplace(vec_data_instruments.at(i), std::move(vec_candle));
 						}
 					}
 				}
 
-				//	
-				//	vector<string> vec_files_candle_14400;
-
-
+				// Read the candle data 14400 into an a map vs instruments
+				if (vec_data_instruments.size() > 0) {
+					for (size_t i = 0; i < vec_data_instruments.size(); ++i) {
+						str_candle_filepath = str_path_scripture + "\\" + str_gen + "\\"
+							+ str_filename_candle_prefix
+							+ vec_data_instruments.at(i)
+							+ str_filename_candle_14400_suffix;
+						if (boost::filesystem::is_regular_file(str_candle_filepath) == true) {
+							vector<tuple<double, double, double, double, double, double, double, double>> vec_candle;
+							process_candle_file(str_candle_filepath, &vec_candle);
+							map_vec_candle14400.emplace(vec_data_instruments.at(i), std::move(vec_candle));
+						}
+					}
+				}
 
 
 				//	
@@ -191,7 +201,7 @@ int polo_gen::init(vector<string> vec_gen
 
 
 
-
+				std::cout << "\tGen Complete : " << str_gen << "\n";
 			}
 		}
 	}
@@ -200,7 +210,7 @@ int polo_gen::init(vector<string> vec_gen
 
 	if (vec_errors.size() > 0) {
 		std::cout << "Errors found in " << str_class_name << "[" << __func__ << "]" << " :\n";
-		for (int i = 0; i < vec_errors.size(); ++i) {
+		for (size_t i = 0; i < vec_errors.size(); ++i) {
 			std::cout << "\t" << vec_errors.at(i);
 		}
 	}
@@ -208,9 +218,67 @@ int polo_gen::init(vector<string> vec_gen
 	return static_cast<int>(vec_errors.size());
 }
 
+void polo_gen::process_candle_file(string str_filepath, vector<tuple<double, double, double, double, double, double, double, double>> * ptr_vec_candle) {
+	vector<tuple<int, double, double, double, double, double, double, double>> vec_candle_backward;
 
-void process_candle_file(string str_filepath) {
+	int i_val = -1, i_start = -1, i_end = -1;
 
+	std::string str_line;
+	std::ifstream ifs(str_filepath);
+	while (std::getline(ifs, str_line)) {
+		if (str_line.size() > 0) {
+			vector<string> vec_line;
+			boost::split(vec_line, str_line, boost::is_any_of("|"));
+			if (vec_line.size() >= 8) {
+				tuple<int, double, double, double, double, double, double, double> tup = std::make_tuple(std::stoi(vec_line.at(0), nullptr, 10)
+					, std::stod(vec_line.at(1), nullptr)
+					, std::stod(vec_line.at(2), nullptr)
+					, std::stod(vec_line.at(3), nullptr)
+					, std::stod(vec_line.at(4), nullptr)
+					, std::stod(vec_line.at(5), nullptr)
+					, std::stod(vec_line.at(6), nullptr)
+					, std::stod(vec_line.at(7), nullptr)
+				);
+				if (get<0>(tup) > 0) {
+					i_val = get<0>(tup);
+					if (i_start == -1) {
+						i_start = i_val;
+					}
+					i_end = i_val;
+					vec_candle_backward.push_back(tup);
+				}
+			}
+		}
+	}
+
+	if (vec_candle_backward.size() == 0) {
+		ptr_vec_candle->push_back(tuple<double, double, double, double, double, double, double, double>(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+		ptr_vec_candle->push_back(tuple<double, double, double, double, double, double, double, double>(100.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+	} else {
+		if (vec_candle_backward.size() == 1) {
+			ptr_vec_candle->push_back(tuple<double, double, double, double, double, double, double, double>(100.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+		} else {
+			double d_diff_total = static_cast<double>(i_end - i_start);
+
+			for (int i = static_cast<int>(vec_candle_backward.size()) - 1; i >= 0; --i) {
+				double d_diff = static_cast<double>(i_end - get<0>(vec_candle_backward.at(static_cast<size_t>(i))));
+				double d_pc = (d_diff / d_diff_total) * 100.0;
+
+				tuple<double, double, double, double, double, double, double, double> tup = std::make_tuple(
+					d_pc
+					, get<1>(vec_candle_backward.at(i))
+					, get<2>(vec_candle_backward.at(i))
+					, get<3>(vec_candle_backward.at(i))
+					, get<4>(vec_candle_backward.at(i))
+					, get<5>(vec_candle_backward.at(i))
+					, get<6>(vec_candle_backward.at(i))
+					, get<7>(vec_candle_backward.at(i))
+					);
+
+				ptr_vec_candle->push_back(tup);
+			}
+		}
+	}
 }
 
 

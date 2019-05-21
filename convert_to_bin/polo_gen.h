@@ -69,6 +69,8 @@ public:
 		, string str_path_scripture
 	);
 
+	void process_candle_file(string, vector<tuple<double, double, double, double, double, double, double, double>> *);
+
 
 	string to_string();
 
