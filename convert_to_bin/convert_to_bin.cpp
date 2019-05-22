@@ -66,7 +66,6 @@ int main(int argc, char** argv) {
 	}
 
 
-
 	string str_instruments = s.get_prop_str("--instruments");
 	vector<string> vec_instrument;
 	if (str_instruments != "") {
@@ -82,7 +81,7 @@ int main(int argc, char** argv) {
 
 
 	polo_gen pg;
-	pg.init(vec_gen, vec_instrument, s.get_prop_str("--path_scripture"));
+	pg.process(vec_gen, vec_instrument, s.get_prop_str("--path_scripture"));
 
 
 
