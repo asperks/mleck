@@ -84,13 +84,13 @@ public:
 		, string str_path_scripture
 	);
 
-	void process_file_candle(string, vector<tuple<double, double, double, double, double, double, double, double>> *);
+	void process_file_candle(string, double, vector<tuple<double, double, double, double, double, double, double, double>> *);
 
 	//	 dbl%			dbl%						t/f					dbl,		dbl%					dbl%
 	//	timepc, price vs start pc, buy/sell true/false,		vol,	vol vs max,	vol running total vs total,	
-	void process_file_history(string, vector<tuple<double, double, short, double, double, double>> *);
+	void process_file_history(string, double, vector<tuple<double, double, short, double, double, double>> *);
 
-	void process_file_orderbook(string);
+	void process_file_orderbook(string, double);
 
 
 	// Convert date strings to unix epochs in seconds.
