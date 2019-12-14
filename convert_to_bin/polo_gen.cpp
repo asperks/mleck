@@ -4,9 +4,9 @@
 
 
 int polo_gen::init(vector<string> vec_gen
-	, vector<string> vec_instrument_user
-	, string str_path_scripture
-) {
+					, vector<string> vec_instrument_user
+					, string str_path_scripture
+					) {
 	vector<string> vec_errors;
 
 	int i_instrument_count = static_cast<int>(vec_instrument_user.size());
