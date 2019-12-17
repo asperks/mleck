@@ -80,9 +80,12 @@ int main(int argc, char** argv) {
 		boost::split(vec_gen, str_gens, boost::is_any_of("|"));
 	}
 
-
 	polo_gen pg;
-	pg.process(vec_gen, vec_instrument, s.get_prop_str("--path_scripture"));
+	pg.process(vec_gen
+					, vec_instrument
+					, s.get_prop_str("--path_scripture")
+					, s.get_prop_str("--path_bin")
+					);
 
 
 

@@ -16,7 +16,6 @@ using namespace std;
 
 class cur_bin {
 private:
-
 	int i_status = 0;
 
 	// Data defining the generation of this particular mleck situation.
@@ -53,7 +52,6 @@ public:
 	void clear();
 
 	void export_all_text(string);
-
 
 
 };

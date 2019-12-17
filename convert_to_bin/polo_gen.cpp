@@ -7,9 +7,10 @@
 
 
 int polo_gen::process(vector<string> vec_gen
-	, vector<string> vec_instrument_user
-	, string str_path_scripture
-) {
+							, vector<string> vec_instrument_user
+							, string str_path_scripture
+							, string str_path_bin
+							) {
 	vector<string> vec_errors;
 
 	int i_instrument_count = static_cast<int>(vec_instrument_user.size());
@@ -39,6 +40,7 @@ int polo_gen::process(vector<string> vec_gen
 		for (size_t i_gen_nth = 0; i_gen_nth < vec_gen.size(); ++i_gen_nth) {
 			string str_gen = vec_gen.at(static_cast<int>(i_gen_nth));
 			string str_gen_path = str_path_scripture + "\\" + str_gen;
+			string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
 
 			std::cout << "process scripture gen path = " + str_gen_path + "\n";
 
@@ -214,6 +216,7 @@ int polo_gen::process(vector<string> vec_gen
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 				//	Write out the data to a BIN file.
 				//
+				//string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
 
 
 				//

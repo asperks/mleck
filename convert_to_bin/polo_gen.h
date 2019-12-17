@@ -15,6 +15,9 @@
 
 using namespace std;
 
+// serialization requirements
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 #include <string>
 #include <iostream>
@@ -47,6 +50,8 @@ const size_t formats_n = sizeof(formats) / sizeof(formats[0]);
 
 class polo_gen {
 private:
+	friend class boost::serialization::access;
+
 	// Data Members 
 	string str_class_name = "polo_gen";
 
@@ -85,6 +90,7 @@ public:
 	int process(vector<string> vec_gen
 		, vector<string> vec_instrument
 		, string str_path_scripture
+		, string str_path_bin
 	);
 
 
@@ -132,11 +138,7 @@ public:
 		return static_cast<int>(pt_to_time_t(pt));
 	}
 
-
-
 	string to_string();
-
 };
-
 
 #endif //POLO_GEN_H
