@@ -13,7 +13,6 @@ int polo_gen::process(vector<string> vec_gen
 	vector<string> vec_errors;
 
 	int i_instrument_count = static_cast<int>(vec_instrument_user.size());
-	vector<string> vec_instrument;
 
 	// List all of the directories in the scripture directory
 	std::cout << "read scripture folders\n";
@@ -43,16 +42,15 @@ int polo_gen::process(vector<string> vec_gen
 
 			std::cout << "process scripture gen path = " + str_gen_path + "\n";
 
+			cur_bin cb = cur_bin();
+
+
+
 			// The files are read into vectors of their lines
 			vector<string> vec_data_situation;
 			// Only lines that meet the vec_instruments critiria are included.
 			vector<string> vec_data_instruments;
 			map<string, map<string, double>> map_map_ticker;
-
-			map<string, vector<tuple<int, double, double, double, double, double, double, double>>> map_vec_candle300;
-			map<string, vector<tuple<int, double, double, double, double, double, double, double>>> map_vec_candle14400;
-			map<string, vector<tuple<int, double, bool, double>>> map_vec_history;
-			map<string, vector<tuple<double, double, double, double>>> map_vec_orderbook;
 
 			boost::split(vec_ticker_record, str_ticker_record, boost::is_any_of("|"));
 
@@ -69,7 +67,8 @@ int polo_gen::process(vector<string> vec_gen
 					std::ifstream ifs(str_filepath_situation);
 					while (std::getline(ifs, str_line)) {
 						if (str_line.size() > 0) {
-							vec_data_situation.push_back(str_line);
+							// Add it to the cur_bin object
+							cb.add_string_situation(str_line);
 						}
 					}
 				}
@@ -87,14 +86,15 @@ int polo_gen::process(vector<string> vec_gen
 						if (str_line2.size() > 0) {
 							if (i_instrument_count == 0) {
 								vec_data_instruments.push_back(str_line2);
-								vec_instrument.push_back(str_line2);
+								cb.add_string_instrument(str_line2);
 							} else {
 								// For some reason, the tradional find method didn't work on this one.  Meh.  Algorithm works.
 								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
 									if (str_line2.compare(vec_instrument_user.at(i_gen_nth2)) == 0) {
 										std::cout << " found instrument : " << str_line2 << "\n";
 										vec_data_instruments.push_back(str_line2);
-										vec_instrument.push_back(str_line2);
+										// Add it to the cur_bin object
+										cb.add_string_instrument(str_line2);
 										break;
 									}
 								}
@@ -143,19 +143,8 @@ int polo_gen::process(vector<string> vec_gen
 							if (b_found2 == false) { b_add_value = false; }
 
 							if (b_add_value == true) {
-								bool b_found_map = false;
-								if (map_map_ticker.size() > 0) {
-									if (map_map_ticker.count(vec_ticker.at(0)) > 0) { b_found_map = true; }
-								}
-
-								map<string, double> map_ticker;
-								if (b_found_map == true) {
-									map_ticker = map_map_ticker[vec_ticker.at(0)];
-								}
-
-								double d_val1 = 0.0;
-								map_ticker[vec_ticker.at(1)] = std::stod(vec_ticker.at(2), nullptr);
-								map_map_ticker[vec_ticker.at(0)] = map_ticker;
+								// Add it to the cur_bin object
+								cb.add_double_ticker(vec_ticker.at(0), vec_ticker.at(1), std::stod(vec_ticker.at(2), nullptr));
 							}
 						}
 					}
@@ -178,8 +167,9 @@ int polo_gen::process(vector<string> vec_gen
 							vector<tuple<int, double, double, double, double, double, double, double>> vec_candle;
 							vec_candle.reserve(500);
 							process_file_candle(str_filepath_candle, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_candle);
-							map_vec_candle300.emplace(vec_data_instruments.at(i), std::move(vec_candle));
+							cb.set_tup_candle300(vec_data_instruments.at(i), vec_candle);
 						}
+
 
 						// Read the candle data 14400 into an a map vs instruments
 						str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
@@ -190,8 +180,9 @@ int polo_gen::process(vector<string> vec_gen
 							vector<tuple<int, double, double, double, double, double, double, double>> vec_candle;
 							vec_candle.reserve(500);
 							process_file_candle(str_filepath_candle, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_candle);
-							map_vec_candle14400.emplace(vec_data_instruments.at(i), std::move(vec_candle));
+							cb.set_tup_candle14400(vec_data_instruments.at(i), vec_candle);
 						}
+
 
 						//	read the trade history file into an a map vs instruments
 						str_filepath_history = str_path_scripture + "\\" + str_gen + "\\"
@@ -201,8 +192,9 @@ int polo_gen::process(vector<string> vec_gen
 						if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
 							vector<tuple<int, double, bool, double>> vec_tup;
 							process_file_history(str_filepath_history, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
-							map_vec_history.emplace(vec_data_instruments.at(i), std::move(vec_tup));
+							cb.set_tup_history(vec_data_instruments.at(i), vec_tup);
 						}
+
 
 						//	read the order book file into an a map vs instruments
 						str_filepath_orderbook = str_path_scripture + "\\" + str_gen + "\\"
@@ -212,16 +204,21 @@ int polo_gen::process(vector<string> vec_gen
 						if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
 							vector<tuple<double, double, double, double>> vec_tup;
 							process_file_orderbook(str_filepath_orderbook, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
-							map_vec_orderbook.emplace(vec_data_instruments.at(i), std::move(vec_tup));
+							cb.set_tup_orderbook(vec_data_instruments.at(i), vec_tup);
 						}
 					}
 				}
 				// Read all of the data files into memory
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				//	Write out the data to a BIN file.
+				//
 
 
-
+				//
+				//	Write out the data to a BIN file.
+				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 				std::cout << "\tGen Complete : " << str_gen << "\n";

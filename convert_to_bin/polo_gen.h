@@ -24,6 +24,7 @@ using namespace std;
 #include <vector>
 
 #include <time.h>
+#include "cur_bin.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -31,6 +32,8 @@ using namespace std;
 
 #include <boost/date_time.hpp>
 namespace bt = boost::posix_time;
+
+
 
 // Convert date strings to unix epochs in seconds.
 // https://stackoverflow.com/a/3787188

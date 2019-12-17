@@ -27,6 +27,9 @@
     <ClCompile Include="polo_gen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cur_bin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="settings.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="polo_gen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cur_bin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
