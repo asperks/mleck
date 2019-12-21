@@ -1,8 +1,8 @@
 // Class for a snapshot of poloniex data.  The data from poloniex is retrieved using
 //	a separate method.
 //		Reads the poloniex data text files.
-//		Creates binary representations of that data, one for each instrument.
-//		Populates a class for access.
+//		Populates a class for access.  That class reads/writes binary for future
+//		processing.
 //
 //	There is a single function that sucks the data out of the folders.  I might want
 //	to change that later.  
@@ -113,11 +113,6 @@ public:
 	//137.27802432|0.00729104|137.47839826|72.64250000
 	//137.23912591|0.07842815|137.57818032|31.71775437
 	void process_file_orderbook(string, double, vector<Orderbook_line> *);
-
-
-	void process_file_candle_tup(string, double, vector<tuple<int, double, double, double, double, double, double, double>> *);
-	void process_file_history_tup(string, double, vector<tuple<int, double, bool, double>> *);
-	void process_file_orderbook_tup(string, double, vector<tuple<double, double, double, double>> * );
 
 
 	// Convert date strings to unix epochs in seconds.
