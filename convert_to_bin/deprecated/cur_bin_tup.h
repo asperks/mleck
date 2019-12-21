@@ -1,3 +1,14 @@
+/*
+A class for handling poloniex data.  But it can be tailored to anything.  What's important
+is that it can read the base data files, convert them to a BIN format, and then load
+them from that format quickly when required.  This will be the core object loaded into memory
+when processing crypto data at a specific point in time.
+
+This version was deprecated and replaced with the version that uses structs instead of tuples.
+
+2019-12-21	ASP
+*/
+
 #pragma once
 
 #ifndef CUR_BIN_TUP_H
