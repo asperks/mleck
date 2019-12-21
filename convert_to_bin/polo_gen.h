@@ -4,8 +4,8 @@
 //		Populates a class for access.  That class reads/writes binary for future
 //		processing.
 //
-//	There is a single function that sucks the data out of the folders.  I might want
-//	to change that later.  
+//	There is a single function that sucks the data out of the folders and uses that
+//	data in memory.  I might want to change that later.  
 //
 
 #pragma once
@@ -28,7 +28,6 @@ using namespace std;
 
 #include <time.h>
 #include "cur_bin.h"
-#include "cur_bin_tup.h" // To be removed when cur_bin binary is complete.
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
