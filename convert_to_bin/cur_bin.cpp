@@ -5,40 +5,76 @@
 
 #include "cur_bin.h"
 
-void cur_bin::add_double_ticker(string str_ticker, string str_key, double d_val) {
-	bool b_found_map = false;
-
-	// Find if there is already a map for this ticker.
-	if (map_map_ticker.size() > 0) {
-		if (map_map_ticker.count(str_ticker) > 0) { b_found_map = true; }
+bool cur_bin::is_valid_instrument(string str_instrument) {
+	if (std::find(vec_data_instruments.begin(), vec_data_instruments.end(), str_instrument) != vec_data_instruments.end()) {
+		return true;
+	} else {
+		return false;
 	}
-
-	map<string, double> map_ticker;
-	// get the map from the map of maps if it already exists.
-	if (b_found_map == true) {	map_ticker = map_map_ticker[str_ticker];}
-
-	map_ticker[str_key] = d_val;
-	map_map_ticker[str_ticker] = map_ticker;
-
 }
 
 
-void cur_bin::set_tup_candle300(string str_ticker, vector<tuple<int, double, double, double, double, double, double, double>> vec) {
+void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val) {
+	bool b_found_map = false;
+	Ticker ticker{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+	Ticker * ptr_t = & ticker;
+
+	// modifies str to lower case.
+	// https://stackoverflow.com/a/313988
+	boost::algorithm::to_lower(str_key);
+
+	// Find if there is already a map reference for this ticker.
+	if (map_struct_ticker.size() > 0) {
+		if (map_struct_ticker.count(str_ticker) > 0) {
+			ptr_t = & map_struct_ticker[str_ticker];
+			b_found_map = true;
+		}
+	}
+
+	// If the map reference wasn't found.  Create a new entry in the map.
+	if (b_found_map == false) {
+		map_struct_ticker[str_ticker] = ticker;
+		ptr_t = & map_struct_ticker[str_ticker];
+	}
+
+	// Populate the properties of the ticker struct.
+	if (str_key.compare("last") == 0) {
+		ptr_t->last = d_val;
+	} else if (str_key.compare("high24hr") == 0) {
+		ptr_t->high24hr = d_val;
+//	} else if (str_key.compare("isfrozen") == 0) {
+//		ptr_t->isfrozen = d_val;
+	} else if (str_key.compare("highestbid") == 0) {
+		ptr_t->highestbid = d_val;
+	} else if (str_key.compare("percentchange") == 0) {
+		ptr_t->percentchange = d_val;
+	} else if (str_key.compare("low24hr") == 0) {
+		ptr_t->low24hr = d_val;
+	} else if (str_key.compare("lowestask") == 0) {
+		ptr_t->lowestask = d_val;
+//	} else if (str_key.compare("basevolume") == 0) {
+//		ptr_t->basevolume = d_val;
+	}
+	
+}
+
+
+void cur_bin::set_struct_candle300(string str_ticker, vector<Candle_line> vec) {
 	map_vec_candle300.emplace(str_ticker, std::move(vec));
 }
 
 
-void cur_bin::set_tup_candle14400(string str_ticker, vector<tuple<int, double, double, double, double, double, double, double>> vec) {
+void cur_bin::set_struct_candle14400(string str_ticker, vector<Candle_line> vec) {
 	map_vec_candle14400.emplace(str_ticker, std::move(vec));
 }
 
 
-void cur_bin::set_tup_history(string str_ticker, vector<tuple<int, double, bool, double>> vec) {
+void cur_bin::set_struct_history(string str_ticker, vector<History_line> vec) {
 	map_vec_history.emplace(str_ticker, std::move(vec));
 }
 
 
-void cur_bin::set_tup_orderbook(string str_ticker, vector<tuple<double, double, double, double>> vec) {
+void cur_bin::set_struct_orderbook(string str_ticker, vector<Orderbook_line> vec) {
 	map_vec_orderbook.emplace(str_ticker, std::move(vec));
 }
 
@@ -46,7 +82,7 @@ void cur_bin::set_tup_orderbook(string str_ticker, vector<tuple<double, double, 
 void cur_bin::clear() {
 	vec_data_situation.clear();
 	vec_data_instruments.clear();
-	map_map_ticker.clear();
+	map_struct_ticker.clear();
 	map_vec_candle300.clear();
 	map_vec_candle14400.clear();
 	map_vec_history.clear();
@@ -54,3 +90,101 @@ void cur_bin::clear() {
 	i_status = 0;
 }
 
+
+void cur_bin::export_bin(string str_filepath) {
+
+
+
+}
+
+
+void cur_bin::import_bin(string str_filepath) {
+
+
+
+}
+
+
+
+
+void cur_bin::export_text(string str_filepath) {
+
+	ofstream ofs(str_filepath);
+
+	if (ofs.is_open()) {
+		//ofs << "This is a line.\n";
+		//ofs << "This is another line.\n";
+
+		if (vec_data_situation.size() > 0) {
+			for (size_t i_situation = 0; i_situation < vec_data_situation.size(); ++i_situation) {
+				ofs << vec_data_situation.at(i_situation).size() << "|" <<  vec_data_situation.at(i_situation) << "\n";
+			}
+		}
+
+		if (vec_data_instruments.size() > 0) {
+			for (size_t i_instrument = 0; i_instrument < vec_data_instruments.size(); ++i_instrument) {
+				ofs << "\t" << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+				ofs << "\t" << "instrument:";
+				ofs << vec_data_instruments.at(i_instrument).size() << "|" << vec_data_instruments.at(i_instrument) << "\n";
+
+				ofs << "\t\t" << "last:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].last << "\n";
+				ofs << "\t\t" << "high24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].high24hr << "\n";
+				ofs << "\t\t" << "highestbid:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].highestbid << "\n";
+				ofs << "\t\t" << "percentchange:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].percentchange << "\n";
+				ofs << "\t\t" << "low24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].low24hr << "\n";
+				ofs << "\t\t" << "lowestask:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].lowestask << "\n";
+
+				ofs << "\t\t" << "candle300|" << map_vec_candle300.size() << "\n";
+				for (size_t i_vec = 0; i_vec < map_vec_candle300[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
+					ofs << "\t\t\t" << "" << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val3;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val4;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val5;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).vol;
+					ofs << "\n";
+				}
+				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+
+				ofs << "\t\t" << "candle14400|" << map_vec_candle14400.size() << "\n";
+				for (size_t i_vec = 0; i_vec < map_vec_candle14400[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
+					ofs << "\t\t\t" << "" << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val3;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val4;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val5;
+					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).vol;
+					ofs << "\n";
+				}
+				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+
+				ofs << "\t\t" << "history|" << map_vec_history.size() << "\n";
+				for (size_t i_vec = 0; i_vec < map_vec_history[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
+					ofs << "\t\t\t" << "" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
+					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
+					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
+					ofs << "|" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).buy;
+					ofs << "\n";
+				}
+				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+
+				ofs << "\t\t" << "orderbook|" << map_vec_orderbook.size() << "\n";
+				for (size_t i_vec = 0; i_vec < map_vec_orderbook[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
+					ofs << "\t\t\t" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
+					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
+					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val3;
+					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val4;
+					ofs << "\n";
+				}
+				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+
+				ofs << "\t" << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
+			}
+		}
+
+		ofs.close();
+	}
+
+}

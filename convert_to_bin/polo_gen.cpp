@@ -44,8 +44,8 @@ int polo_gen::process(vector<string> vec_gen
 
 			std::cout << "process scripture gen path = " + str_gen_path + "\n";
 
+			cur_bin_tup cb_tup = cur_bin_tup();
 			cur_bin cb = cur_bin();
-
 
 
 			// The files are read into vectors of their lines
@@ -71,6 +71,9 @@ int polo_gen::process(vector<string> vec_gen
 						if (str_line.size() > 0) {
 							// Add it to the cur_bin object
 							cb.add_string_situation(str_line);
+
+							// remove this later.
+							cb_tup.add_string_situation(str_line);
 						}
 					}
 				}
@@ -89,6 +92,9 @@ int polo_gen::process(vector<string> vec_gen
 							if (i_instrument_count == 0) {
 								vec_data_instruments.push_back(str_line2);
 								cb.add_string_instrument(str_line2);
+
+								// remove this later
+								cb_tup.add_string_instrument(str_line2);
 							} else {
 								// For some reason, the tradional find method didn't work on this one.  Meh.  Algorithm works.
 								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
@@ -97,6 +103,9 @@ int polo_gen::process(vector<string> vec_gen
 										vec_data_instruments.push_back(str_line2);
 										// Add it to the cur_bin object
 										cb.add_string_instrument(str_line2);
+
+										// remove this later.
+										cb_tup.add_string_instrument(str_line2);
 										break;
 									}
 								}
@@ -124,7 +133,11 @@ int polo_gen::process(vector<string> vec_gen
 
 							bool b_add_value = false;
 							if (i_instrument_count == 0) {
-								b_add_value = true;
+								if (cb.is_valid_instrument(vec_ticker.at(0))) {
+									b_add_value = true;
+								} else {
+									b_add_value = false;
+								}
 							} else {
 								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
 									if (vec_ticker.at(0).compare(vec_instrument_user.at(i_gen_nth2)) == 0) {
@@ -146,7 +159,10 @@ int polo_gen::process(vector<string> vec_gen
 
 							if (b_add_value == true) {
 								// Add it to the cur_bin object
-								cb.add_double_ticker(vec_ticker.at(0), vec_ticker.at(1), std::stod(vec_ticker.at(2), nullptr));
+								cb.set_ticker_double(vec_ticker.at(0), vec_ticker.at(1), std::stod(vec_ticker.at(2), nullptr));
+
+								// remove this later
+								cb_tup.add_double_ticker(vec_ticker.at(0), vec_ticker.at(1), std::stod(vec_ticker.at(2), nullptr));
 							}
 						}
 					}
@@ -160,16 +176,25 @@ int polo_gen::process(vector<string> vec_gen
 
 				if (vec_data_instruments.size() > 0) {
 					for (size_t i = 0; i < vec_data_instruments.size(); ++i) {
+						Ticker t = cb.get_ticker(vec_data_instruments.at(i));
+
 						// Read the candle data 300 into an a map vs instruments
 						str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
 							+ str_filename_candle_prefix
 							+ vec_data_instruments.at(i)
 							+ str_filename_candle_300_suffix;
+
 						if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
-							vector<tuple<int, double, double, double, double, double, double, double>> vec_candle;
-							vec_candle.reserve(500);
-							process_file_candle(str_filepath_candle, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_candle);
-							cb.set_tup_candle300(vec_data_instruments.at(i), vec_candle);
+							vector<Candle_line> vec_struct;
+							vec_struct.reserve(500);
+							process_file_candle(str_filepath_candle, t.last, &vec_struct);
+							cb.set_struct_candle300(vec_data_instruments.at(i), vec_struct);
+
+							// remove later
+							vector<tuple<int, double, double, double, double, double, double, double>> vec_candle_tup;
+							vec_candle_tup.reserve(500);
+							process_file_candle_tup(str_filepath_candle, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_candle_tup);
+							cb_tup.set_tup_candle300(vec_data_instruments.at(i), vec_candle_tup);
 						}
 
 
@@ -178,51 +203,91 @@ int polo_gen::process(vector<string> vec_gen
 							+ str_filename_candle_prefix
 							+ vec_data_instruments.at(i)
 							+ str_filename_candle_14400_suffix;
-						if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
-							vector<tuple<int, double, double, double, double, double, double, double>> vec_candle;
-							vec_candle.reserve(500);
-							process_file_candle(str_filepath_candle, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_candle);
-							cb.set_tup_candle14400(vec_data_instruments.at(i), vec_candle);
-						}
 
+						if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
+							vector<Candle_line> vec_struct;
+							vec_struct.reserve(500);
+							process_file_candle(str_filepath_candle, t.last, &vec_struct);
+							cb.set_struct_candle14400(vec_data_instruments.at(i), vec_struct);
+
+							// remove later
+							vector<tuple<int, double, double, double, double, double, double, double>> vec_tup;
+							vec_tup.reserve(500);
+							process_file_candle_tup(str_filepath_candle, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
+							cb_tup.set_tup_candle14400(vec_data_instruments.at(i), vec_tup);
+						}
 
 						//	read the trade history file into an a map vs instruments
 						str_filepath_history = str_path_scripture + "\\" + str_gen + "\\"
 							+ str_filename_hist_prefix
 							+ vec_data_instruments.at(i)
 							+ str_filename_hist_suffix;
-						if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
-							vector<tuple<int, double, bool, double>> vec_tup;
-							process_file_history(str_filepath_history, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
-							cb.set_tup_history(vec_data_instruments.at(i), vec_tup);
-						}
 
+						if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
+							vector<History_line> vec_struct;
+							vec_struct.reserve(500);
+							process_file_history(str_filepath_history, t.last, &vec_struct);
+							cb.set_struct_history(vec_data_instruments.at(i), vec_struct);
+
+							// remove later
+							vector<tuple<int, double, bool, double>> vec_tup;
+							vec_tup.reserve(500);
+							process_file_history_tup(str_filepath_history, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
+							cb_tup.set_tup_history(vec_data_instruments.at(i), vec_tup);
+						}
 
 						//	read the order book file into an a map vs instruments
 						str_filepath_orderbook = str_path_scripture + "\\" + str_gen + "\\"
 							+ str_filename_orderbook_prefix
 							+ vec_data_instruments.at(i)
 							+ str_filename_orderbook_suffix;
-						if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
+
+						if (boost::filesystem::is_regular_file(str_filepath_orderbook) == true) {
+							vector<Orderbook_line> vec_struct;
+							vec_struct.reserve(500);
+							process_file_orderbook(str_filepath_orderbook, t.last, &vec_struct);
+							cb.set_struct_orderbook(vec_data_instruments.at(i), vec_struct);
+
+							// remove later
 							vector<tuple<double, double, double, double>> vec_tup;
-							process_file_orderbook(str_filepath_orderbook, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
-							cb.set_tup_orderbook(vec_data_instruments.at(i), vec_tup);
+							vec_tup.reserve(500);
+							process_file_orderbook_tup(str_filepath_orderbook, map_map_ticker[vec_data_instruments.at(i)]["last"], &vec_tup);
+							cb_tup.set_tup_orderbook(vec_data_instruments.at(i), vec_tup);
 						}
 					}
 				}
 				// Read all of the data files into memory
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+				
+
+
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 				//	Write out the data to a BIN file.
 				//
-				//string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
+				string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
+				string str_ascii_filepath = str_path_bin + "\\" + str_gen + ".asc";
+
+				// testing
+				cb.export_text(str_ascii_filepath);
 
 
+				//cb.export_bin(str_bin_filepath);
 				//
 				//	Write out the data to a BIN file.
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+				/*
+				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				//	Test the data read/write process from BIN
+				//
+				cur_bin cb_test = cur_bin();
+				cb_test.import_bin(str_bin_filepath);
+				cb_test.export_text(str_ascii_filepath);
+				//
+				//	Test the data read/write process from BIN
+				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+				*/
 
 				std::cout << "\tGen Complete : " << str_gen << "\n";
 			}
@@ -242,13 +307,144 @@ int polo_gen::process(vector<string> vec_gen
 }
 
 
+
+
 // Read the text data file into memory
 // Record vector with elements newest (lower) to latest (higher)     (the file must be reversed)
 //			0			1				2					3			 4			5				6			7
 //	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
 //	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
 //	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
-void polo_gen::process_file_candle(string str_filepath, double d_val_last, vector<tuple<int, double, double, double, double, double, double, double>> * ptr_vec_output) {
+void polo_gen::process_file_candle(string str_filepath, double d_val_last, vector<Candle_line> * ptr_vec_output) {
+	vector<Candle_line> vec_struct_file;
+	vec_struct_file.reserve(500);
+
+	int i_val = -1, i_start = -1, i_end = -1;
+
+	std::string str_line;
+	std::ifstream ifs(str_filepath);
+	while (std::getline(ifs, str_line)) {
+		if (str_line.size() > 0) {
+			vector<string> vec_line;
+			boost::split(vec_line, str_line, boost::is_any_of("|"));
+			if (vec_line.size() >= 8) {
+				Candle_line cl;
+
+				cl.unix_time = std::stoi(vec_line.at(0), nullptr, 10);
+				cl.val1 = std::stod(vec_line.at(1), nullptr);
+				cl.val2 = std::stod(vec_line.at(2), nullptr);
+				cl.val3 = std::stod(vec_line.at(3), nullptr);
+				cl.val4 = std::stod(vec_line.at(4), nullptr);
+				cl.val5 = std::stod(vec_line.at(5), nullptr);
+				//cl.val6 = std::stod(vec_line.at(6), nullptr);
+				cl.vol = std::stod(vec_line.at(7), nullptr);
+
+				vec_struct_file.push_back(cl);
+			}
+		}
+	}
+
+	// Reverse the list.
+	if (vec_struct_file.size() > 0) {
+		for (int i = static_cast<int>(vec_struct_file.size()) - 1; i >= 0; --i) {
+			ptr_vec_output->push_back(vec_struct_file.at(static_cast<size_t>(i)));
+		}
+	}
+}
+
+
+// Record vector with elements newest (lower) to latest (higher)
+//		1					2				3				4
+//137.33920319|16.63857248|137.40000000|23.79240309
+//137.33920318|0.00728780|137.45367868|1.13800000
+//137.27802432|0.00729104|137.47839826|72.64250000
+//137.23912591|0.07842815|137.57818032|31.71775437
+void polo_gen::process_file_orderbook(string str_filepath, double d_val_last, vector<Orderbook_line> * ptr_vec_output) {
+	std::string str_line;
+	std::ifstream ifs(str_filepath);
+	while (std::getline(ifs, str_line)) {
+		if (str_line.size() > 0) {
+			vector<string> vec_line;
+			boost::split(vec_line, str_line, boost::is_any_of("|"));
+			if (vec_line.size() >= 4) {
+				Orderbook_line ol;
+
+				ol.val1 = std::stod(vec_line.at(0), nullptr);
+				ol.val2 = std::stod(vec_line.at(1), nullptr);
+				ol.val3 = std::stod(vec_line.at(2), nullptr);
+				ol.val4 = std::stod(vec_line.at(3), nullptr);
+
+				ptr_vec_output->push_back(ol);
+				//std::cout << "\tline : " << str_line << "\n";
+			}
+		}
+	}
+}
+
+
+// Read the text data file into memory
+// Record vector with elements newest (lower) to latest (higher)   
+//	0(skip)	1(skip)			2					3		4		5			6(skip)
+//411121485|26532891|2019-03-1812:52:20|3980.92148989|sel|2184.04682637|0.54862846
+//411121484|26532890|2019-03-1812:52:20|3981.27192630|sel|8.78997159|0.00220783
+//411121478|26532889|2019-03-1812:52:06|3983.29999997|buy|187.88003226|0.04716693
+void polo_gen::process_file_history(string str_filepath, double d_val_last, vector<History_line> * ptr_vec_output) {
+	int i_epoch_start = -1, i_epoch_end = -1;
+	double d_vol_total = 0.0;
+
+	std::string str_line;
+	std::ifstream ifs(str_filepath);
+	while (std::getline(ifs, str_line)) {
+		if (str_line.size() > 0) {
+			vector<string> vec_line;
+			boost::split(vec_line, str_line, boost::is_any_of("|"));
+			if (vec_line.size() >= 7) {
+				History_line hl;
+
+				hl.unix_time = seconds_from_epoch(vec_line.at(2));
+
+				bool b_buysell = false;
+				if (vec_line.at(4).compare("buy") == 0) {
+					hl.buy = true;
+				} else {
+					hl.buy = false;
+				}
+
+				hl.val1 = std::stod(vec_line.at(3), nullptr);
+				hl.val2 = std::stod(vec_line.at(5), nullptr);
+
+				ptr_vec_output->push_back(hl);
+				//std::cout << "\tline : " << str_line << "\n";
+			}
+		}
+	}
+}
+
+
+
+string polo_gen::to_string() {
+	string str_return = "";
+
+	return str_return;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+// I used to do this with tuples.  I've removed them and replaced them with structs.  I'll remove the code safely later.
+//
+void polo_gen::process_file_candle_tup(string str_filepath, double d_val_last, vector<tuple<int, double, double, double, double, double, double, double>> * ptr_vec_output) {
 	vector<tuple<int, double, double, double, double, double, double, double>> vec_tup_file;
 	vec_tup_file.reserve(500);
 
@@ -292,13 +488,7 @@ void polo_gen::process_file_candle(string str_filepath, double d_val_last, vecto
 }
 
 
-// Record vector with elements newest (lower) to latest (higher)
-//		1					2				3				4
-//137.33920319|16.63857248|137.40000000|23.79240309
-//137.33920318|0.00728780|137.45367868|1.13800000
-//137.27802432|0.00729104|137.47839826|72.64250000
-//137.23912591|0.07842815|137.57818032|31.71775437
-void polo_gen::process_file_orderbook(string str_filepath, double d_val_last, vector<tuple<double, double, double, double>> * ptr_vec_output) {
+void polo_gen::process_file_orderbook_tup(string str_filepath, double d_val_last, vector<tuple<double, double, double, double>> * ptr_vec_output) {
 	std::string str_line;
 	std::ifstream ifs(str_filepath);
 	while (std::getline(ifs, str_line)) {
@@ -320,14 +510,7 @@ void polo_gen::process_file_orderbook(string str_filepath, double d_val_last, ve
 	}
 }
 
-
-// Read the text data file into memory
-// Record vector with elements newest (lower) to latest (higher)   
-//	0(skip)	1(skip)			2						3			 4			5				6(skip)
-//411121485|26532891|2019-03-1812:52:20|3980.92148989|sel|2184.04682637|0.54862846
-//411121484|26532890|2019-03-1812:52:20|3981.27192630|sel|8.78997159|0.00220783
-//411121478|26532889|2019-03-1812:52:06|3983.29999997|buy|187.88003226|0.04716693
-void polo_gen::process_file_history(string str_filepath, double d_val_last, vector<tuple<int, double, bool, double>> * ptr_vec_output) {
+void polo_gen::process_file_history_tup(string str_filepath, double d_val_last, vector<tuple<int, double, bool, double>> * ptr_vec_output) {
 	int i_epoch_start = -1, i_epoch_end = -1;
 	double d_vol_total = 0.0;
 
@@ -364,10 +547,7 @@ void polo_gen::process_file_history(string str_filepath, double d_val_last, vect
 		}
 	}
 }
+//
+// I used to do this with tuples.  I've removed them and replaced them with structs.  I'll remove the code safely later.
+//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-
-string polo_gen::to_string() {
-	string str_return = "";
-
-	return str_return;
-}

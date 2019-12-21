@@ -28,6 +28,7 @@ using namespace std;
 
 #include <time.h>
 #include "cur_bin.h"
+#include "cur_bin_tup.h" // To be removed when cur_bin binary is complete.
 
 #include <boost/filesystem.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -50,8 +51,6 @@ const size_t formats_n = sizeof(formats) / sizeof(formats[0]);
 
 class polo_gen {
 private:
-	friend class boost::serialization::access;
-
 	// Data Members 
 	string str_class_name = "polo_gen";
 
@@ -93,20 +92,19 @@ public:
 		, string str_path_bin
 	);
 
-
 	// Record vector with elements newest (lower) to latest (higher)
-	//			0			1				2					3			 4			5				6			7
-	//	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
-	//	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
-	//	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
-	void process_file_candle(string, double, vector<tuple<int, double, double, double, double, double, double, double>> *);
+//			0			1				2					3			 4			5				6			7
+//	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
+//	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
+//	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
+	void process_file_candle(string, double, vector<Candle_line> *);
 
 	// Record vector with elements newest (lower) to latest (higher)
 	//	0(skip)	1(skip)			2						3			 4			5				6(skip)
 	//411121485|26532891|2019-03-18 12:52:20|3980.92148989|sel|2184.04682637|0.54862846
 	//411121484|26532890|2019-03-18 12:52:20|3981.27192630|sel|8.78997159|0.00220783
 	//411121478|26532889|2019-03-18 12:52:06|3983.29999997|buy|187.88003226|0.04716693
-	void process_file_history(string, double, vector<tuple<int, double, bool, double>> *);
+	void process_file_history(string, double, vector<History_line> *);
 
 	// Record vector with elements newest (lower) to latest (higher)
 	//		1					2				3				4
@@ -114,7 +112,12 @@ public:
 	//137.33920318|0.00728780|137.45367868|1.13800000
 	//137.27802432|0.00729104|137.47839826|72.64250000
 	//137.23912591|0.07842815|137.57818032|31.71775437
-	void process_file_orderbook(string, double, vector<tuple<double, double, double, double>> * );
+	void process_file_orderbook(string, double, vector<Orderbook_line> *);
+
+
+	void process_file_candle_tup(string, double, vector<tuple<int, double, double, double, double, double, double, double>> *);
+	void process_file_history_tup(string, double, vector<tuple<int, double, bool, double>> *);
+	void process_file_orderbook_tup(string, double, vector<tuple<double, double, double, double>> * );
 
 
 	// Convert date strings to unix epochs in seconds.
