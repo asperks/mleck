@@ -229,7 +229,7 @@ int polo_gen::process(vector<string> vec_gen
 				string str_ascii_filepath = str_path_bin + "\\" + str_gen + ".asc";
 
 				//// testing ascii writing.
-				//cb.export_text(str_ascii_filepath);
+				cb.export_text(str_ascii_filepath);
 
 				cb.export_bin(str_bin_filepath);
 

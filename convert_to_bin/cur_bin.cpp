@@ -98,13 +98,13 @@ void cur_bin::import_bin(string str_filepath) {
 	if (fs.is_open()) {
 		cur_bin::clear();
 
-		int i_cnt_situation;
+		size_t i_cnt_situation;
 		// Get the count of the number of situation elements.
 		fs.read((char*)&i_cnt_situation, sizeof(i_cnt_situation));
 		if (i_cnt_situation > 0) {
 			cur_bin::vec_data_situation.reserve(i_cnt_situation);
 			for (size_t i_situation = 0; i_situation < i_cnt_situation; ++i_situation) {
-				int i_strlen;
+				size_t i_strlen;
 				// Get the string length
 				fs.read((char*)&i_strlen, sizeof(i_strlen));
 				std::string str_situation = "";
@@ -120,14 +120,14 @@ void cur_bin::import_bin(string str_filepath) {
 			}
 		}
 
-		int i_cnt_instrument;
+		size_t i_cnt_instrument;
 		// Get the count of the number of situation elements.
 		fs.read((char*)&i_cnt_instrument, sizeof(i_cnt_instrument));
 		if (i_cnt_instrument > 0) {
 			cur_bin::vec_data_instruments.reserve(i_cnt_instrument);
 
 			for (size_t i_instrument = 0; i_instrument < i_cnt_instrument; ++i_instrument) {
-				int i_instrument_strlen;
+				size_t i_instrument_strlen;
 				// Get the string length
 				fs.read((char*)&i_instrument_strlen, sizeof(i_instrument_strlen));
 				std::string str_instrument = "";
@@ -145,22 +145,47 @@ void cur_bin::import_bin(string str_filepath) {
 				fs.read((char*)&t, sizeof(t));
 				map_struct_ticker[str_instrument] = t;
 
-
+				size_t i_vector_loop = 0;
 
 				// Read the Candle300 data
-
-
+				i_vector_loop = 0;
+				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+				map_vec_candle300[str_instrument].reserve(i_vector_loop);
+				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+					Candle_line struct_extract;
+					fs.read((char*)&struct_extract, sizeof(struct_extract));
+					map_vec_candle300[str_instrument].push_back(struct_extract);
+				}
 
 				// Read the Candle14400 data
-
-
+				i_vector_loop = 0;
+				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+				map_vec_candle14400[str_instrument].reserve(i_vector_loop);
+				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+					Candle_line struct_extract;
+					fs.read((char*)&struct_extract, sizeof(struct_extract));
+					map_vec_candle14400[str_instrument].push_back(struct_extract);
+				}
 
 				// Read the History data
-
-
+				i_vector_loop = 0;
+				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+				map_vec_history[str_instrument].reserve(i_vector_loop);
+				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+					History_line struct_extract;
+					fs.read((char*)&struct_extract, sizeof(struct_extract));
+					map_vec_history[str_instrument].push_back(struct_extract);
+				}
 
 				// Read the Orderbook data
-
+				i_vector_loop = 0;
+				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+				map_vec_orderbook[str_instrument].reserve(i_vector_loop);
+				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+					Orderbook_line struct_extract;
+					fs.read((char*)&struct_extract, sizeof(struct_extract));
+					map_vec_orderbook[str_instrument].push_back(struct_extract);
+				}
 
 
 			}
@@ -182,11 +207,11 @@ void cur_bin::export_bin(string str_filepath) {
 	if (fs.is_open()) {
 		// Write out the situation data
 		if (vec_data_situation.size() > 0) {
-			int i_cnt = static_cast<int>(vec_data_situation.size());
+			size_t i_cnt = static_cast<size_t>(vec_data_situation.size());
 			// Write the number of situation elements.
 			fs.write((char*)&i_cnt, sizeof(i_cnt));
 			for (size_t i_situation = 0; i_situation < vec_data_situation.size(); ++i_situation) {
-				int i_strlen = static_cast<int>(vec_data_situation.at(i_situation).size());
+				size_t i_strlen = static_cast<size_t>(vec_data_situation.at(i_situation).size());
 				const char * cstr = vec_data_situation.at(i_situation).c_str();
 				// Write the string length and the situation string of that length.
 				fs.write((char*)&i_strlen, sizeof(i_strlen));
@@ -197,37 +222,68 @@ void cur_bin::export_bin(string str_filepath) {
 
 		// Write out the instrument name
 		if (vec_data_instruments.size() > 0) {
-			int i_cnt = static_cast<int>(vec_data_instruments.size());
+			size_t i_cnt = static_cast<size_t>(vec_data_instruments.size());
 			// Write the number of instrument elements.
 			fs.write((char*)&i_cnt, sizeof(i_cnt));
 
 			for (size_t i_instrument = 0; i_instrument < vec_data_instruments.size(); ++i_instrument) {
-				
-				int i_strlen = static_cast<int>(vec_data_instruments.at(i_instrument).size());
+				size_t i_strlen = static_cast<size_t>(vec_data_instruments.at(i_instrument).size());
 				const char * cstr = vec_data_instruments.at(i_instrument).c_str();
 				// Write the string length and the instrument string of that length.
 				fs.write((char*)&i_strlen, sizeof(i_strlen));
 				fs.write((char*)cstr, i_strlen);
+
+
+				std::cout << "cur bin write = #" << to_string(i_instrument) << "\t" << vec_data_instruments.at(i_instrument) << "\n";
+
 
 				Ticker t = map_struct_ticker[vec_data_instruments.at(i_instrument)];
 				// Write the ticker for this element to the binary file.
 				fs.write((char*)&t, sizeof(t));
 
 
+				size_t i_cnt_loop = 0;
 				// Write the Candle300 data
-
-
-
+				i_cnt_loop = map_vec_candle300[vec_data_instruments.at(i_instrument)].size();
+				fs.write((char*)&i_cnt_loop, sizeof(i_cnt_loop));
+				if (i_cnt_loop > 0) {
+					for (size_t i_vec = 0; i_vec < i_cnt_loop; ++i_vec) {
+						Candle_line cl = map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec);
+						fs.write((char*)&cl, sizeof(cl));
+					}
+				}
+				
 				// Write the Candle14400 data
-
-
+				i_cnt_loop = map_vec_candle14400[vec_data_instruments.at(i_instrument)].size();
+				fs.write((char*)&i_cnt_loop, sizeof(i_cnt_loop));
+				if (i_cnt_loop > 0) {
+					for (size_t i_vec = 0; i_vec < i_cnt_loop; ++i_vec) {
+						Candle_line cl = map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec);
+						fs.write((char*)&cl, sizeof(cl));
+					}
+				}
 
 				// Write the History data
-
-
+				i_cnt_loop = map_vec_history[vec_data_instruments.at(i_instrument)].size();
+				fs.write((char*)&i_cnt_loop, sizeof(i_cnt_loop));
+				if (i_cnt_loop > 0) {
+					for (size_t i_vec = 0; i_vec < i_cnt_loop; ++i_vec) {
+						History_line hl = map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec);
+						fs.write((char*)&hl, sizeof(hl));
+					}
+				}
 
 				// Write the Orderbook data
+				i_cnt_loop = map_vec_orderbook[vec_data_instruments.at(i_instrument)].size();
+				fs.write((char*)&i_cnt_loop, sizeof(i_cnt_loop));
+				if (i_cnt_loop > 0) {
+					for (size_t i_vec = 0; i_vec < i_cnt_loop; ++i_vec) {
+						Orderbook_line ol = map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec);
+						fs.write((char*)&ol, sizeof(ol));
+					}
+				}
 
+				
 			}
 		}
 
@@ -267,7 +323,7 @@ void cur_bin::export_text(string str_filepath) {
 				ofs << "\t\t\t" << "low24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].low24hr << "\n";
 				ofs << "\t\t\t" << "lowestask:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].lowestask << "\n";
 
-				ofs << "\t\t\t" << "candle300|" << map_vec_candle300.size() << "\n";
+				ofs << "\t\t\t" << "candle300|" << map_vec_candle300[vec_data_instruments.at(i_instrument)].size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_candle300[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
 					ofs << "\t\t\t\t" << "" << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
@@ -280,7 +336,7 @@ void cur_bin::export_text(string str_filepath) {
 				}
 				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t\t\t" << "candle14400|" << map_vec_candle14400.size() << "\n";
+				ofs << "\t\t\t" << "candle14400|" << map_vec_candle14400[vec_data_instruments.at(i_instrument)].size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_candle14400[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
 					ofs << "\t\t\t\t" << "" << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
@@ -293,7 +349,7 @@ void cur_bin::export_text(string str_filepath) {
 				}
 				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t\t\t" << "history|" << map_vec_history.size() << "\n";
+				ofs << "\t\t\t" << "history|" << map_vec_history[vec_data_instruments.at(i_instrument)].size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_history[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
 					ofs << "\t\t\t\t" << "" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
 					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).priceusd;
@@ -303,7 +359,7 @@ void cur_bin::export_text(string str_filepath) {
 				}
 				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t\t\t" << "orderbook|" << map_vec_orderbook.size() << "\n";
+				ofs << "\t\t\t" << "orderbook|" << map_vec_orderbook[vec_data_instruments.at(i_instrument)].size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_orderbook[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
 					ofs << "\t\t\t\t" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
 					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val2;

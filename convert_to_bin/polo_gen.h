@@ -122,7 +122,7 @@ public:
 		return diff.ticks() / bt::time_duration::rep_type::ticks_per_second;
 	}
 
-	int seconds_from_epoch(const std::string& s) {
+	unsigned long seconds_from_epoch(const std::string& s) {
 		bt::ptime pt;
 		for (size_t i = 0; i < formats_n; ++i) {
 			std::istringstream is(s);
@@ -132,7 +132,7 @@ public:
 		}
 		//std::cout << " ptime is " << pt << '\n';
 		//std::cout << " seconds from epoch are " << pt_to_time_t(pt) << '\n';
-		return static_cast<int>(pt_to_time_t(pt));
+		return static_cast<unsigned long>(pt_to_time_t(pt));
 	}
 
 	string to_string();

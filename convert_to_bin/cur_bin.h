@@ -38,7 +38,7 @@ struct Ticker {
 };
 
 struct Candle_line {
-	int unix_time;
+	unsigned long unix_time;
 	double val1;
 	double val2;
 	double val3;
@@ -49,7 +49,7 @@ struct Candle_line {
 };
 
 struct History_line {
-	int unix_time;
+	unsigned long unix_time;
 	double priceusd;
 	double amountusd;
 	// Not used.  It really is just amountusd/priceusd
