@@ -59,22 +59,22 @@ private:
 	string str_gen = "";
 	string str_path_scripture = "";
 
-	string str_filename_situation = "0.situation.asc";
-	string str_filename_ticker = "1.ticker.asc";
-	string str_filename_instruments = "3.instruments_btc.asc";
+	const string str_filename_situation = "0.situation.asc";
+	const string str_filename_ticker = "1.ticker.asc";
+	const string str_filename_instruments = "3.instruments_btc.asc";
 
 	// From the instrument, the filename to read is constructed using
 	//	the prefix and suffix.
-	string str_filename_candle_prefix = "4.instrument.candle_chart.";
-	string str_filename_candle_300_suffix = ".300.asc";
-	string str_filename_candle_14400_suffix = ".14400.asc";
+	const string str_filename_candle_prefix = "4.instrument.candle_chart.";
+	const string str_filename_candle_300_suffix = ".300.asc";
+	const string str_filename_candle_14400_suffix = ".14400.asc";
 
-	string str_filename_hist_prefix = "4.instrument.trade_hist.";
-	string str_filename_hist_suffix = ".asc";
-	string str_filename_orderbook_prefix = "4.instrument.order_book.";
-	string str_filename_orderbook_suffix = ".asc";
+	const string str_filename_hist_prefix = "4.instrument.trade_hist.";
+	const string str_filename_hist_suffix = ".asc";
+	const string str_filename_orderbook_prefix = "4.instrument.order_book.";
+	const string str_filename_orderbook_suffix = ".asc";
 
-	string str_ticker_record = "last|quoteVolume|high24hr|highestBid|percentChange|low24hr|lowestAsk";
+	const string str_ticker_record = "last|quoteVolume|high24hr|highestBid|percentChange|low24hr|lowestAsk";
 	vector<string> vec_ticker_record;
 
 public:

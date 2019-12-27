@@ -16,8 +16,8 @@ bool cur_bin::is_valid_instrument(string str_instrument) {
 
 void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val) {
 	bool b_found_map = false;
-	Ticker ticker{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-	Ticker * ptr_t = & ticker;
+	Ticker ticker{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+	Ticker * ptr_t = &ticker;
 
 	// modifies str to lower case.
 	// https://stackoverflow.com/a/313988
@@ -26,7 +26,7 @@ void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val)
 	// Find if there is already a map reference for this ticker.
 	if (map_struct_ticker.size() > 0) {
 		if (map_struct_ticker.count(str_ticker) > 0) {
-			ptr_t = & map_struct_ticker[str_ticker];
+			ptr_t = &map_struct_ticker[str_ticker];
 			b_found_map = true;
 		}
 	}
@@ -34,7 +34,7 @@ void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val)
 	// If the map reference wasn't found.  Create a new entry in the map.
 	if (b_found_map == false) {
 		map_struct_ticker[str_ticker] = ticker;
-		ptr_t = & map_struct_ticker[str_ticker];
+		ptr_t = &map_struct_ticker[str_ticker];
 	}
 
 	// Populate the properties of the ticker struct.
@@ -42,8 +42,8 @@ void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val)
 		ptr_t->last = d_val;
 	} else if (str_key.compare("high24hr") == 0) {
 		ptr_t->high24hr = d_val;
-//	} else if (str_key.compare("isfrozen") == 0) {
-//		ptr_t->isfrozen = d_val;
+		//	} else if (str_key.compare("isfrozen") == 0) {
+		//		ptr_t->isfrozen = d_val;
 	} else if (str_key.compare("highestbid") == 0) {
 		ptr_t->highestbid = d_val;
 	} else if (str_key.compare("percentchange") == 0) {
@@ -52,10 +52,10 @@ void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val)
 		ptr_t->low24hr = d_val;
 	} else if (str_key.compare("lowestask") == 0) {
 		ptr_t->lowestask = d_val;
-//	} else if (str_key.compare("basevolume") == 0) {
-//		ptr_t->basevolume = d_val;
+		//	} else if (str_key.compare("basevolume") == 0) {
+		//		ptr_t->basevolume = d_val;
 	}
-	
+
 }
 
 
@@ -91,20 +91,150 @@ void cur_bin::clear() {
 }
 
 
-void cur_bin::export_bin(string str_filepath) {
-
-
-
-}
-
-
 void cur_bin::import_bin(string str_filepath) {
+	fstream fs;
+	fs.open(str_filepath, ios::in | ios::binary);
+
+	if (fs.is_open()) {
+		cur_bin::clear();
+
+		int i_cnt_situation;
+		// Get the count of the number of situation elements.
+		fs.read((char*)&i_cnt_situation, sizeof(i_cnt_situation));
+		if (i_cnt_situation > 0) {
+			cur_bin::vec_data_situation.reserve(i_cnt_situation);
+			for (size_t i_situation = 0; i_situation < i_cnt_situation; ++i_situation) {
+				int i_strlen;
+				// Get the string length
+				fs.read((char*)&i_strlen, sizeof(i_strlen));
+				std::string str_situation = "";
+				for (size_t i_str = 0; i_str < i_strlen; ++i_str) {
+					char c;
+					// Get the string char
+					fs.read((char*)&c, sizeof(c));
+					// push back the char on the string
+					str_situation.push_back(c);
+				}
+				// add the string to the vector.
+				vec_data_situation.push_back(str_situation);
+			}
+		}
+
+		int i_cnt_instrument;
+		// Get the count of the number of situation elements.
+		fs.read((char*)&i_cnt_instrument, sizeof(i_cnt_instrument));
+		if (i_cnt_instrument > 0) {
+			cur_bin::vec_data_instruments.reserve(i_cnt_instrument);
+
+			for (size_t i_instrument = 0; i_instrument < i_cnt_instrument; ++i_instrument) {
+				int i_instrument_strlen;
+				// Get the string length
+				fs.read((char*)&i_instrument_strlen, sizeof(i_instrument_strlen));
+				std::string str_instrument = "";
+				for (size_t i_str = 0; i_str < i_instrument_strlen; ++i_str) {
+					char c;
+					// Get the string char
+					fs.read((char*)&c, sizeof(c));
+					// push back the char on the string
+					str_instrument.push_back(c);
+				}
+				// add the string to the vector.
+				vec_data_instruments.push_back(str_instrument);
+
+				Ticker t;
+				fs.read((char*)&t, sizeof(t));
+				map_struct_ticker[str_instrument] = t;
 
 
 
+				// Read the Candle300 data
+
+
+
+				// Read the Candle14400 data
+
+
+
+				// Read the History data
+
+
+
+				// Read the Orderbook data
+
+
+
+			}
+
+
+		}
+
+
+
+		fs.close();
+	}
 }
 
 
+void cur_bin::export_bin(string str_filepath) {
+	fstream fs;
+	fs.open(str_filepath, ios::out | ios::binary);
+
+	if (fs.is_open()) {
+		// Write out the situation data
+		if (vec_data_situation.size() > 0) {
+			int i_cnt = static_cast<int>(vec_data_situation.size());
+			// Write the number of situation elements.
+			fs.write((char*)&i_cnt, sizeof(i_cnt));
+			for (size_t i_situation = 0; i_situation < vec_data_situation.size(); ++i_situation) {
+				int i_strlen = static_cast<int>(vec_data_situation.at(i_situation).size());
+				const char * cstr = vec_data_situation.at(i_situation).c_str();
+				// Write the string length and the situation string of that length.
+				fs.write((char*)&i_strlen, sizeof(i_strlen));
+				fs.write((char*)cstr, i_strlen);
+			}
+		}
+
+
+		// Write out the instrument name
+		if (vec_data_instruments.size() > 0) {
+			int i_cnt = static_cast<int>(vec_data_instruments.size());
+			// Write the number of instrument elements.
+			fs.write((char*)&i_cnt, sizeof(i_cnt));
+
+			for (size_t i_instrument = 0; i_instrument < vec_data_instruments.size(); ++i_instrument) {
+				
+				int i_strlen = static_cast<int>(vec_data_instruments.at(i_instrument).size());
+				const char * cstr = vec_data_instruments.at(i_instrument).c_str();
+				// Write the string length and the instrument string of that length.
+				fs.write((char*)&i_strlen, sizeof(i_strlen));
+				fs.write((char*)cstr, i_strlen);
+
+				Ticker t = map_struct_ticker[vec_data_instruments.at(i_instrument)];
+				// Write the ticker for this element to the binary file.
+				fs.write((char*)&t, sizeof(t));
+
+
+				// Write the Candle300 data
+
+
+
+				// Write the Candle14400 data
+
+
+
+				// Write the History data
+
+
+
+				// Write the Orderbook data
+
+			}
+		}
+
+
+		fs.close();
+	}
+}
 
 
 void cur_bin::export_text(string str_filepath) {
@@ -115,28 +245,31 @@ void cur_bin::export_text(string str_filepath) {
 		//ofs << "This is a line.\n";
 		//ofs << "This is another line.\n";
 
+		ofs << "situation elements:" << vec_data_situation.size() << "\n";
+
 		if (vec_data_situation.size() > 0) {
 			for (size_t i_situation = 0; i_situation < vec_data_situation.size(); ++i_situation) {
-				ofs << vec_data_situation.at(i_situation).size() << "|" <<  vec_data_situation.at(i_situation) << "\n";
+				ofs << "\t" << vec_data_situation.at(i_situation).size() << "|" << vec_data_situation.at(i_situation) << "\n";
 			}
 		}
 
 		if (vec_data_instruments.size() > 0) {
+			ofs << "\t\t" << "instrument count:" << vec_data_instruments.size() << "\n";
 			for (size_t i_instrument = 0; i_instrument < vec_data_instruments.size(); ++i_instrument) {
-				ofs << "\t" << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
-				ofs << "\t" << "instrument:";
+				ofs << "\t\t" << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+				ofs << "\t\t\t" << "instrument:";
 				ofs << vec_data_instruments.at(i_instrument).size() << "|" << vec_data_instruments.at(i_instrument) << "\n";
 
-				ofs << "\t\t" << "last:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].last << "\n";
-				ofs << "\t\t" << "high24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].high24hr << "\n";
-				ofs << "\t\t" << "highestbid:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].highestbid << "\n";
-				ofs << "\t\t" << "percentchange:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].percentchange << "\n";
-				ofs << "\t\t" << "low24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].low24hr << "\n";
-				ofs << "\t\t" << "lowestask:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].lowestask << "\n";
+				ofs << "\t\t\t" << "last:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].last << "\n";
+				ofs << "\t\t\t" << "high24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].high24hr << "\n";
+				ofs << "\t\t\t" << "highestbid:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].highestbid << "\n";
+				ofs << "\t\t\t" << "percentchange:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].percentchange << "\n";
+				ofs << "\t\t\t" << "low24hr:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].low24hr << "\n";
+				ofs << "\t\t\t" << "lowestask:" << fixed << setprecision(8) << map_struct_ticker[vec_data_instruments.at(i_instrument)].lowestask << "\n";
 
-				ofs << "\t\t" << "candle300|" << map_vec_candle300.size() << "\n";
+				ofs << "\t\t\t" << "candle300|" << map_vec_candle300.size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_candle300[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
-					ofs << "\t\t\t" << "" << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
+					ofs << "\t\t\t\t" << "" << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).val3;
@@ -145,11 +278,11 @@ void cur_bin::export_text(string str_filepath) {
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle300[vec_data_instruments.at(i_instrument)].at(i_vec).vol;
 					ofs << "\n";
 				}
-				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t\t" << "candle14400|" << map_vec_candle14400.size() << "\n";
+				ofs << "\t\t\t" << "candle14400|" << map_vec_candle14400.size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_candle14400[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
-					ofs << "\t\t\t" << "" << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
+					ofs << "\t\t\t\t" << "" << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).val3;
@@ -158,29 +291,29 @@ void cur_bin::export_text(string str_filepath) {
 					ofs << "|" << fixed << setprecision(8) << map_vec_candle14400[vec_data_instruments.at(i_instrument)].at(i_vec).vol;
 					ofs << "\n";
 				}
-				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t\t" << "history|" << map_vec_history.size() << "\n";
+				ofs << "\t\t\t" << "history|" << map_vec_history.size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_history[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
-					ofs << "\t\t\t" << "" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
-					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
-					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
-					ofs << "|" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).buy;
+					ofs << "\t\t\t\t" << "" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
+					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).priceusd;
+					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).amountusd;
+					ofs << "|" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).action;
 					ofs << "\n";
 				}
-				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t\t" << "orderbook|" << map_vec_orderbook.size() << "\n";
+				ofs << "\t\t\t" << "orderbook|" << map_vec_orderbook.size() << "\n";
 				for (size_t i_vec = 0; i_vec < map_vec_orderbook[vec_data_instruments.at(i_instrument)].size(); ++i_vec) {
-					ofs << "\t\t\t" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
+					ofs << "\t\t\t\t" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val1;
 					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val2;
 					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val3;
 					ofs << "|" << fixed << setprecision(8) << map_vec_orderbook[vec_data_instruments.at(i_instrument)].at(i_vec).val4;
 					ofs << "\n";
 				}
-				ofs << "\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
+				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
-				ofs << "\t" << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
+				ofs << "\t\t" << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
 			}
 		}
 

@@ -222,20 +222,19 @@ int polo_gen::process(vector<string> vec_gen
 				// Read all of the data files into memory
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-				
-
-
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 				//	Write out the data to a BIN file.
 				//
 				string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
 				string str_ascii_filepath = str_path_bin + "\\" + str_gen + ".asc";
 
-				// testing
-				cb.export_text(str_ascii_filepath);
+				//// testing ascii writing.
+				//cb.export_text(str_ascii_filepath);
 
+				cb.export_bin(str_bin_filepath);
 
-				//cb.export_bin(str_bin_filepath);
+				//// testing bin reading.
+				cb.import_bin(str_bin_filepath);
 				//
 				//	Write out the data to a BIN file.
 				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -270,8 +269,6 @@ int polo_gen::process(vector<string> vec_gen
 }
 
 
-
-
 // Read the text data file into memory
 // Record vector with elements newest (lower) to latest (higher)     (the file must be reversed)
 //			0			1				2					3			 4			5				6			7
@@ -299,8 +296,8 @@ void polo_gen::process_file_candle(string str_filepath, double d_val_last, vecto
 				cl.val3 = std::stod(vec_line.at(3), nullptr);
 				cl.val4 = std::stod(vec_line.at(4), nullptr);
 				cl.val5 = std::stod(vec_line.at(5), nullptr);
-				//cl.val6 = std::stod(vec_line.at(6), nullptr);
-				cl.vol = std::stod(vec_line.at(7), nullptr);
+				cl.vol = std::stod(vec_line.at(6), nullptr);
+				//cl.vol = std::stod(vec_line.at(7), nullptr);
 
 				vec_struct_file.push_back(cl);
 			}
@@ -368,13 +365,16 @@ void polo_gen::process_file_history(string str_filepath, double d_val_last, vect
 
 				bool b_buysell = false;
 				if (vec_line.at(4).compare("buy") == 0) {
-					hl.buy = true;
+					hl.action = 'b';
 				} else {
-					hl.buy = false;
+					hl.action = 's';
 				}
 
-				hl.val1 = std::stod(vec_line.at(3), nullptr);
-				hl.val2 = std::stod(vec_line.at(5), nullptr);
+				hl.priceusd = std::stod(vec_line.at(3), nullptr);
+				hl.amountusd = std::stod(vec_line.at(5), nullptr);
+
+				// This is the amount of units in the crypto.  Not used.
+				//hl.amountunit = std::stod(vec_line.at(6), nullptr);
 
 				ptr_vec_output->push_back(hl);
 				//std::cout << "\tline : " << str_line << "\n";

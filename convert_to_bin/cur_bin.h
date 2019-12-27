@@ -50,9 +50,11 @@ struct Candle_line {
 
 struct History_line {
 	int unix_time;
-	double val1;
-	double val2;
-	bool buy;
+	double priceusd;
+	double amountusd;
+	// Not used.  It really is just amountusd/priceusd
+	//double amountunit;
+	char action;
 };
 
 struct Orderbook_line {
@@ -96,6 +98,7 @@ public:
 	bool is_valid_instrument(string);
 
 	// This is set by reading the ticker file, and populating the struct for this instrument
+	// Pass instrument, ticker property, property value.
 	void set_ticker_double(string, string, double);
 
 	void set_struct_candle300(string, vector<Candle_line>);
