@@ -90,7 +90,14 @@ public:
 
 	// Getter / Setters
 	int get_status() { return i_status; }
+	void set_status(int i_status_in) { i_status = i_status_in; }
+
+	size_t get_map_ticker_count() { return map_struct_ticker.size(); }
+
+
 	Ticker get_ticker(string str_ticker) { return map_struct_ticker[str_ticker]; };
+
+
 
 	void add_string_situation(string str_val) { vec_data_situation.push_back(str_val); };
 	void add_string_instrument(string str_val) { vec_data_instruments.push_back(str_val); };
@@ -106,12 +113,16 @@ public:
 	void set_struct_history(string, vector<History_line>);
 	void set_struct_orderbook(string, vector<Orderbook_line>);
 
+	// Clear all maps and vectors.
 	void clear();
 
+	// Export as a formatted text file.
 	void export_text(string);
 
+	// Export in BIN format.
 	void export_bin(string);
 
+	// Import BIN format.
 	void import_bin(string);
 
 

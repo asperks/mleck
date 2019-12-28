@@ -92,11 +92,14 @@ void cur_bin::clear() {
 
 
 void cur_bin::import_bin(string str_filepath) {
+
+
 	fstream fs;
 	fs.open(str_filepath, ios::in | ios::binary);
 
 	if (fs.is_open()) {
 		cur_bin::clear();
+		this->set_status(1);
 
 		size_t i_cnt_situation;
 		// Get the count of the number of situation elements.
@@ -146,57 +149,71 @@ void cur_bin::import_bin(string str_filepath) {
 				map_struct_ticker[str_instrument] = t;
 
 				size_t i_vector_loop = 0;
+				
+				// Check to make sure that this 
+				if (this->get_status() == 1) {
+					// Read the Candle300 data
+					i_vector_loop = 0;
+					fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+					map_vec_candle300[str_instrument].reserve(i_vector_loop);
+					if (i_vector_loop == 0) {
+						this->set_status(2);
+					} else {
+						for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+							Candle_line struct_extract;
+							fs.read((char*)&struct_extract, sizeof(struct_extract));
+							map_vec_candle300[str_instrument].push_back(struct_extract);
+						}
+					}
 
-				// Read the Candle300 data
-				i_vector_loop = 0;
-				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
-				map_vec_candle300[str_instrument].reserve(i_vector_loop);
-				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
-					Candle_line struct_extract;
-					fs.read((char*)&struct_extract, sizeof(struct_extract));
-					map_vec_candle300[str_instrument].push_back(struct_extract);
+					// Read the Candle14400 data
+					i_vector_loop = 0;
+					fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+					if (i_vector_loop == 0) {
+						this->set_status(2);
+					} else {
+						map_vec_candle14400[str_instrument].reserve(i_vector_loop);
+						for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+							Candle_line struct_extract;
+							fs.read((char*)&struct_extract, sizeof(struct_extract));
+							map_vec_candle14400[str_instrument].push_back(struct_extract);
+						}
+					}
+
+					// Read the History data
+					i_vector_loop = 0;
+					fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+					if (i_vector_loop == 0) {
+						this->set_status(2);
+					} else {
+						map_vec_history[str_instrument].reserve(i_vector_loop);
+						for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+							History_line struct_extract;
+							fs.read((char*)&struct_extract, sizeof(struct_extract));
+							map_vec_history[str_instrument].push_back(struct_extract);
+						}
+					}
+
+					// Read the Orderbook data
+					i_vector_loop = 0;
+					fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
+					if (i_vector_loop == 0) {
+						this->set_status(2);
+					} else {
+						map_vec_orderbook[str_instrument].reserve(i_vector_loop);
+						for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
+							Orderbook_line struct_extract;
+							fs.read((char*)&struct_extract, sizeof(struct_extract));
+							map_vec_orderbook[str_instrument].push_back(struct_extract);
+						}
+					}
 				}
-
-				// Read the Candle14400 data
-				i_vector_loop = 0;
-				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
-				map_vec_candle14400[str_instrument].reserve(i_vector_loop);
-				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
-					Candle_line struct_extract;
-					fs.read((char*)&struct_extract, sizeof(struct_extract));
-					map_vec_candle14400[str_instrument].push_back(struct_extract);
-				}
-
-				// Read the History data
-				i_vector_loop = 0;
-				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
-				map_vec_history[str_instrument].reserve(i_vector_loop);
-				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
-					History_line struct_extract;
-					fs.read((char*)&struct_extract, sizeof(struct_extract));
-					map_vec_history[str_instrument].push_back(struct_extract);
-				}
-
-				// Read the Orderbook data
-				i_vector_loop = 0;
-				fs.read((char*)&i_vector_loop, sizeof(i_vector_loop));
-				map_vec_orderbook[str_instrument].reserve(i_vector_loop);
-				for (size_t i_vec = 0; i_vec < i_vector_loop; ++i_vec) {
-					Orderbook_line struct_extract;
-					fs.read((char*)&struct_extract, sizeof(struct_extract));
-					map_vec_orderbook[str_instrument].push_back(struct_extract);
-				}
-
-
 			}
-
-
 		}
-
-
 
 		fs.close();
 	}
+
 }
 
 
@@ -233,14 +250,11 @@ void cur_bin::export_bin(string str_filepath) {
 				fs.write((char*)&i_strlen, sizeof(i_strlen));
 				fs.write((char*)cstr, i_strlen);
 
-
 				std::cout << "cur bin write = #" << to_string(i_instrument) << "\t" << vec_data_instruments.at(i_instrument) << "\n";
-
 
 				Ticker t = map_struct_ticker[vec_data_instruments.at(i_instrument)];
 				// Write the ticker for this element to the binary file.
 				fs.write((char*)&t, sizeof(t));
-
 
 				size_t i_cnt_loop = 0;
 				// Write the Candle300 data
@@ -252,7 +266,7 @@ void cur_bin::export_bin(string str_filepath) {
 						fs.write((char*)&cl, sizeof(cl));
 					}
 				}
-				
+
 				// Write the Candle14400 data
 				i_cnt_loop = map_vec_candle14400[vec_data_instruments.at(i_instrument)].size();
 				fs.write((char*)&i_cnt_loop, sizeof(i_cnt_loop));
@@ -282,11 +296,8 @@ void cur_bin::export_bin(string str_filepath) {
 						fs.write((char*)&ol, sizeof(ol));
 					}
 				}
-
-				
 			}
 		}
-
 
 		fs.close();
 	}

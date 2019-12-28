@@ -7,10 +7,10 @@
 
 
 int polo_gen::process(vector<string> vec_gen
-							, vector<string> vec_instrument_user
-							, string str_path_scripture
-							, string str_path_bin
-							) {
+	, vector<string> vec_instrument_user
+	, string str_path_scripture
+	, string str_path_bin
+) {
 	vector<string> vec_errors;
 
 	int i_instrument_count = static_cast<int>(vec_instrument_user.size());
@@ -46,6 +46,8 @@ int polo_gen::process(vector<string> vec_gen
 
 			cur_bin cb = cur_bin();
 
+			cb.set_status(1);
+
 			// The files are read into vectors of their lines
 			vector<string> vec_data_situation;
 			// Only lines that meet the vec_instruments critiria are included.
@@ -56,12 +58,14 @@ int polo_gen::process(vector<string> vec_gen
 
 			if (boost::filesystem::is_directory(str_gen_path) == false) {
 				vec_errors.push_back("folder [" + str_gen_path + "] not found!");
+				cb.set_status(2);
 			} else {
 
 				// Read the situation file.
 				string str_filepath_situation = str_path_scripture + "\\" + str_gen + "\\" + str_filename_situation;
 				if (boost::filesystem::is_regular_file(str_filepath_situation) == false) {
 					vec_errors.push_back("file [" + str_filepath_situation + "] not found!");
+					cb.set_status(2);
 				} else {
 					std::string str_line;
 					std::ifstream ifs(str_filepath_situation);
@@ -79,6 +83,7 @@ int polo_gen::process(vector<string> vec_gen
 				string str_filepath_instruments = str_path_scripture + "\\" + str_gen + "\\" + str_filename_instruments;
 				if (boost::filesystem::is_regular_file(str_filepath_instruments) == false) {
 					vec_errors.push_back("file [" + str_filepath_instruments + "] not found!");
+					cb.set_status(2);
 				} else {
 					std::string str_line2;
 					std::ifstream ifs(str_filepath_instruments);
@@ -87,7 +92,6 @@ int polo_gen::process(vector<string> vec_gen
 							if (i_instrument_count == 0) {
 								vec_data_instruments.push_back(str_line2);
 								cb.add_string_instrument(str_line2);
-
 							} else {
 								// For some reason, the tradional find method didn't work on this one.  Meh.  Algorithm works.
 								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
@@ -102,156 +106,181 @@ int polo_gen::process(vector<string> vec_gen
 							}
 						}
 					}
+					if (i_instrument_count > 0) {
+						if (vec_data_instruments.size() != vec_instrument_user.size()) {
+							std::cout << "\tTICKER NOT FOUND\n";
+							cb.set_status(3);
+						}
+					}
 				}
 
-				// Read the ticker file, and populate the ticker file with
-				//	the data of valid instruments.  This will need to be a dictionary of dictionaries.
-				// read the vec_data_instruments file, and remove elements
-				//	if they don't exist from a user list, or add elements if no
-				//	instruments have been provided.
-				string str_filepath_ticker = str_path_scripture + "\\" + str_gen + "\\" + str_filename_ticker;
+				if (cb.get_status() == 1) {
+					// Read the ticker file, and populate the ticker file with
+					//	the data of valid instruments.  This will need to be a dictionary of dictionaries.
+					// read the vec_data_instruments file, and remove elements
+					//	if they don't exist from a user list, or add elements if no
+					//	instruments have been provided.
+					string str_filepath_ticker = str_path_scripture + "\\" + str_gen + "\\" + str_filename_ticker;
 
-				if (boost::filesystem::is_regular_file(str_filepath_instruments) == false) {
-					vec_errors.push_back("file [" + str_filepath_ticker + "] not found!");
-				} else {
-					std::string str_line3;
-					std::ifstream ifs(str_filepath_ticker);
-					while (std::getline(ifs, str_line3)) {
-						if (str_line3.size() > 0) {
-							vector<string> vec_ticker;
-							boost::split(vec_ticker, str_line3, boost::is_any_of("|"));
+					if (boost::filesystem::is_regular_file(str_filepath_instruments) == false) {
+						vec_errors.push_back("file [" + str_filepath_ticker + "] not found!");
+						cb.set_status(2);
+					} else {
+						std::string str_line3;
+						std::ifstream ifs(str_filepath_ticker);
+						while (std::getline(ifs, str_line3)) {
+							if (str_line3.size() > 0) {
+								vector<string> vec_ticker;
+								boost::split(vec_ticker, str_line3, boost::is_any_of("|"));
 
-							bool b_add_value = false;
-							if (i_instrument_count == 0) {
-								if (cb.is_valid_instrument(vec_ticker.at(0))) {
-									b_add_value = true;
-								} else {
-									b_add_value = false;
-								}
-							} else {
-								for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
-									if (vec_ticker.at(0).compare(vec_instrument_user.at(i_gen_nth2)) == 0) {
+								bool b_add_value = false;
+								if (i_instrument_count == 0) {
+									if (cb.is_valid_instrument(vec_ticker.at(0))) {
 										b_add_value = true;
+									} else {
+										b_add_value = false;
+									}
+								} else {
+									for (size_t i_gen_nth2 = 0; i_gen_nth2 < vec_instrument_user.size(); ++i_gen_nth2) {
+										if (vec_ticker.at(0).compare(vec_instrument_user.at(i_gen_nth2)) == 0) {
+											b_add_value = true;
+											break;
+										}
+									}
+								}
+
+								bool b_found2 = false;
+								for (size_t i = 0; i < vec_ticker_record.size(); ++i) {
+									if (vec_ticker.at(1).compare(vec_ticker_record.at(i)) == 0) {
+										b_found2 = true;
 										break;
 									}
 								}
-							}
 
-							bool b_found2 = false;
-							for (size_t i = 0; i < vec_ticker_record.size(); ++i) {
-								if (vec_ticker.at(1).compare(vec_ticker_record.at(i)) == 0) {
-									b_found2 = true;
-									break;
+								if (b_found2 == false) { b_add_value = false; }
+
+								if (b_add_value == true) {
+									// Add it to the cur_bin object
+									cb.set_ticker_double(vec_ticker.at(0), vec_ticker.at(1), std::stod(vec_ticker.at(2), nullptr));
 								}
 							}
+						}
+					}
 
-							if (b_found2 == false) { b_add_value = false; }
+					if (cb.get_map_ticker_count() != vec_data_instruments.size()) {
+						std::cout << "\tTICKER DATA NOT FOUND\n";
+						cb.set_status(4);
+					}
+				}
 
-							if (b_add_value == true) {
-								// Add it to the cur_bin object
-								cb.set_ticker_double(vec_ticker.at(0), vec_ticker.at(1), std::stod(vec_ticker.at(2), nullptr));
+
+				if (cb.get_status() == 1) {
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+					// Read all of the data files into memory
+					string str_filepath_candle = "";
+					string str_filepath_history = "";
+					string str_filepath_orderbook = "";
+
+					if (vec_data_instruments.size() > 0) {
+						for (size_t i = 0; i < vec_data_instruments.size(); ++i) {
+							Ticker t = cb.get_ticker(vec_data_instruments.at(i));
+
+							// Read the candle data 300 into an a map vs instruments
+							str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
+								+ str_filename_candle_prefix
+								+ vec_data_instruments.at(i)
+								+ str_filename_candle_300_suffix;
+
+							if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
+								vector<Candle_line> vec_struct;
+								vec_struct.reserve(500);
+								process_file_candle(str_filepath_candle, t.last, &vec_struct);
+								cb.set_struct_candle300(vec_data_instruments.at(i), vec_struct);
+							}
+
+							// Read the candle data 14400 into an a map vs instruments
+							str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
+								+ str_filename_candle_prefix
+								+ vec_data_instruments.at(i)
+								+ str_filename_candle_14400_suffix;
+
+							if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
+								vector<Candle_line> vec_struct;
+								vec_struct.reserve(500);
+								process_file_candle(str_filepath_candle, t.last, &vec_struct);
+								cb.set_struct_candle14400(vec_data_instruments.at(i), vec_struct);
+							}
+
+							//	read the trade history file into an a map vs instruments
+							str_filepath_history = str_path_scripture + "\\" + str_gen + "\\"
+								+ str_filename_hist_prefix
+								+ vec_data_instruments.at(i)
+								+ str_filename_hist_suffix;
+
+							if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
+								vector<History_line> vec_struct;
+								vec_struct.reserve(500);
+								process_file_history(str_filepath_history, t.last, &vec_struct);
+								cb.set_struct_history(vec_data_instruments.at(i), vec_struct);
+							}
+
+							//	read the order book file into an a map vs instruments
+							str_filepath_orderbook = str_path_scripture + "\\" + str_gen + "\\"
+								+ str_filename_orderbook_prefix
+								+ vec_data_instruments.at(i)
+								+ str_filename_orderbook_suffix;
+
+							if (boost::filesystem::is_regular_file(str_filepath_orderbook) == true) {
+								vector<Orderbook_line> vec_struct;
+								vec_struct.reserve(500);
+								process_file_orderbook(str_filepath_orderbook, t.last, &vec_struct);
+								cb.set_struct_orderbook(vec_data_instruments.at(i), vec_struct);
 							}
 						}
 					}
+					// Read all of the data files into memory
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 				}
 
-				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-				// Read all of the data files into memory
-				string str_filepath_candle = "";
-				string str_filepath_history = "";
-				string str_filepath_orderbook = "";
 
-				if (vec_data_instruments.size() > 0) {
-					for (size_t i = 0; i < vec_data_instruments.size(); ++i) {
-						Ticker t = cb.get_ticker(vec_data_instruments.at(i));
+				if (cb.get_status() == 1) {
 
-						// Read the candle data 300 into an a map vs instruments
-						str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
-							+ str_filename_candle_prefix
-							+ vec_data_instruments.at(i)
-							+ str_filename_candle_300_suffix;
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+					//	Write out the data to a BIN file.
+					//
+					string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
+					string str_ascii_filepath = str_path_bin + "\\" + str_gen + ".asc";
 
-						if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
-							vector<Candle_line> vec_struct;
-							vec_struct.reserve(500);
-							process_file_candle(str_filepath_candle, t.last, &vec_struct);
-							cb.set_struct_candle300(vec_data_instruments.at(i), vec_struct);
-						}
+					//// testing ascii writing.
+					cb.export_text(str_ascii_filepath);
 
+					cb.export_bin(str_bin_filepath);
 
-						// Read the candle data 14400 into an a map vs instruments
-						str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
-							+ str_filename_candle_prefix
-							+ vec_data_instruments.at(i)
-							+ str_filename_candle_14400_suffix;
-
-						if (boost::filesystem::is_regular_file(str_filepath_candle) == true) {
-							vector<Candle_line> vec_struct;
-							vec_struct.reserve(500);
-							process_file_candle(str_filepath_candle, t.last, &vec_struct);
-							cb.set_struct_candle14400(vec_data_instruments.at(i), vec_struct);
-						}
-
-						//	read the trade history file into an a map vs instruments
-						str_filepath_history = str_path_scripture + "\\" + str_gen + "\\"
-							+ str_filename_hist_prefix
-							+ vec_data_instruments.at(i)
-							+ str_filename_hist_suffix;
-
-						if (boost::filesystem::is_regular_file(str_filepath_history) == true) {
-							vector<History_line> vec_struct;
-							vec_struct.reserve(500);
-							process_file_history(str_filepath_history, t.last, &vec_struct);
-							cb.set_struct_history(vec_data_instruments.at(i), vec_struct);
-						}
-
-						//	read the order book file into an a map vs instruments
-						str_filepath_orderbook = str_path_scripture + "\\" + str_gen + "\\"
-							+ str_filename_orderbook_prefix
-							+ vec_data_instruments.at(i)
-							+ str_filename_orderbook_suffix;
-
-						if (boost::filesystem::is_regular_file(str_filepath_orderbook) == true) {
-							vector<Orderbook_line> vec_struct;
-							vec_struct.reserve(500);
-							process_file_orderbook(str_filepath_orderbook, t.last, &vec_struct);
-							cb.set_struct_orderbook(vec_data_instruments.at(i), vec_struct);
-						}
+					//// testing bin reading.
+					cb.import_bin(str_bin_filepath);
+					if (cb.get_status() == 1) {
+						std::cout << "\tBIN successfully read\n";
 					}
+					//
+					//	Write out the data to a BIN file.
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+					/*
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+					//	Test the data read/write process from BIN
+					//
+					cur_bin cb_test = cur_bin();
+					cb_test.import_bin(str_bin_filepath);
+					cb_test.export_text(str_ascii_filepath);
+					//
+					//	Test the data read/write process from BIN
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+					*/
+					std::cout << "\tGen Complete : " << str_gen << "\n";
+				} else {
+					std::cout << "\tGen DISCARDED : " << str_gen << "\n";
+
 				}
-				// Read all of the data files into memory
-				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-				//	Write out the data to a BIN file.
-				//
-				string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
-				string str_ascii_filepath = str_path_bin + "\\" + str_gen + ".asc";
-
-				//// testing ascii writing.
-				cb.export_text(str_ascii_filepath);
-
-				cb.export_bin(str_bin_filepath);
-
-				//// testing bin reading.
-				cb.import_bin(str_bin_filepath);
-				//
-				//	Write out the data to a BIN file.
-				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-				/*
-				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-				//	Test the data read/write process from BIN
-				//
-				cur_bin cb_test = cur_bin();
-				cb_test.import_bin(str_bin_filepath);
-				cb_test.export_text(str_ascii_filepath);
-				//
-				//	Test the data read/write process from BIN
-				//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-				*/
-
-				std::cout << "\tGen Complete : " << str_gen << "\n";
 			}
 		}
 	}
