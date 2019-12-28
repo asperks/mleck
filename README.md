@@ -1,8 +1,35 @@
 # mleck
 Market Living Entities.  Artificial Life Cryptocurrency Meanderings.
 
+# What it is.
 
--- Why oh why oh why oh why...
+Mleck is a hobby project building my own machine language algorithms for predicting cryptocurrency markets.  It isn't, however, just about crypto markets.  The way it is constructed, it should be possible to use it for any type of market based prediction mechanism.
+
+For more detail, go to the why oh why oh why... section of the readme.
+
+# Done
+
+-  2019-12-28 Create a backtesting data-set of poloniex data.  Convert it to a binary form.  Create a class to handle the binary data in the program proper.
+
+# Doing
+
+-  Create a Farm object that houses mlecks.
+
+-  Pass a cur_bin object to the farm.  When analyzed, ensure there is a subsequent cur_bin object to the one passed so that performance can be measured.  If a BIN2 file exists for that cur_bin object, load it.  If it doesn't...
+
+   -  Measure the performance of all instruments, comparing 'last' values of the current cur_bin object to the next.
+   -  Create a vector of cur_bin objects that step back from the one passed.  
+   -  If it runs to the end of the processing round, clone the last one, so that there are a total of 10 (TEN) cur_bin objects available for processing.  
+   -  Create vectors of all instrument tickers for the 10 items.  Export all of this information into a .BIN2 file.
+
+# To Do
+
+-  Populate the Mleck logic
+
+-  ... more to come.
+
+
+# Why oh why oh why oh why...
 
 Mleck is a meandering project I've been working on for almost two decades as a thought experiment on machine learning and AI.  It originally started in VB, went to VB.Net, Java, C#, and finally I've decided to port it to c++.  It originally started as a pure USD/EUR currency pair analysis tool (I have posted a data-set used for that analysis if you're interested), expanded it to analysze many instruments, and then again paired it back to just the USD/EUR analysis.  I have done it on minute, tick, candle, hourly, and just about any other variation that can be thought of at some time or another.
 
