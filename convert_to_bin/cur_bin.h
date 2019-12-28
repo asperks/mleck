@@ -6,8 +6,6 @@ when processing crypto data at a specific point in time.
 
 2019-12-21	ASP
 */
-
-
 #pragma once
 
 #ifndef CUR_BIN_H
@@ -24,7 +22,6 @@ using namespace std;
 #include <vector>
 
 #include <boost/algorithm/string.hpp>
-
 
 struct Ticker {
 	double last;
@@ -64,7 +61,6 @@ struct Orderbook_line {
 	double val4;
 };
 
-
 class cur_bin {
 private:
 	int i_status = 0;
@@ -93,11 +89,8 @@ public:
 	void set_status(int i_status_in) { i_status = i_status_in; }
 
 	size_t get_map_ticker_count() { return map_struct_ticker.size(); }
-
-
+	
 	Ticker get_ticker(string str_ticker) { return map_struct_ticker[str_ticker]; };
-
-
 
 	void add_string_situation(string str_val) { vec_data_situation.push_back(str_val); };
 	void add_string_instrument(string str_val) { vec_data_instruments.push_back(str_val); };
@@ -124,8 +117,7 @@ public:
 
 	// Import BIN format.
 	void import_bin(string);
-
-
+	
 };
 
 #endif //CUR_BIN_H

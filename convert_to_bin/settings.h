@@ -12,7 +12,6 @@ using namespace std;
 #include <iostream>
 #include <map>
 
-
 class settings {
 	private:
 		// Data Members 
@@ -24,8 +23,6 @@ class settings {
 
 
 	public:
-
-
 		// Member Functions() 
 
 		void set_prop_str(string, string);
@@ -41,9 +38,6 @@ class settings {
 		double get_prop_dbl(string);
 		
 		void to_string();
-
-
-
 
 };
 

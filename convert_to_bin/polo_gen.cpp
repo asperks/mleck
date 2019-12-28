@@ -2,15 +2,13 @@
 //
 //	
 //
-
 #include "polo_gen.h"
 
-
 int polo_gen::process(vector<string> vec_gen
-	, vector<string> vec_instrument_user
-	, string str_path_scripture
-	, string str_path_bin
-) {
+							, vector<string> vec_instrument_user
+							, string str_path_scripture
+							, string str_path_bin
+							) {
 	vector<string> vec_errors;
 
 	int i_instrument_count = static_cast<int>(vec_instrument_user.size());
@@ -173,7 +171,6 @@ int polo_gen::process(vector<string> vec_gen
 					}
 				}
 
-
 				if (cb.get_status() == 1) {
 					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 					// Read all of the data files into memory
@@ -285,8 +282,6 @@ int polo_gen::process(vector<string> vec_gen
 		}
 	}
 
-
-
 	if (vec_errors.size() > 0) {
 		std::cout << "Errors found in " << str_class_name << "[" << __func__ << "]" << " :\n";
 		for (size_t i = 0; i < vec_errors.size(); ++i) {
@@ -304,7 +299,10 @@ int polo_gen::process(vector<string> vec_gen
 //	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
 //	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
 //	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
-void polo_gen::process_file_candle(string str_filepath, double d_val_last, vector<Candle_line> * ptr_vec_output) {
+void polo_gen::process_file_candle(string str_filepath
+												, double d_val_last
+												, vector<Candle_line> * ptr_vec_output
+												) {
 	vector<Candle_line> vec_struct_file;
 	vec_struct_file.reserve(500);
 
@@ -348,7 +346,10 @@ void polo_gen::process_file_candle(string str_filepath, double d_val_last, vecto
 //137.33920318|0.00728780|137.45367868|1.13800000
 //137.27802432|0.00729104|137.47839826|72.64250000
 //137.23912591|0.07842815|137.57818032|31.71775437
-void polo_gen::process_file_orderbook(string str_filepath, double d_val_last, vector<Orderbook_line> * ptr_vec_output) {
+void polo_gen::process_file_orderbook(string str_filepath
+													, double d_val_last
+													, vector<Orderbook_line> * ptr_vec_output
+													) {
 	std::string str_line;
 	std::ifstream ifs(str_filepath);
 	while (std::getline(ifs, str_line)) {
@@ -377,7 +378,10 @@ void polo_gen::process_file_orderbook(string str_filepath, double d_val_last, ve
 //411121485|26532891|2019-03-1812:52:20|3980.92148989|sel|2184.04682637|0.54862846
 //411121484|26532890|2019-03-1812:52:20|3981.27192630|sel|8.78997159|0.00220783
 //411121478|26532889|2019-03-1812:52:06|3983.29999997|buy|187.88003226|0.04716693
-void polo_gen::process_file_history(string str_filepath, double d_val_last, vector<History_line> * ptr_vec_output) {
+void polo_gen::process_file_history(string str_filepath
+												, double d_val_last
+												, vector<History_line> * ptr_vec_output
+												) {
 	int i_epoch_start = -1, i_epoch_end = -1;
 	double d_vol_total = 0.0;
 
@@ -412,12 +416,9 @@ void polo_gen::process_file_history(string str_filepath, double d_val_last, vect
 	}
 }
 
-
-
+// Not used.
 string polo_gen::to_string() {
 	string str_return = "";
 
 	return str_return;
 }
-
-

@@ -7,7 +7,6 @@
 //	There is a single function that sucks the data out of the folders and uses that
 //	data in memory.  I might want to change that later.  
 //
-
 #pragma once
 
 #ifndef POLO_GEN_H
@@ -35,7 +34,6 @@ using namespace std;
 
 #include <boost/date_time.hpp>
 namespace bt = boost::posix_time;
-
 
 
 // Convert date strings to unix epochs in seconds.
@@ -92,10 +90,10 @@ public:
 	);
 
 	// Record vector with elements newest (lower) to latest (higher)
-//			0			1				2					3			 4			5				6			7
-//	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
-//	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
-//	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
+	//			0			1				2					3			 4			5				6			7
+	//	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
+	//	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
+	//	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
 	void process_file_candle(string, double, vector<Candle_line> *);
 
 	// Record vector with elements newest (lower) to latest (higher)

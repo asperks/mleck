@@ -14,7 +14,6 @@
 //	--instruments		A pipe (|) delimited string of all instruments to process into
 //							binaries.
 //
-
 #include "settings.h"
 #include "polo_gen.h"
 
@@ -65,15 +64,13 @@ int main(int argc, char** argv) {
 			s.set_prop_str(vec_args.at(i), str_temp);
 		}
 	}
-
-
+	
 	string str_instruments = s.get_prop_str("--instruments");
 	vector<string> vec_instrument;
 	if (str_instruments != "") {
 		boost::split(vec_instrument, str_instruments, boost::is_any_of("|"));
 	}
-
-
+	
 	string str_gens = s.get_prop_str("--gen");
 	vector<string> vec_gen;
 	if (str_gens != "") {
@@ -86,8 +83,6 @@ int main(int argc, char** argv) {
 					, s.get_prop_str("--path_scripture")
 					, s.get_prop_str("--path_bin")
 					);
-
-
-
+	  
 	std::cout << "program end\n";
 }

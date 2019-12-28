@@ -55,7 +55,6 @@ void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val)
 		//	} else if (str_key.compare("basevolume") == 0) {
 		//		ptr_t->basevolume = d_val;
 	}
-
 }
 
 
@@ -92,8 +91,6 @@ void cur_bin::clear() {
 
 
 void cur_bin::import_bin(string str_filepath) {
-
-
 	fstream fs;
 	fs.open(str_filepath, ios::in | ios::binary);
 
@@ -213,7 +210,6 @@ void cur_bin::import_bin(string str_filepath) {
 
 		fs.close();
 	}
-
 }
 
 
@@ -235,7 +231,6 @@ void cur_bin::export_bin(string str_filepath) {
 				fs.write((char*)cstr, i_strlen);
 			}
 		}
-
 
 		// Write out the instrument name
 		if (vec_data_instruments.size() > 0) {
@@ -305,7 +300,6 @@ void cur_bin::export_bin(string str_filepath) {
 
 
 void cur_bin::export_text(string str_filepath) {
-
 	ofstream ofs(str_filepath);
 
 	if (ofs.is_open()) {
@@ -386,5 +380,4 @@ void cur_bin::export_text(string str_filepath) {
 
 		ofs.close();
 	}
-
 }
