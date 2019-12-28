@@ -11,9 +11,10 @@ For more detail, go to the why oh why oh why... section of the readme.
 
 -  2019-12-28 Create a backtesting data-set of poloniex data.  Convert it to a binary form.  Create a class to handle the binary data in the program proper.
 
-# Doing
+-  2019-12-28 Create a Farm object that houses mlecks.  Mleck settings files are now created automatically when the farm is created.
 
--  Create a Farm object that houses mlecks.
+
+# Doing
 
 -  Pass a cur_bin object to the farm.  When analyzed, ensure there is a subsequent cur_bin object to the one passed so that performance can be measured.  If a BIN2 file exists for that cur_bin object, load it.  If it doesn't...
 

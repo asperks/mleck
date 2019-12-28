@@ -11,6 +11,8 @@
 using namespace std;
 
 #include "settings.h"
+#include "mleck.h"
+#include "cur_bin_handler.h"
 
 #include <iomanip>
 #include <iostream>
@@ -27,13 +29,16 @@ class farm {
 private:
 	const char * str_class_name = "farm";
 
-	int i_farm;
+	int id;
 	int i_gen_count;
 	int i_cur_bin;
+
+	bool b_loaded = false;
 
 	string str_path_bin;
 	string str_path_farm;
 	string str_filepath_settings;
+	string str_filepath_farm_dead;
 
 	settings s;
 	const char * filename_settings = "mleck.settings";
@@ -41,35 +46,40 @@ private:
 	store them in an external text file, and modify them if I want to change
 	them for different effects.
 	
-	int	gen
-	int	mleck_count
+	int	gen						(the current gen)
+	int	mleck_count				(the mleck cohort count)
+	int	mleck_id_highest		(record of the id of the last mleck created)
+
+	dbl	mleck_random_PC		(the percentage of replacement)
+
+	str	mlecks					(~ delimited string of mlecks to load)
 
 
-	// Used for debugging.
-	int	test_int
-	dbl	test_dbl
-	str	test_str
-	
 	*/
 
-
-
+	vector<mleck> vec_m;
+	cur_bin_handler cbh;
 
 
 public:
 
-	void init(int i_farm_in
+	void init(int id_in
 				, string str_path_bin_in
 				, string str_path_farm_in
 				);
 
-	void run(int i_gen_count_in
-				);
-
-
 	// Load the settings from an external settings file for a farm, or populate
 	//	the settings file with default values.  They can be modified if required.
 	void load_settings();
+
+	// Ensure all of the available slots for mlecks are filled so the full 
+	//	cohort is available.
+	void populate_mlecks();
+
+
+	void run(int i_gen_count_in
+				);
+
 
 };
 
