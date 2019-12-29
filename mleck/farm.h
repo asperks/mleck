@@ -46,14 +46,18 @@ private:
 	store them in an external text file, and modify them if I want to change
 	them for different effects.
 	
-	int	gen						(the current gen)
-	int	mleck_count				(the mleck cohort count)
-	int	mleck_id_highest		(record of the id of the last mleck created)
+	int	gen						the current gen
+	int	mleck_count				the mleck cohort count
+	int	mleck_id_highest		record of the id of the last mleck created
+	int	gen_proc					generations to process before quitting.
+	int	gen_proc_step			1 = random.  2 = sequential.
+										If it meets the end of the sequence, it quits
+	int	gen_cur_last			The last cur_id that was processed.  Useful for
+										sequential stepping
 
-	dbl	mleck_random_PC		(the percentage of replacement)
+	dbl	mleck_random_PC		the percentage of replacement
 
-	str	mlecks					(~ delimited string of mlecks to load)
-
+	str	mlecks					'~' delimited string of mlecks to load
 
 	*/
 
@@ -62,6 +66,8 @@ private:
 
 
 public:
+
+	farm();
 
 	void init(int id_in
 				, string str_path_bin_in

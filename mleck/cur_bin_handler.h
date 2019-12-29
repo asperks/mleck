@@ -1,6 +1,8 @@
 /*
 A class that handles all of the interface between the mleck engine and the cur
-objects.
+objects.  I'm tossing up whether I should rename this class as 'shape' at some
+point.  It is about the shape of a number of currency points, and they get
+transformed into other representations.
 
 */
 
@@ -34,6 +36,10 @@ private:
 
 public:
 
+	// Constructor : blank.
+	cur_bin_handler();
+
+	// Constructor : Pass data loc.
 	cur_bin_handler(string str_path_bin_in);
 
 	void init(string str_path_bin_in);

@@ -6,9 +6,14 @@
 
 #include "cur_bin_handler.h"
 
+cur_bin_handler::cur_bin_handler() {
+
+}
+
 cur_bin_handler::cur_bin_handler(string str_path_bin_in) {
 	init(str_path_bin_in);
 	}
+
 
 void cur_bin_handler::init(string str_path_bin_in) {
 	b_valid = false;

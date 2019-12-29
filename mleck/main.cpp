@@ -18,7 +18,7 @@
 #include <boost/lexical_cast.hpp>
 
 int main(int argc, char** argv) {
-	std::cout << "program start : " << argc << " arguments\n";
+	std::cout << "program start : " << argc << " arguments" << std::endl;
 
 	vector<string> vec_args;
 	for (int i = 0; i < argc; ++i) {
@@ -98,6 +98,6 @@ int main(int argc, char** argv) {
 	}
 
 
-	std::cout << "program end";
+	std::cout << "program end" << std::endl;
 }
 

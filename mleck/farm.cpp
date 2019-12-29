@@ -5,6 +5,11 @@
 
 #include "farm.h"
 
+// constructor
+farm::farm() {
+
+}
+
 void farm::load_settings() {
 	//https://stackoverflow.com/questions/50960492/creating-folders-in-c/56262869#56262869
 	bool b_exists = std::experimental::filesystem::exists(str_filepath_settings);
@@ -35,6 +40,21 @@ void farm::load_settings() {
 	if (s.get_prop_dbl("mleck_random_PC") == 0.0) {
 		b_change = true;
 		s.set_prop_dbl("mleck_random_PC", 5.0);
+	}
+
+	if (s.get_prop_int("gen_cur_last") == 0) {
+		b_change = true;
+		s.set_prop_int("gen_cur_last", 1);
+	}
+
+	if (s.get_prop_int("gen_proc") == 0) {
+		b_change = true;
+		s.set_prop_int("gen_proc", 5);
+	}
+
+	if (s.get_prop_int("gen_proc_step") == 0) {
+		b_change = true;
+		s.set_prop_int("gen_proc_step", 1);
 	}
 
 	if (b_change == true) {
@@ -105,9 +125,23 @@ void farm::populate_mlecks() {
 
 void farm::run(int i_gen_count_in
 					) {
+	std::cout << "farm run start" << std::endl;
+
+	int i_gen_proc_total = s.get_prop_int("gen_proc");
+
+	// initialize the cbh object, so that it has data to traverse
+	cbh.init(str_path_bin);
+
+	for (size_t i_gen_proc = 0; i_gen_proc < i_gen_proc_total; ++i_gen_proc) {
+		std::cout << "\tfarm gen start:" << i_gen_proc << std::endl;
 
 
 
+
+		std::cout << "\tfarm gen end:  " << i_gen_proc << std::endl;
+	}
+
+	std::cout << "farm run end" << std::endl;
 }
 
 
