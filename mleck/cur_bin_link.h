@@ -28,8 +28,16 @@ using namespace std;
 
 class cur_bin_link {
 private:
+	bool b_valid = false;
+	string str_path_bin;
+
+
 
 public:
+
+	cur_bin_link();
+
+	void init();
 
 };
 

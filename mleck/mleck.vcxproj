@@ -173,6 +173,8 @@
     <ClCompile Include="cur_bin_handler.cpp" />
     <ClCompile Include="cur_bin_link.cpp" />
     <ClCompile Include="farm.cpp" />
+    <ClCompile Include="jewel.cpp" />
+    <ClCompile Include="jewel_handler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mleck.cpp" />
     <ClCompile Include="settings.cpp" />
@@ -182,6 +184,8 @@
     <ClInclude Include="cur_bin_handler.h" />
     <ClInclude Include="cur_bin_link.h" />
     <ClInclude Include="farm.h" />
+    <ClInclude Include="jewel.h" />
+    <ClInclude Include="jewel_handler.h" />
     <ClInclude Include="mleck.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>

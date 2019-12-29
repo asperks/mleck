@@ -56,6 +56,7 @@ void farm::init(int i_farm_in
 
 	// The mleck objects are ready.  Now it's time to prep the currency data available.
 
+	cbh.init(str_path_bin_in);
 
 }
 

@@ -16,8 +16,12 @@ For more detail, go to the why oh why oh why... section of the readme.
 
 # Doing
 
--  Pass a cur_bin object to the farm.  When analyzed, ensure there is a subsequent cur_bin object to the one passed so that performance can be measured.  If a BIN2 file exists for that cur_bin object, load it.  If it doesn't...
+- So the logic goes like this.  
+   -  There are cur_bin objects.  They are representations of a single snapshot of instruments of currency data at a single time.
+   -  There are cur_bin_link objects.  These link cur_bin objects into sequences, so they can determine performances, and also develop sequential between cur_bin objects.
+   -  There are jewel objects.  Jewel objects tank cur_bin_link objects and create algorithms that return values based upon those paramatized inputs.
 
+-  Pass a cur_bin object to the farm.  When analyzed, ensure there is a subsequent cur_bin object to the one passed so that performance can be measured.  If a BIN2 file exists for that cur_bin object, load it.  If it doesn't...
    -  Measure the performance of all instruments, comparing 'last' values of the current cur_bin object to the next.
    -  Create a vector of cur_bin objects that step back from the one passed.  
    -  If it runs to the end of the processing round, clone the last one, so that there are a total of 10 (TEN) cur_bin objects available for processing.  

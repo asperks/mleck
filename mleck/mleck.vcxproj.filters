@@ -36,6 +36,12 @@
     <ClCompile Include="cur_bin_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="jewel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jewel_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="settings.h">
@@ -54,6 +60,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cur_bin_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jewel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jewel_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,4 +20,6 @@ void cur_bin_handler::init(string str_path_bin_in) {
 
 
 
+
+
 }
