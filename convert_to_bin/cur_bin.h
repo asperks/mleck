@@ -56,7 +56,8 @@ struct History_line {
 	double amountusd;
 	// Not used.  It really is just amountusd/priceusd
 	//double amountunit;
-	char action;
+	// +1 buy, -1 sell
+	long int action;
 };
 
 struct Orderbook_line {

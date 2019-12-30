@@ -406,9 +406,9 @@ void polo_gen::process_file_history(string str_filepath
 
 				bool b_buysell = false;
 				if (vec_line.at(4).compare("buy") == 0) {
-					hl.action = 'b';
+					hl.action = 1;
 				} else {
-					hl.action = 's';
+					hl.action = -1;
 				}
 
 				hl.priceusd = std::stod(vec_line.at(3), nullptr);

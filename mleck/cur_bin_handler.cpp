@@ -32,7 +32,7 @@ int cur_bin_handler::load_cur_bin(int i_cur_step_type, int i_cur_id_in) {
 	
 	cb_open.import_bin(map_bin[i_cur_id]);
 
-	string str_filepath_bin2 = str_path_bin2 + "\\" + std::to_string(i_cur_id) + ".bin2";
+	string str_filepath_bin2 = str_path_bin2 + "\\" + std::to_string(i_cur_id);
 
 	cb2_open.init(str_path_bin, i_cur_id, str_filepath_bin2, cb_open);
 
@@ -79,6 +79,7 @@ int cur_bin_handler::get_next_id(int id_in) {
 int cur_bin_handler::get_random_id() {
 	int id = 0;
 	bool b_end = false;
+	srand((unsigned)time(0));
 	while (b_end == false) {
 		auto it = map_bin.begin();
 		std::advance(it, rand() % map_bin.size());

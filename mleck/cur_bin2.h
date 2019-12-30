@@ -27,6 +27,7 @@ using namespace std;
 
 #include <experimental/filesystem>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
 class cur_bin2 {
@@ -36,25 +37,40 @@ private:
 
 	cur_bin cb_base;
 
-	// a ratio between the previous ticker and the base
-	map<string, Ticker> map_struct_ticker_prev;
-
 	// a ratio between the base ticker and the next.
 	//	This would be removed if this were to be a live implementation.  It is 
 	// implemented here so that I can quickly measure performance for back testing.
 	map<string, Ticker> map_struct_ticker_next;
 
+
+	// a ratio between the previous ticker and the base
+	map<string, Ticker> map_struct_ticker_prev;
+
 	// There will be X elements for each of these vectors.  These are values that are
 	//	derived from reading the They will contain :
 	//		Average
 	//		Total
-	//		Middle
-	map <string, vector<double>> map_vec_dbl_prev;
-	map <string, vector<double>> map_vec_dbl_prev_shared;
+	// If the cur_bin data isn't available (no entries) the numbers will be zero'd
+	map <string, Candle_line> map_cl_prev_300_avg;
+	map <string, Candle_line> map_cl_prev_300_tot;
 
-	vector<double > vec_dbl_prev_shared_totals;
+	map <string, Candle_line> map_cl_prev_14400_avg;
+	map <string, Candle_line> map_cl_prev_14400_tot;
 
-	// There is no _next requirement for this
+	map <string, History_line> map_hl_prev_avg;
+	map <string, History_line> map_hl_prev_tot;
+
+	map <string, Orderbook_line> map_ol_prev_avg;
+	map <string, Orderbook_line> map_ol_prev_tot;
+
+
+	// This will have as many elements in it as the map_vec_dbl_prev_tot vector does.  
+	Candle_line cl_prev_300_tot;
+	Candle_line cl_prev_14400_tot;
+	History_line hl_prev_history_tot;
+	Orderbook_line ol_prev_orderbook_tot;
+
+	Orderbook_line ol_prev_orderbook_totcalc;
 
 
 public:
@@ -62,6 +78,9 @@ public:
 	cur_bin2();
 
 	void init(string str_path_bin, int cur_id, string str_filepath_bin2, cur_bin cb_in);
+
+	// Export in ascii format.
+	void export_text(string);
 
 	// Export in BIN2 format.
 	void export_bin(string);

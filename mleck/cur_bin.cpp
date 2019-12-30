@@ -360,7 +360,11 @@ void cur_bin::export_text(string str_filepath) {
 					ofs << "\t\t\t\t" << "" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).unix_time;
 					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).priceusd;
 					ofs << "|" << fixed << setprecision(8) << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).amountusd;
-					ofs << "|" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).action;
+					if (map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).action > 0) {
+						ofs << "| " << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).action;
+					} else {
+						ofs << "|" << map_vec_history[vec_data_instruments.at(i_instrument)].at(i_vec).action;
+					}
 					ofs << "\n";
 				}
 				ofs << "\t\t\txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
