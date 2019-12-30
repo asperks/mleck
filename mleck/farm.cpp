@@ -42,20 +42,23 @@ void farm::load_settings() {
 		s.set_prop_dbl("mleck_random_PC", 5.0);
 	}
 
-	if (s.get_prop_int("gen_cur_last") == 0) {
+	if (s.get_prop_int("cur_id_last") == 0) {
 		b_change = true;
-		s.set_prop_int("gen_cur_last", 1);
+		s.set_prop_int("cur_id_last", 1);
 	}
+
+	if (s.get_prop_int("cur_id_step") == 0) {
+		b_change = true;
+		s.set_prop_int("cur_id_step", 1);
+	}
+
 
 	if (s.get_prop_int("gen_proc") == 0) {
 		b_change = true;
 		s.set_prop_int("gen_proc", 5);
 	}
 
-	if (s.get_prop_int("gen_proc_step") == 0) {
-		b_change = true;
-		s.set_prop_int("gen_proc_step", 1);
-	}
+
 
 	if (b_change == true) {
 		// Save the new settings file
@@ -76,9 +79,50 @@ void farm::init(int i_farm_in
 
 	// The mleck objects are ready.  Now it's time to prep the currency data available.
 
+	// initialize the cbh object, so that it has data to traverse
 	cbh.init(str_path_bin_in);
 
 }
+void farm::run(int i_gen_count_in
+					) {
+	std::cout << "farm run start" << std::endl;
+
+	int i_gen_proc_total = s.get_prop_int("gen_proc");
+
+	if (cbh.is_valid() == false) {
+		std::cout << "NO CUR ####.BIN FILES!  EXITING" << std::endl;
+	} else {
+		for (size_t i_gen_proc = 0; i_gen_proc < i_gen_proc_total; ++i_gen_proc) {
+			std::cout << "\tfarm gen start:" << i_gen_proc << std::endl;
+
+			int i_cur_id = -1;
+
+			//	int	cur_id_step				1 = random.  2 = sequential.
+			//										If it meets the end of the sequence, it quits
+			if (s.get_prop_int("cur_id_step") == 1) {
+				// select a random cur_id
+				i_cur_id = cbh.load_cur_bin(1, 0);
+			} else {
+				if (i_cur_id == -1) {
+					i_cur_id = cbh.load_cur_bin(1, 0);
+				} else {
+					i_cur_id = cbh.load_cur_bin(2, i_cur_id);
+				}
+			}
+			
+
+
+
+			std::cout << "\tfarm gen end:  " << i_gen_proc << std::endl;
+		}
+
+	}
+
+
+	std::cout << "farm run end" << std::endl;
+}
+
+
 
 
 void farm::populate_mlecks() {
@@ -120,28 +164,6 @@ void farm::populate_mlecks() {
 		s.set_prop_str("mlecks", str_m_list);
 		s.export_text(str_filepath_settings);
 	}
-}
-
-
-void farm::run(int i_gen_count_in
-					) {
-	std::cout << "farm run start" << std::endl;
-
-	int i_gen_proc_total = s.get_prop_int("gen_proc");
-
-	// initialize the cbh object, so that it has data to traverse
-	cbh.init(str_path_bin);
-
-	for (size_t i_gen_proc = 0; i_gen_proc < i_gen_proc_total; ++i_gen_proc) {
-		std::cout << "\tfarm gen start:" << i_gen_proc << std::endl;
-
-
-
-
-		std::cout << "\tfarm gen end:  " << i_gen_proc << std::endl;
-	}
-
-	std::cout << "farm run end" << std::endl;
 }
 
 

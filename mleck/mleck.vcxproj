@@ -170,6 +170,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cur_bin.cpp" />
+    <ClCompile Include="cur_bin2.cpp" />
     <ClCompile Include="cur_bin_handler.cpp" />
     <ClCompile Include="cur_bin_link.cpp" />
     <ClCompile Include="farm.cpp" />
@@ -181,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cur_bin.h" />
+    <ClInclude Include="cur_bin2.h" />
     <ClInclude Include="cur_bin_handler.h" />
     <ClInclude Include="cur_bin_link.h" />
     <ClInclude Include="farm.h" />

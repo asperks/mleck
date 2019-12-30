@@ -50,10 +50,11 @@ private:
 	int	mleck_count				the mleck cohort count
 	int	mleck_id_highest		record of the id of the last mleck created
 	int	gen_proc					generations to process before quitting.
-	int	gen_proc_step			1 = random.  2 = sequential.
-										If it meets the end of the sequence, it quits
-	int	gen_cur_last			The last cur_id that was processed.  Useful for
+
+	int	cur_id_last				The last cur_id that was processed.  Useful for
 										sequential stepping
+	int	cur_id_step				1 = random.  2 = sequential.
+										If it meets the end of the sequence, it quits
 
 	dbl	mleck_random_PC		the percentage of replacement
 

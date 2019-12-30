@@ -1,4 +1,4 @@
-/* refer cur_bin_handler.h for details.
+/* refer jewel.h for details.
 
 
 */
