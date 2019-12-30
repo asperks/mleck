@@ -1,7 +1,8 @@
-// refer cur_bin.h for details.
-//
-//	
-//
+/* refer cur_bin.h for details.
+
+Forked from convert_to_bin utility 2019-12-28
+*/
+
 
 #include "cur_bin.h"
 

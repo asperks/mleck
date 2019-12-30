@@ -34,7 +34,7 @@ int cur_bin_handler::load_cur_bin(int i_cur_step_type, int i_cur_id_in) {
 
 	string str_filepath_bin2 = str_path_bin2 + "\\" + std::to_string(i_cur_id) + ".bin2";
 
-	cb2_open.init(i_cur_id, str_filepath_bin2, cb_open);
+	cb2_open.init(str_path_bin, i_cur_id, str_filepath_bin2, cb_open);
 
 
 

@@ -5,7 +5,12 @@ them from that format quickly when required.  This will be the core object loade
 when processing crypto data at a specific point in time.
 
 2019-12-21	ASP
+
+Merged into convert_to_bin utility 2019-12-30
+
+Forked from convert_to_bin utility 2019-12-28
 */
+
 #pragma once
 
 #ifndef CUR_BIN_H
@@ -63,6 +68,8 @@ struct Orderbook_line {
 
 class cur_bin {
 private:
+	const char * str_class_name = "cur_bin";
+
 	int i_status = 0;
 
 	// Data defining the generation of this particular mleck situation.
@@ -89,7 +96,7 @@ public:
 	void set_status(int i_status_in) { i_status = i_status_in; }
 
 	size_t get_map_ticker_count() { return map_struct_ticker.size(); }
-	
+
 	Ticker get_ticker(string str_ticker) { return map_struct_ticker[str_ticker]; };
 
 	void add_string_situation(string str_val) { vec_data_situation.push_back(str_val); };
@@ -100,11 +107,17 @@ public:
 	// This is set by reading the ticker file, and populating the struct for this instrument
 	// Pass instrument, ticker property, property value.
 	void set_ticker_double(string, string, double);
+	map<string, Ticker> get_map_struct_ticker() { return map_struct_ticker; }
 
 	void set_struct_candle300(string, vector<Candle_line>);
 	void set_struct_candle14400(string, vector<Candle_line>);
 	void set_struct_history(string, vector<History_line>);
 	void set_struct_orderbook(string, vector<Orderbook_line>);
+	vector<Candle_line> get_struct_candle300(string str_instrument) { return map_vec_candle300[str_instrument]; }
+	vector<Candle_line> get_struct_candle14400(string str_instrument) { return map_vec_candle14400[str_instrument]; }
+	vector<History_line> get_struct_history(string str_instrument) { return map_vec_history[str_instrument]; }
+	vector<Orderbook_line> get_struct_orderbook(string str_instrument) { return map_vec_orderbook[str_instrument]; }
+
 
 	// Clear all maps and vectors.
 	void clear();

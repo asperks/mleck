@@ -193,6 +193,8 @@ int polo_gen::process(vector<string> vec_gen
 								vec_struct.reserve(500);
 								process_file_candle(str_filepath_candle, t.last, &vec_struct);
 								cb.set_struct_candle300(vec_data_instruments.at(i), vec_struct);
+							} else {
+								cb.set_status(5);
 							}
 
 							// Read the candle data 14400 into an a map vs instruments
@@ -206,6 +208,8 @@ int polo_gen::process(vector<string> vec_gen
 								vec_struct.reserve(500);
 								process_file_candle(str_filepath_candle, t.last, &vec_struct);
 								cb.set_struct_candle14400(vec_data_instruments.at(i), vec_struct);
+							} else {
+								cb.set_status(6);
 							}
 
 							//	read the trade history file into an a map vs instruments
@@ -219,6 +223,8 @@ int polo_gen::process(vector<string> vec_gen
 								vec_struct.reserve(500);
 								process_file_history(str_filepath_history, t.last, &vec_struct);
 								cb.set_struct_history(vec_data_instruments.at(i), vec_struct);
+							} else {
+								cb.set_status(7);
 							}
 
 							//	read the order book file into an a map vs instruments
@@ -232,6 +238,8 @@ int polo_gen::process(vector<string> vec_gen
 								vec_struct.reserve(500);
 								process_file_orderbook(str_filepath_orderbook, t.last, &vec_struct);
 								cb.set_struct_orderbook(vec_data_instruments.at(i), vec_struct);
+							} else {
+								cb.set_status(8);
 							}
 						}
 					}

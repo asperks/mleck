@@ -7,26 +7,33 @@ Mleck is a hobby project building my own machine language algorithms for predict
 
 For more detail, go to the why oh why oh why... section of the readme.
 
+
+# The rough stucture.
+
+   -  Farms contain collections of mlecks.  Mlecks are the genetic algorithms that analyze data and select currency instruments to 'buy' by which their perfomance is measured.  Unsuccesful mlecks are discarded.
+   -  Farms contain collections of jewels.  Jewels are interpretations of currency data.  They contain ratios between values, and other higher functions.  They are created by mlecks during the randomization and mutation process.  They can be shared by mlecks.  Unsuccessful jewels belonging to no mlecks are discarded when the last mleck that uses them is discarded.
+   -  Cur_bin objects are snapshots of all instruments at a specific point in time.  They contain the current ticker data, candle data at 300 second and 14400 second interals, the order book, and purchase history for each instrument.
+   -  Cur_bin2 objects are snapshots that measure the relationship between three sequential cur_bin objects.  They are used to measure performance at a specific point in time relative to the previous and next point.  The next point is there purely to extract performance data.  There's no use processing a data point if there's no succeeding point, because performance can't be measured.  They also record totals, averages, and other data detailing the delta between the previous and the current data point.
+   
+
 # Done
 
 -  2019-12-28 Create a backtesting data-set of poloniex data.  Convert it to a binary form.  Create a class to handle the binary data in the program proper.
 
 -  2019-12-28 Create a Farm object that houses mlecks.  Mleck settings files are now created automatically when the farm is created.
 
+-  2019-12-30 Create the cur_bin objects.  They are representations of a single snapshot of instruments of currency data at a single time.
+
 
 # Doing
 
 - So the logic goes like this.  
-   -  There are cur_bin objects.  They are representations of a single snapshot of instruments of currency data at a single time.
    -  There are cur_bin_link objects.  These link cur_bin objects into sequences, so they can determine performances, and also record sequential changes between cur_bin objects.
+   -  Pass a cur_bin object to the farm.  When analyzed, ensure there is a subsequent cur_bin object to the one passed so that performance can be measured.  If a BIN2 file exists for that cur_bin object, load it.  If it doesn't...
+   -  Measure the performance of all instruments, comparing 'last' values of the current cur_bin object to the next.
    -  There are jewel objects.  Jewel objects tank cur_bin_link objects and create algorithms that return values based upon those paramatized inputs.
 
--  Pass a cur_bin object to the farm.  When analyzed, ensure there is a subsequent cur_bin object to the one passed so that performance can be measured.  If a BIN2 file exists for that cur_bin object, load it.  If it doesn't...
-   -  Measure the performance of all instruments, comparing 'last' values of the current cur_bin object to the next.
-   -  Create a vector of cur_bin objects that step back from the one passed.  
-   -  If it runs to the end of the processing round, clone the last one, so that there are a total of 10 (TEN) cur_bin objects available for processing.  
-   -  Create vectors of all instrument tickers for the 10 items.  Export all of this information into a .BIN2 file.
-
+   
 # To Do
 
 -  Populate the Mleck logic
@@ -44,4 +51,4 @@ In this iteration, I have chosen to focus it on cryptocurrency pairs.  One of th
 
 What is going to be dumped here however, is a subset of this data-set.  Namely, the USDT_BTC, BTC_ETH, and USDT_ETH pairs.  I've posted a sample of the raw data, then created a c++ utility that writes both formatted ascii and binary files.  The c++ object for reading the binary files will be the the one that I use to load the elements into memory.
 
-No guarantees.  No warrantees.  No funny business whatseover.  Use it as long as you attribute me.  It is a hobby, and it keeps me out of the pub. 
+No guarantees.  No warranties.  No funny business whatseover.  Use it as long as you attribute me.  It is a hobby, and it keeps me out of the pub. 
