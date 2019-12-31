@@ -28,7 +28,7 @@ using namespace std;
 class mleck {
 private:
 	int id;
-	int i_cur id_birth;
+	int i_gen_birth;
 
 	// The total amount of position points.  + = in profit.
 	double d_score = 0.0;
@@ -43,7 +43,7 @@ private:
 	them for different effects.
 
 	int	id
-	int	cur id_birth
+	int	i_gen_birth
 
 
 	// Used for debugging.
@@ -57,7 +57,7 @@ private:
 public:
 	mleck(int id_in
 		, string str_path_farm_in
-		, int i_cur id_in
+		, int i_gen_in
 	);
 
 
@@ -66,7 +66,7 @@ public:
 	//	if one doesn't.
 	void init(int id_in
 				, string str_path_farm_in
-				, int i_cur id_in
+				, int i_gen_in
 	);
 
 
@@ -85,7 +85,7 @@ public:
 
 	// Create a new mleck settings file based upon the old mleck.
 	void clone(mleck m
-					, int i_cur id_in
+					, int i_gen_in
 					);
 
 

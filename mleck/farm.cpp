@@ -92,10 +92,13 @@ void farm::run(int i_gen_count_in
 	if (cbh.is_valid() == false) {
 		std::cout << "NO CUR ####.BIN FILES!  EXITING" << std::endl;
 	} else {
-		for (size_t i_gen_proc = 0; i_gen_proc < i_gen_proc_total; ++i_gen_proc) {
-			std::cout << "\tfarm gen start:" << i_gen_proc << std::endl;
+		int i_cur_id = -1;
 
-			int i_cur_id = -1;
+		srand((unsigned)time(0));
+
+		for (size_t i_gen_proc = 0; i_gen_proc < i_gen_proc_total; ++i_gen_proc) {
+			std::cout << "\tfarm gen start:" << (i_gen_proc + 1) << std::endl;
+
 
 			//	int	cur_id_step				1 = random.  2 = sequential.
 			//										If it meets the end of the sequence, it quits
@@ -113,7 +116,7 @@ void farm::run(int i_gen_count_in
 			std::cout << "\t\tcur id\t: " << i_cur_id << std::endl;
 
 
-			std::cout << "\tfarm gen end:  " << i_gen_proc << std::endl;
+			std::cout << "\tfarm gen end:  " << (i_gen_proc + 1) << std::endl;
 		}
 
 	}

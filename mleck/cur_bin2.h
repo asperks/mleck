@@ -27,6 +27,7 @@ using namespace std;
 
 #include <experimental/filesystem>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -42,7 +43,6 @@ private:
 	// implemented here so that I can quickly measure performance for back testing.
 	map<string, Ticker> map_struct_ticker_next;
 
-
 	// a ratio between the previous ticker and the base
 	map<string, Ticker> map_struct_ticker_prev;
 
@@ -51,7 +51,6 @@ private:
 	//		Average
 	//		Total
 	// If the cur_bin data isn't available (no entries) the numbers will be zero'd
-
 
 	map <string, Candle_line> map_cl_prev_300_avg;
 	map <string, Candle_line> map_cl_prev_300_tot;
@@ -73,7 +72,6 @@ private:
 	map <string, Orderbook_line> map_ol_prev_min;
 	map <string, Orderbook_line> map_ol_prev_max;
 
-
 	// This will have as many elements in it as the map_vec_dbl_prev_tot vector does.  
 	Candle_line cl_prev_300_tot;
 	Candle_line cl_prev_14400_tot;
@@ -87,7 +85,12 @@ public:
 
 	cur_bin2();
 
+	void clear();
+
 	void init(string str_path_bin, int cur_id, string str_filepath_bin2, cur_bin cb_in);
+
+	void set_base(cur_bin cb_in) { cb_base = cb_in; }
+	void set_path_bin(string str_path_bin_in) { str_path_bin = str_path_bin_in; }
 
 	// Export in ascii format.
 	void export_text(string);

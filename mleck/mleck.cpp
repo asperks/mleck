@@ -6,9 +6,9 @@
 
 mleck::mleck(int id_in
 				, string str_path_farm_in
-				, int i_cur id_in
+				, int i_gen_in
 				) {
-	init(id_in, str_path_farm_in, i_cur id_in);
+	init(id_in, str_path_farm_in, i_gen_in);
 }
 
 
@@ -33,11 +33,11 @@ void mleck::load_settings() {
 		id = s.get_prop_int("id");
 	}
 
-	if (s.get_prop_int("cur id_birth") != i_cur id_birth) {
+	if (s.get_prop_int("gen_birth") != i_gen_birth) {
 		b_change = true;
-		s.set_prop_int("cur id_birth", i_cur id_birth);
+		s.set_prop_int("gen_birth", i_gen_birth);
 	} else {
-		i_cur id_birth = s.get_prop_int("cur id_birth");
+		i_gen_birth = s.get_prop_int("gen_birth");
 	}
 
 	if (b_change == true) {
@@ -60,11 +60,11 @@ void mleck::reset_settings() {
 
 void mleck::init(int id_in
 						, string str_path_farm_in
-						, int i_cur id_birth_in
+						, int i_gen_birth_in
 						) {
 	str_path_farm = str_path_farm_in;
 	id = id_in;
-	i_cur id_birth = i_cur id_birth_in;
+	i_gen_birth = i_gen_birth_in;
 
 	str_filepath_settings = str_path_farm + "\\" + std::to_string(id) + "_" + filename_settings;
 

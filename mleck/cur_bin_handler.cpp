@@ -79,7 +79,6 @@ int cur_bin_handler::get_next_id(int id_in) {
 int cur_bin_handler::get_random_id() {
 	int id = 0;
 	bool b_end = false;
-	srand((unsigned)time(0));
 	while (b_end == false) {
 		auto it = map_bin.begin();
 		std::advance(it, rand() % map_bin.size());
