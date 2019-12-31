@@ -110,7 +110,7 @@ void farm::run(int i_gen_count_in
 				}
 			}
 			
-
+			std::cout << "\t\tcur id\t: " << i_cur_id << std::endl;
 
 
 			std::cout << "\tfarm gen end:  " << i_gen_proc << std::endl;

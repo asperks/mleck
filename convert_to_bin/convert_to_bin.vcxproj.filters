@@ -21,10 +21,10 @@
     <ClCompile Include="settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="polo_gen.cpp">
+    <ClCompile Include="cur_bin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cur_bin.cpp">
+    <ClCompile Include="polo_cur.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,10 +32,10 @@
     <ClInclude Include="settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="polo_gen.h">
+    <ClInclude Include="cur_bin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cur_bin.h">
+    <ClInclude Include="polo_cur.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

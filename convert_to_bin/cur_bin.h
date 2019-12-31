@@ -6,6 +6,8 @@ when processing crypto data at a specific point in time.
 
 2019-12-21	ASP
 
+Merged back into mleck utility 2019-12-30
+
 Merged into convert_to_bin utility 2019-12-30
 
 Forked from convert_to_bin utility 2019-12-28
@@ -29,42 +31,42 @@ using namespace std;
 #include <boost/algorithm/string.hpp>
 
 struct Ticker {
-	double last;
-	double high24hr;
+	double last = 0.0;
+	double high24hr = 0.0;
 	//double isfrozen;
-	double highestbid;
-	double percentchange;
-	double low24hr;
-	double lowestask;
+	double highestbid = 0.0;
+	double percentchange = 0.0;
+	double low24hr = 0.0;
+	double lowestask = 0.0;
 	//double basevolume;
 };
 
 struct Candle_line {
-	unsigned long unix_time;
-	double val1;
-	double val2;
-	double val3;
-	double val4;
-	double val5;
+	unsigned long unix_time = 0;
+	double val1 = 0.0;
+	double val2 = 0.0;
+	double val3 = 0.0;
+	double val4 = 0.0;
+	double val5 = 0.0;
 	//double val6;
-	double vol;
+	double vol = 0.0;
 };
 
 struct History_line {
-	unsigned long unix_time;
-	double priceusd;
-	double amountusd;
+	unsigned long unix_time = 0;
+	double priceusd = 0.0;
+	double amountusd = 0.0;
 	// Not used.  It really is just amountusd/priceusd
 	//double amountunit;
 	// +1 buy, -1 sell
-	long int action;
+	long int action = 0;
 };
 
 struct Orderbook_line {
-	double val1;
-	double val2;
-	double val3;
-	double val4;
+	double val1 = 0.0;
+	double val2 = 0.0;
+	double val3 = 0.0;
+	double val4 = 0.0;
 };
 
 class cur_bin {
@@ -104,6 +106,8 @@ public:
 	void add_string_instrument(string str_val) { vec_data_instruments.push_back(str_val); };
 
 	bool is_valid_instrument(string);
+
+	vector<string> get_vec_situation() { return vec_data_situation; }
 
 	// This is set by reading the ticker file, and populating the struct for this instrument
 	// Pass instrument, ticker property, property value.

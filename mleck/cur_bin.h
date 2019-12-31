@@ -107,6 +107,8 @@ public:
 
 	bool is_valid_instrument(string);
 
+	vector<string> get_vec_situation() { return vec_data_situation; }
+
 	// This is set by reading the ticker file, and populating the struct for this instrument
 	// Pass instrument, ticker property, property value.
 	void set_ticker_double(string, string, double);

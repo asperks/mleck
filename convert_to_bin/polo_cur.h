@@ -46,15 +46,15 @@ const std::locale formats[] = {
 const size_t formats_n = sizeof(formats) / sizeof(formats[0]);
 
 
-class polo_gen {
+class polo_cur {
 private:
 	// Data Members 
-	string str_class_name = "polo_gen";
+	string str_class_name = "polo_cur";
 
 	bool b_exists_scripture = false;
 	bool b_loaded = false;
 
-	string str_gen = "";
+	string str_cur_id = "";
 	string str_path_scripture = "";
 
 	const string str_filename_situation = "0.situation.asc";
@@ -133,7 +133,6 @@ public:
 		return static_cast<unsigned long>(pt_to_time_t(pt));
 	}
 
-	string to_string();
 };
 
 #endif //POLO_GEN_H

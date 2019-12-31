@@ -84,9 +84,11 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				// from USDT_ETH
 				//	1509254100 | 294.99999541 | 294.00000168 | 294.99999493 | 294.00000168 | 294.00000647 | 3127.14211448
 				//	1509253800 | 294.99999768 | 294.00000017 | 294.99999728 | 294.00000017 | 294.19053401 | 1518.57383018
-				//	skip			 avg				 avg				 avg				 avg				 avg			    avg,tot
+				//	skip			 avg,mm			 avg,mm			 avg,mm			 avg,mm			 avg,mm			 avg,tot,mm
 				Candle_line cl300_instrument_avg;
 				Candle_line cl300_instrument_tot;
+				Candle_line cl300_instrument_min;
+				Candle_line cl300_instrument_max;
 
 				vector<Candle_line> vec_candle300 = cb_base.get_struct_candle300(str_instrument);
 				if (vec_candle300.size() > 0) {
@@ -97,6 +99,38 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 						cl300_instrument_tot.val4 = cl300_instrument_tot.val4 + vec_candle300.at(i).val4;
 						cl300_instrument_tot.val5 = cl300_instrument_tot.val5 + vec_candle300.at(i).val5;
 						cl300_instrument_tot.vol = cl300_instrument_tot.vol + vec_candle300.at(i).vol;
+
+						// min/max calc
+						if (i == 0) {
+							cl300_instrument_min.val1 = vec_candle300.at(i).val1;
+							cl300_instrument_min.val2 = vec_candle300.at(i).val2;
+							cl300_instrument_min.val3 = vec_candle300.at(i).val3;
+							cl300_instrument_min.val4 = vec_candle300.at(i).val4;
+							cl300_instrument_min.val5 = vec_candle300.at(i).val5;
+							cl300_instrument_min.vol = vec_candle300.at(i).vol;
+
+							cl300_instrument_max.val1 = vec_candle300.at(i).val1;
+							cl300_instrument_max.val2 = vec_candle300.at(i).val2;
+							cl300_instrument_max.val3 = vec_candle300.at(i).val3;
+							cl300_instrument_max.val4 = vec_candle300.at(i).val4;
+							cl300_instrument_max.val5 = vec_candle300.at(i).val5;
+							cl300_instrument_max.vol = vec_candle300.at(i).vol;
+						} else {
+							if (vec_candle300.at(i).val1 < cl300_instrument_min.val1) { cl300_instrument_min.val1 = vec_candle300.at(i).val1; }
+							if (vec_candle300.at(i).val2 < cl300_instrument_min.val2) { cl300_instrument_min.val2 = vec_candle300.at(i).val2; }
+							if (vec_candle300.at(i).val3 < cl300_instrument_min.val3) { cl300_instrument_min.val3 = vec_candle300.at(i).val3; }
+							if (vec_candle300.at(i).val4 < cl300_instrument_min.val4) { cl300_instrument_min.val4 = vec_candle300.at(i).val4; }
+							if (vec_candle300.at(i).val5 < cl300_instrument_min.val5) { cl300_instrument_min.val5 = vec_candle300.at(i).val5; }
+							if (vec_candle300.at(i).vol < cl300_instrument_min.vol) { cl300_instrument_min.vol = vec_candle300.at(i).vol; }
+
+							if (vec_candle300.at(i).val1 > cl300_instrument_max.val1) { cl300_instrument_max.val1 = vec_candle300.at(i).val1; }
+							if (vec_candle300.at(i).val2 > cl300_instrument_max.val2) { cl300_instrument_max.val2 = vec_candle300.at(i).val2; }
+							if (vec_candle300.at(i).val3 > cl300_instrument_max.val3) { cl300_instrument_max.val3 = vec_candle300.at(i).val3; }
+							if (vec_candle300.at(i).val4 > cl300_instrument_max.val4) { cl300_instrument_max.val4 = vec_candle300.at(i).val4; }
+							if (vec_candle300.at(i).val5 > cl300_instrument_max.val5) { cl300_instrument_max.val5 = vec_candle300.at(i).val5; }
+							if (vec_candle300.at(i).vol > cl300_instrument_max.vol) { cl300_instrument_max.vol = vec_candle300.at(i).vol; }
+						}
+
 					}
 					double d_size = boost::lexical_cast<double>(vec_candle300.size());
 					cl300_instrument_avg.val1 = cl300_instrument_tot.val1 / d_size;
@@ -110,14 +144,18 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				}
 				map_cl_prev_300_avg.emplace(str_instrument, std::move(cl300_instrument_avg));
 				map_cl_prev_300_tot.emplace(str_instrument, std::move(cl300_instrument_tot));
+				map_cl_prev_300_min.emplace(str_instrument, std::move(cl300_instrument_min));
+				map_cl_prev_300_max.emplace(str_instrument, std::move(cl300_instrument_max));
 
 				// Extract data from the candle14400
 				//	from USDT_BTC
 				//	1509249600 | 5775.50000000 | 5702.28462698 | 5742.99999998 | 5726.00000000 | 5754.48812736 | 856007.03235443
 				//	1509235200 | 5730.97601203 | 5670.00000000 | 5728.06090088 | 5719.00000000 | 5700.16508200 | 1247850.47603730
-				//	skip			 avg				 avg					avg				 avg				 avg					avg,tot
+				//	skip			 avg,mm			 avg,mm				avg,mm			 avg,mm			  avg,mm				avg,tot,mm
 				Candle_line cl14400_instrument_avg;
 				Candle_line cl14400_instrument_tot;
+				Candle_line cl14400_instrument_min;
+				Candle_line cl14400_instrument_max;
 
 				vector<Candle_line> vec_candle14400 = cb_base.get_struct_candle14400(str_instrument);
 				if (vec_candle300.size() > 0) {
@@ -128,6 +166,37 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 						cl14400_instrument_tot.val4 = cl14400_instrument_tot.val4 + vec_candle14400.at(i).val4;
 						cl14400_instrument_tot.val5 = cl14400_instrument_tot.val5 + vec_candle14400.at(i).val5;
 						cl14400_instrument_tot.vol = cl14400_instrument_tot.vol + vec_candle14400.at(i).vol;
+
+						// min/max calc
+						if (i == 0) {
+							cl14400_instrument_min.val1 = vec_candle14400.at(i).val1;
+							cl14400_instrument_min.val2 = vec_candle14400.at(i).val2;
+							cl14400_instrument_min.val3 = vec_candle14400.at(i).val3;
+							cl14400_instrument_min.val4 = vec_candle14400.at(i).val4;
+							cl14400_instrument_min.val5 = vec_candle14400.at(i).val5;
+							cl14400_instrument_min.vol = vec_candle14400.at(i).vol;
+
+							cl14400_instrument_max.val1 = vec_candle14400.at(i).val1;
+							cl14400_instrument_max.val2 = vec_candle14400.at(i).val2;
+							cl14400_instrument_max.val3 = vec_candle14400.at(i).val3;
+							cl14400_instrument_max.val4 = vec_candle14400.at(i).val4;
+							cl14400_instrument_max.val5 = vec_candle14400.at(i).val5;
+							cl14400_instrument_max.vol = vec_candle14400.at(i).vol;
+						} else {
+							if (vec_candle14400.at(i).val1 < cl14400_instrument_min.val1) { cl14400_instrument_min.val1 = vec_candle14400.at(i).val1; }
+							if (vec_candle14400.at(i).val2 < cl14400_instrument_min.val2) { cl14400_instrument_min.val2 = vec_candle14400.at(i).val2; }
+							if (vec_candle14400.at(i).val3 < cl14400_instrument_min.val3) { cl14400_instrument_min.val3 = vec_candle14400.at(i).val3; }
+							if (vec_candle14400.at(i).val4 < cl14400_instrument_min.val4) { cl14400_instrument_min.val4 = vec_candle14400.at(i).val4; }
+							if (vec_candle14400.at(i).val5 < cl14400_instrument_min.val5) { cl14400_instrument_min.val5 = vec_candle14400.at(i).val5; }
+							if (vec_candle14400.at(i).vol < cl14400_instrument_min.vol) { cl14400_instrument_min.vol = vec_candle14400.at(i).vol; }
+
+							if (vec_candle14400.at(i).val1 > cl14400_instrument_max.val1) { cl14400_instrument_max.val1 = vec_candle14400.at(i).val1; }
+							if (vec_candle14400.at(i).val2 > cl14400_instrument_max.val2) { cl14400_instrument_max.val2 = vec_candle14400.at(i).val2; }
+							if (vec_candle14400.at(i).val3 > cl14400_instrument_max.val3) { cl14400_instrument_max.val3 = vec_candle14400.at(i).val3; }
+							if (vec_candle14400.at(i).val4 > cl14400_instrument_max.val4) { cl14400_instrument_max.val4 = vec_candle14400.at(i).val4; }
+							if (vec_candle14400.at(i).val5 > cl14400_instrument_max.val5) { cl14400_instrument_max.val5 = vec_candle14400.at(i).val5; }
+							if (vec_candle14400.at(i).vol > cl14400_instrument_max.vol) { cl14400_instrument_max.vol = vec_candle14400.at(i).vol; }
+						}
 					}
 					double d_size = boost::lexical_cast<double>(vec_candle14400.size());
 					cl14400_instrument_avg.val1 = cl14400_instrument_tot.val1 / d_size;
@@ -141,7 +210,8 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				}
 				map_cl_prev_14400_avg.emplace(str_instrument, std::move(cl14400_instrument_avg));
 				map_cl_prev_14400_tot.emplace(str_instrument, std::move(cl14400_instrument_tot));
-
+				map_cl_prev_14400_min.emplace(str_instrument, std::move(cl14400_instrument_min));
+				map_cl_prev_14400_max.emplace(str_instrument, std::move(cl14400_instrument_max));
 
 				// Extract data from the history
 				// from USDT_LTC
@@ -149,9 +219,11 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				//		So that it can be compared as a percentage between	all instruments.
 				//	1509254600 | 54.31142791 | 543.11427910 |  1
 				//	1509254008 | 54.31142791 | 37.46402297 | -1
-				//	skip			 avg				avg,tot
+				//	skip			 avg,mm			avg,tot,mm	  avg,tot
 				History_line hl_instrument_avg;
 				History_line hl_instrument_tot;
+				History_line hl_instrument_min;
+				History_line hl_instrument_max;
 
 				vector<History_line> vec_history = cb_base.get_struct_history(str_instrument);
 				if (vec_candle300.size() > 0) {
@@ -159,6 +231,22 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 						hl_instrument_tot.priceusd = hl_instrument_tot.priceusd + vec_history.at(i).priceusd;
 						hl_instrument_tot.amountusd = hl_instrument_tot.amountusd + vec_history.at(i).amountusd;
 						hl_instrument_tot.action = hl_instrument_tot.action + vec_history.at(i).action;
+
+						// min/max calc
+						if (i == 0) {
+							hl_instrument_min.priceusd = vec_history.at(i).priceusd;
+							hl_instrument_min.amountusd = vec_history.at(i).amountusd;
+
+							hl_instrument_max.priceusd = vec_history.at(i).priceusd;
+							hl_instrument_max.amountusd = vec_history.at(i).amountusd;
+
+						} else {
+							if (vec_history.at(i).priceusd < hl_instrument_min.priceusd) { hl_instrument_min.priceusd = vec_history.at(i).priceusd; }
+							if (vec_history.at(i).amountusd < hl_instrument_min.amountusd) { hl_instrument_min.amountusd = vec_history.at(i).amountusd; }
+
+							if (vec_history.at(i).priceusd > hl_instrument_max.priceusd) { hl_instrument_max.priceusd = vec_history.at(i).priceusd; }
+							if (vec_history.at(i).amountusd > hl_instrument_max.amountusd) { hl_instrument_max.amountusd = vec_history.at(i).amountusd; }
+						}
 					}
 					double d_size = boost::lexical_cast<double>(vec_history.size());
 					hl_instrument_avg.priceusd = hl_instrument_tot.priceusd / d_size;
@@ -170,6 +258,8 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				}
 				map_hl_prev_avg.emplace(str_instrument, std::move(hl_instrument_avg));
 				map_hl_prev_tot.emplace(str_instrument, std::move(hl_instrument_tot));
+				map_hl_prev_min.emplace(str_instrument, std::move(hl_instrument_min));
+				map_hl_prev_max.emplace(str_instrument, std::move(hl_instrument_max));
 
 
 				// Extract data from the orderbook
@@ -178,9 +268,12 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				//		So that it can be compared as a percentage between	all instruments.
 				//	86.74652466 | 3.69240923 | 86.80009774 | 0.00311432
 				//	86.56134530 | 0.01563150 | 86.87378847 | 0.05743694
-				//	avg			  avg,tot		avg			  avg,tot
+				//	avg,mm		  avg,tot,mm	avg,mm		  avg,tot,mm
+				
 				Orderbook_line ol_instrument_avg;
 				Orderbook_line ol_instrument_tot;
+				Orderbook_line ol_instrument_min;
+				Orderbook_line ol_instrument_max;
 
 				vector<Orderbook_line> vec_orderbook = cb_base.get_struct_orderbook(str_instrument);
 				if (vec_orderbook.size() > 0) {
@@ -189,6 +282,29 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 						ol_instrument_tot.val2 = ol_instrument_tot.val2 + vec_orderbook.at(i).val2;
 						ol_instrument_tot.val3 = ol_instrument_tot.val3 + vec_orderbook.at(i).val3;
 						ol_instrument_tot.val4 = ol_instrument_tot.val4 + vec_orderbook.at(i).val4;
+
+						// min/max calc
+						if (i == 0) {
+							ol_instrument_min.val1 = vec_orderbook.at(i).val1;
+							ol_instrument_min.val2 = vec_orderbook.at(i).val2;
+							ol_instrument_min.val3 = vec_orderbook.at(i).val3;
+							ol_instrument_min.val4 = vec_orderbook.at(i).val4;
+
+							ol_instrument_max.val1 = vec_orderbook.at(i).val1;
+							ol_instrument_max.val2 = vec_orderbook.at(i).val2;
+							ol_instrument_max.val3 = vec_orderbook.at(i).val3;
+							ol_instrument_max.val4 = vec_orderbook.at(i).val4;
+						} else {
+							if (vec_orderbook.at(i).val1 < ol_instrument_min.val1) { ol_instrument_min.val1 = vec_orderbook.at(i).val1; }
+							if (vec_orderbook.at(i).val2 < ol_instrument_min.val2) { ol_instrument_min.val2 = vec_orderbook.at(i).val2; }
+							if (vec_orderbook.at(i).val3 < ol_instrument_min.val3) { ol_instrument_min.val3 = vec_orderbook.at(i).val3; }
+							if (vec_orderbook.at(i).val4 < ol_instrument_min.val4) { ol_instrument_min.val4 = vec_orderbook.at(i).val4; }
+
+							if (vec_orderbook.at(i).val1 > ol_instrument_max.val1) { ol_instrument_max.val1 = vec_orderbook.at(i).val1; }
+							if (vec_orderbook.at(i).val2 > ol_instrument_max.val2) { ol_instrument_max.val2 = vec_orderbook.at(i).val2; }
+							if (vec_orderbook.at(i).val3 > ol_instrument_max.val3) { ol_instrument_max.val3 = vec_orderbook.at(i).val3; }
+							if (vec_orderbook.at(i).val4 > ol_instrument_max.val4) { ol_instrument_max.val4 = vec_orderbook.at(i).val4; }
+						}
 					}
 					double d_size = boost::lexical_cast<double>(vec_orderbook.size());
 					ol_instrument_avg.val1 = ol_instrument_tot.val1 / d_size;
@@ -204,12 +320,14 @@ void cur_bin2::init(string str_path_bin, int id_cur, string str_filepath_bin2, c
 				}
 				map_ol_prev_avg.emplace(str_instrument, std::move(ol_instrument_avg));
 				map_ol_prev_tot.emplace(str_instrument, std::move(ol_instrument_tot));
+				map_ol_prev_min.emplace(str_instrument, std::move(ol_instrument_min));
+				map_ol_prev_max.emplace(str_instrument, std::move(ol_instrument_max));
 			}
 		}
 
 		cur_bin2::export_text(str_filepath_bin2);
 
-		//cur_bin2::export_bin(str_filepath_bin2 + ".bin2");
+		//cur_bin2::export_bin(str_filepath_bin2);
 	}
 
 }
@@ -221,33 +339,33 @@ void cur_bin2::export_text(string str_filepath) {
 	ofstream ofs(str_filepath + ".asc");
 
 	if (ofs.is_open()) {
+
+		ofs << "SITUATION" << std::endl;
+		if (cb_base.get_vec_situation().size() > 0) {
+			for (size_t i_situation = 0; i_situation < cb_base.get_vec_situation().size(); ++i_situation) {
+				ofs << "\t" << cb_base.get_vec_situation().at(i_situation).size() << "|" << cb_base.get_vec_situation().at(i_situation) << std::endl;
+			}
+		}
+
 		//ofs << "This is a line.\n";
 		//ofs << "This is another line.\n";
 		ofs << "TOTALS" << std::endl;
 
-		//		Candle_line cl_prev_300_tot;
-		//		Candle_line cl_prev_14400_tot;
-		//		History_line hl_prev_history_tot;
-		//		Orderbook_line ol_prev_orderbook_tot;
-
-		//		History_line hl_prev_history_totcalc;
-		//		Orderbook_line ol_prev_orderbook_totcalc;
-
 		ofs << "\tCandle300" << std::endl;
-		ofs << "\t\tvol\t:" << fixed << setprecision(8) << cl_prev_300_tot.vol << std::endl;
+		ofs << "\t\tvol\t\t\t\t\t:\t" << fixed << setprecision(8) << cl_prev_300_tot.vol << std::endl;
 
 		ofs << "\tCandle14400" << std::endl;
-		ofs << "\t\tvol\t:" << fixed << setprecision(8) << cl_prev_14400_tot.vol << std::endl;
+		ofs << "\t\tvol\t\t\t\t\t:\t" << fixed << setprecision(8) << cl_prev_14400_tot.vol << std::endl;
 
 		ofs << "\tHistory" << std::endl;
-		ofs << "\t\tavg amountusd \t:" << fixed << setprecision(8) << hl_prev_history_tot.amountusd << std::endl;
-		ofs << "\t\tavg action*1K \t:" << hl_prev_history_tot.action << std::endl;
+		ofs << "\t\tavg amountusd \t:\t" << fixed << setprecision(8) << hl_prev_history_tot.amountusd << std::endl;
+		ofs << "\t\tavg action*1K \t:\t" << hl_prev_history_tot.action << std::endl;
 
 		ofs << "\tOrderbook" << std::endl;
-		ofs << "\t\tval2     \t:" << fixed << setprecision(8) << ol_prev_orderbook_tot.val2 << std::endl;
-		ofs << "\t\tval4     \t:" << fixed << setprecision(8) << ol_prev_orderbook_tot.val4 << std::endl;
-		ofs << "\t\tval1*val2\t:" << fixed << setprecision(8) << ol_prev_orderbook_totcalc.val2 << std::endl;
-		ofs << "\t\tval3*val4\t:" << fixed << setprecision(8) << ol_prev_orderbook_totcalc.val4 << std::endl;
+		ofs << "\t\tval2     \t\t:\t" << fixed << setprecision(8) << ol_prev_orderbook_tot.val2 << std::endl;
+		ofs << "\t\tval4     \t\t:\t" << fixed << setprecision(8) << ol_prev_orderbook_tot.val4 << std::endl;
+		ofs << "\t\tval1*val2\t\t:\t" << fixed << setprecision(8) << ol_prev_orderbook_totcalc.val2 << std::endl;
+		ofs << "\t\tval3*val4\t\t:\t" << fixed << setprecision(8) << ol_prev_orderbook_totcalc.val4 << std::endl;
 
 
 		ofs << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << std::endl;
@@ -257,11 +375,29 @@ void cur_bin2::export_text(string str_filepath) {
 				string str_instrument = imap.first;
 				Ticker t = imap.second;
 
+				Ticker t_prev_change = map_struct_ticker_prev[str_instrument];
+				Ticker t_next_change = map_struct_ticker_next[str_instrument];
+
 				ofs << "INSTRUMENT\t:\t" << str_instrument << std::endl;
 
-
-
-
+				ofs << "\tTicker\t\t\t\tPrevious\t\tBase\t\t\t\tNext" << std::endl;
+				
+				ofs << "\tlast" << "\t\t\t\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_prev_change.last
+					<< "\t" << std::right << std::setw(14) << fixed << setprecision(8) << t.last
+					<< "\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_next_change.last << std::endl;
+				ofs << "\thighestbid" << "\t\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_prev_change.highestbid
+					<< "\t" << std::right << std::setw(14) << fixed << setprecision(8) << t.highestbid
+					<< "\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_next_change.highestbid << std::endl;
+				ofs << "\tlowestask" << "\t\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_prev_change.lowestask
+					<< "\t" << std::right << std::setw(14) << fixed << setprecision(8) << t.lowestask
+					<< "\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_next_change.lowestask << std::endl;
+				ofs << "\tpercentchange" << "\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_prev_change.percentchange
+					<< "\t" << std::right << std::setw(14) << fixed << setprecision(8) << t.percentchange
+					<< "\t" << std::right << std::setw(10) << fixed << setprecision(4) << t_next_change.percentchange << std::endl;
+				ofs << "\thigh24hr" << "\t" << "       " 
+					<< "\t\t\t\t" << std::right << std::setw(14) << fixed << setprecision(8) << t.high24hr << std::endl;
+				ofs << "\tlow24hr" << "\t" << "        "
+					<< "\t\t\t\t" << std::right << std::setw(14) << fixed << setprecision(8) << t.low24hr << std::endl;
 				ofs << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
 
 			}
@@ -280,7 +416,25 @@ void cur_bin2::export_text(string str_filepath) {
 // Export in BIN2 format.
 void cur_bin2::export_bin(string str_filepath) {
 	// Write out an ascii file of the performance of each instrument.
+	fstream fs;
+	fs.open(str_filepath + ".bin", ios::out | ios::binary);
 
+	if (fs.is_open()) {
+		// Write out the totals data
+
+		// loop through the instruments.
+		if (cb_base.get_map_struct_ticker().size() > 0) {
+
+			for (auto const& imap : cb_base.get_map_struct_ticker()) {
+				string str_instrument = imap.first;
+				Ticker t = imap.second;
+
+			}
+		}
+
+
+		fs.close();
+	}
 
 
 

@@ -7,7 +7,7 @@
 //
 //	--path_bin			Path where the binary files created from the scripture is stored.
 //
-//	--gen					A pipe (|) delimited string of all gens to process
+//	--cur_ids			A pipe (|) delimited string of all gens to process
 //							if empty all of the folders in the path_scripture
 //							directory
 //
@@ -15,7 +15,7 @@
 //							binaries.
 //
 #include "settings.h"
-#include "polo_gen.h"
+#include "polo_cur.h"
 
 #include <iostream>
 #include <iterator>
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
 			s.set_prop_str(vec_args.at(i), str_temp);
 
-		} else if (vec_args.at(i) == "--gen") {
+		} else if (vec_args.at(i) == "--cur_ids") {
 			string str_temp = vec_args.at(i + 1);
 			// Remove quotes from paths
 			str_temp.erase(remove(str_temp.begin(), str_temp.end(), '\"'), str_temp.end());
@@ -70,14 +70,14 @@ int main(int argc, char** argv) {
 		boost::split(vec_instrument, str_instruments, boost::is_any_of("|"));
 	}
 	
-	string str_gens = s.get_prop_str("--gen");
+	string str_gens = s.get_prop_str("--cur_ids");
 	vector<string> vec_gen;
 	if (str_gens != "") {
 		boost::split(vec_gen, str_gens, boost::is_any_of("|"));
 	}
 
-	polo_gen pg;
-	pg.process(vec_gen
+	polo_cur pc;
+	pc.process(vec_gen
 					, vec_instrument
 					, s.get_prop_str("--path_scripture")
 					, s.get_prop_str("--path_bin")

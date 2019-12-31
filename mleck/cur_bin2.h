@@ -51,17 +51,27 @@ private:
 	//		Average
 	//		Total
 	// If the cur_bin data isn't available (no entries) the numbers will be zero'd
+
+
 	map <string, Candle_line> map_cl_prev_300_avg;
 	map <string, Candle_line> map_cl_prev_300_tot;
+	map <string, Candle_line> map_cl_prev_300_min;
+	map <string, Candle_line> map_cl_prev_300_max;
 
 	map <string, Candle_line> map_cl_prev_14400_avg;
 	map <string, Candle_line> map_cl_prev_14400_tot;
+	map <string, Candle_line> map_cl_prev_14400_min;
+	map <string, Candle_line> map_cl_prev_14400_max;
 
 	map <string, History_line> map_hl_prev_avg;
 	map <string, History_line> map_hl_prev_tot;
+	map <string, History_line> map_hl_prev_min;
+	map <string, History_line> map_hl_prev_max;
 
 	map <string, Orderbook_line> map_ol_prev_avg;
 	map <string, Orderbook_line> map_ol_prev_tot;
+	map <string, Orderbook_line> map_ol_prev_min;
+	map <string, Orderbook_line> map_ol_prev_max;
 
 
 	// This will have as many elements in it as the map_vec_dbl_prev_tot vector does.  

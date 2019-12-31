@@ -1,10 +1,10 @@
-// refer polo_gen.h for details.
+// refer polo_cur.h for details.
 //
 //	
 //
-#include "polo_gen.h"
+#include "polo_cur.h"
 
-int polo_gen::process(vector<string> vec_gen
+int polo_cur::process(vector<string> vec_gen
 							, vector<string> vec_instrument_user
 							, string str_path_scripture
 							, string str_path_bin
@@ -33,14 +33,14 @@ int polo_gen::process(vector<string> vec_gen
 	}
 
 	if (vec_gen.size() == 0) {
-		vec_errors.push_back("No gens found for processing!");
+		vec_errors.push_back("No cur id's found for processing!");
 	} else {
 		for (size_t i_gen_nth = 0; i_gen_nth < vec_gen.size(); ++i_gen_nth) {
-			string str_gen = vec_gen.at(static_cast<int>(i_gen_nth));
-			string str_gen_path = str_path_scripture + "\\" + str_gen;
-			string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
+			string str_cur_id = vec_gen.at(static_cast<int>(i_gen_nth));
+			string str_cur_id_path = str_path_scripture + "\\" + str_cur_id;
+			string str_bin_filepath = str_path_bin + "\\" + str_cur_id + ".bin";
 
-			std::cout << "process scripture gen path = " + str_gen_path + "\n";
+			std::cout << "process scripture cur path = " + str_cur_id_path + "\n";
 
 			cur_bin cb = cur_bin();
 
@@ -54,13 +54,13 @@ int polo_gen::process(vector<string> vec_gen
 
 			boost::split(vec_ticker_record, str_ticker_record, boost::is_any_of("|"));
 
-			if (boost::filesystem::is_directory(str_gen_path) == false) {
-				vec_errors.push_back("folder [" + str_gen_path + "] not found!");
+			if (boost::filesystem::is_directory(str_cur_id_path) == false) {
+				vec_errors.push_back("folder [" + str_cur_id_path + "] not found!");
 				cb.set_status(2);
 			} else {
 
 				// Read the situation file.
-				string str_filepath_situation = str_path_scripture + "\\" + str_gen + "\\" + str_filename_situation;
+				string str_filepath_situation = str_path_scripture + "\\" + str_cur_id + "\\" + str_filename_situation;
 				if (boost::filesystem::is_regular_file(str_filepath_situation) == false) {
 					vec_errors.push_back("file [" + str_filepath_situation + "] not found!");
 					cb.set_status(2);
@@ -69,6 +69,9 @@ int polo_gen::process(vector<string> vec_gen
 					std::ifstream ifs(str_filepath_situation);
 					while (std::getline(ifs, str_line)) {
 						if (str_line.size() > 0) {
+							// Changing of terminology.  Yeah, I know, bad design.  But I need to make it more consistent
+							// cur_id's are not gens.  Gens relate to the generations of the mlecks.
+							boost::replace_all(str_line, "Gen|", "cur_id|");
 							// Add it to the cur_bin object
 							cb.add_string_situation(str_line);
 						}
@@ -78,7 +81,7 @@ int polo_gen::process(vector<string> vec_gen
 				// read the vec_data_instruments file, and remove elements
 				//	if they don't exist from a user list, or add elements if no
 				//	instruments have been provided.
-				string str_filepath_instruments = str_path_scripture + "\\" + str_gen + "\\" + str_filename_instruments;
+				string str_filepath_instruments = str_path_scripture + "\\" + str_cur_id + "\\" + str_filename_instruments;
 				if (boost::filesystem::is_regular_file(str_filepath_instruments) == false) {
 					vec_errors.push_back("file [" + str_filepath_instruments + "] not found!");
 					cb.set_status(2);
@@ -118,7 +121,7 @@ int polo_gen::process(vector<string> vec_gen
 					// read the vec_data_instruments file, and remove elements
 					//	if they don't exist from a user list, or add elements if no
 					//	instruments have been provided.
-					string str_filepath_ticker = str_path_scripture + "\\" + str_gen + "\\" + str_filename_ticker;
+					string str_filepath_ticker = str_path_scripture + "\\" + str_cur_id + "\\" + str_filename_ticker;
 
 					if (boost::filesystem::is_regular_file(str_filepath_instruments) == false) {
 						vec_errors.push_back("file [" + str_filepath_ticker + "] not found!");
@@ -183,7 +186,7 @@ int polo_gen::process(vector<string> vec_gen
 							Ticker t = cb.get_ticker(vec_data_instruments.at(i));
 
 							// Read the candle data 300 into an a map vs instruments
-							str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
+							str_filepath_candle = str_path_scripture + "\\" + str_cur_id + "\\"
 								+ str_filename_candle_prefix
 								+ vec_data_instruments.at(i)
 								+ str_filename_candle_300_suffix;
@@ -198,7 +201,7 @@ int polo_gen::process(vector<string> vec_gen
 							}
 
 							// Read the candle data 14400 into an a map vs instruments
-							str_filepath_candle = str_path_scripture + "\\" + str_gen + "\\"
+							str_filepath_candle = str_path_scripture + "\\" + str_cur_id + "\\"
 								+ str_filename_candle_prefix
 								+ vec_data_instruments.at(i)
 								+ str_filename_candle_14400_suffix;
@@ -213,7 +216,7 @@ int polo_gen::process(vector<string> vec_gen
 							}
 
 							//	read the trade history file into an a map vs instruments
-							str_filepath_history = str_path_scripture + "\\" + str_gen + "\\"
+							str_filepath_history = str_path_scripture + "\\" + str_cur_id + "\\"
 								+ str_filename_hist_prefix
 								+ vec_data_instruments.at(i)
 								+ str_filename_hist_suffix;
@@ -228,7 +231,7 @@ int polo_gen::process(vector<string> vec_gen
 							}
 
 							//	read the order book file into an a map vs instruments
-							str_filepath_orderbook = str_path_scripture + "\\" + str_gen + "\\"
+							str_filepath_orderbook = str_path_scripture + "\\" + str_cur_id + "\\"
 								+ str_filename_orderbook_prefix
 								+ vec_data_instruments.at(i)
 								+ str_filename_orderbook_suffix;
@@ -253,8 +256,8 @@ int polo_gen::process(vector<string> vec_gen
 					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 					//	Write out the data to a BIN file.
 					//
-					string str_bin_filepath = str_path_bin + "\\" + str_gen + ".bin";
-					string str_ascii_filepath = str_path_bin + "\\" + str_gen + ".asc";
+					string str_bin_filepath = str_path_bin + "\\" + str_cur_id + ".bin";
+					string str_ascii_filepath = str_path_bin + "\\" + str_cur_id + ".asc";
 
 					//// testing ascii writing.
 					cb.export_text(str_ascii_filepath);
@@ -281,9 +284,9 @@ int polo_gen::process(vector<string> vec_gen
 					//	Test the data read/write process from BIN
 					//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 					*/
-					std::cout << "\tGen Complete : " << str_gen << "\n";
+					std::cout << "\tCur id Complete : " << str_cur_id << "\n";
 				} else {
-					std::cout << "\tGen DISCARDED : " << str_gen << "\n";
+					std::cout << "\tCur id DISCARDED : " << str_cur_id << "\n";
 
 				}
 			}
@@ -307,7 +310,7 @@ int polo_gen::process(vector<string> vec_gen
 //	1548777600|0.00000017|0.00000016|0.00000016|0.00000016|0.00000016|5.82696703|34300966.899461
 //	1548792000|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|2.57156965|15154582.862649
 //	1548806400|0.00000017|0.00000016|0.00000017|0.00000016|0.00000016|0.0729452|453722.45582316
-void polo_gen::process_file_candle(string str_filepath
+void polo_cur::process_file_candle(string str_filepath
 												, double d_val_last
 												, vector<Candle_line> * ptr_vec_output
 												) {
@@ -354,7 +357,7 @@ void polo_gen::process_file_candle(string str_filepath
 //137.33920318|0.00728780|137.45367868|1.13800000
 //137.27802432|0.00729104|137.47839826|72.64250000
 //137.23912591|0.07842815|137.57818032|31.71775437
-void polo_gen::process_file_orderbook(string str_filepath
+void polo_cur::process_file_orderbook(string str_filepath
 													, double d_val_last
 													, vector<Orderbook_line> * ptr_vec_output
 													) {
@@ -386,7 +389,7 @@ void polo_gen::process_file_orderbook(string str_filepath
 //411121485|26532891|2019-03-1812:52:20|3980.92148989|sel|2184.04682637|0.54862846
 //411121484|26532890|2019-03-1812:52:20|3981.27192630|sel|8.78997159|0.00220783
 //411121478|26532889|2019-03-1812:52:06|3983.29999997|buy|187.88003226|0.04716693
-void polo_gen::process_file_history(string str_filepath
+void polo_cur::process_file_history(string str_filepath
 												, double d_val_last
 												, vector<History_line> * ptr_vec_output
 												) {
@@ -424,9 +427,3 @@ void polo_gen::process_file_history(string str_filepath
 	}
 }
 
-// Not used.
-string polo_gen::to_string() {
-	string str_return = "";
-
-	return str_return;
-}
