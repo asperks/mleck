@@ -58,6 +58,15 @@ void farm::load_settings() {
 		s.set_prop_int("gen_proc", 5);
 	}
 
+	if (s.get_prop_int("mleck_start_jewel_min") == 0) {
+		b_change = true;
+		s.set_prop_int("mleck_start_jewel_min", 5);
+	}
+
+	if (s.get_prop_int("mleck_start_jewel_max") == 0) {
+		b_change = true;
+		s.set_prop_int("mleck_start_jewel_max", 10);
+	}
 
 
 	if (b_change == true) {
@@ -81,6 +90,11 @@ void farm::init(int i_farm_in
 
 	// initialize the cbh object, so that it has data to traverse
 	cbh.init(str_path_bin_in);
+
+	// the cur_bin_handler changes state by the load_cur_bin function.  But that should
+	// be the last time it is directly accessed from here.  It should be accessed via
+	//	the jewel_handler and jewel objects as a pointer.
+	jh.init(cbh);
 
 }
 void farm::run(int i_gen_count_in
@@ -115,6 +129,7 @@ void farm::run(int i_gen_count_in
 			
 			std::cout << "\t\tcur id\t: " << i_cur_id << std::endl;
 
+			
 
 			std::cout << "\tfarm gen end:  " << (i_gen_proc + 1) << std::endl;
 		}
@@ -140,7 +155,12 @@ void farm::populate_mlecks() {
 			boost::algorithm::trim(str_m);
 			if (str_m.compare("") != 0) {
 				int i_m = std::stoi(str_m);
-				mleck m(i_m, str_path_farm, s.get_prop_int("gen"));
+				mleck m(i_m
+							, str_path_farm
+							, s.get_prop_int("gen")
+							, tuple<int, int>(s.get_prop_int("mleck_start_jewel_min"), s.get_prop_int("mleck_start_jewel_max"))
+							, jh
+							);
 				vec_m.push_back(m);
 			}
 		}
@@ -153,7 +173,12 @@ void farm::populate_mlecks() {
 		int i_gen = s.get_prop_int("gen");
 		for (size_t i1 = 0; i1 < i_new; ++i1) {
 			++i_mleck_id_highest;
-			mleck m(i_mleck_id_highest, str_path_farm, i_gen);
+			mleck m(i_mleck_id_highest
+						, str_path_farm
+						, i_gen
+						, tuple<int, int>(s.get_prop_int("mleck_start_jewel_min"), s.get_prop_int("mleck_start_jewel_max"))
+						, jh
+						);
 			vec_m.push_back(m);
 			if (str_m_list.compare("") != 0) {
 				str_m_list = str_m_list + "~" + std::to_string(i_mleck_id_highest);

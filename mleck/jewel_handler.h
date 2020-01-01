@@ -37,6 +37,7 @@ private:
 	// to arrive
 	map<int, jewel> map_jewel;
 
+
 	// When a new jewel is created, it will have a hash created of its core data;
 	// If a new mutation is created of a jewel hash that already exists, instead
 	// of creating a new jewel, it will adopt the jewel it finds.
@@ -49,11 +50,13 @@ public:
 	jewel_handler();
 
 	// Load the existing jewels.
-	void init();
+	void init(cur_bin_handler cbh_in);
 
 	void set_cbh(cur_bin_handler cbh_in) { ptr_cbh = & cbh_in; }
 
+	int create_jewel_link(int id_mleck);
 
+	jewel * get_ptr_jewel(int id);
 
 	void export_bin(string str_filepath_jewel);
 

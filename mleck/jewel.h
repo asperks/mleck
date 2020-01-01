@@ -50,7 +50,12 @@ private:
 
 	vector<double> vec_dbl;
 
+	// This is used to ensure that new jewels created aren't duplicates of existing
+	// jewels.  By using this reference, the hash of any new jewel can be tested
+	// to find out whether another jewel should be pointed to instead of the one
+	// created.
 	map<string, int> * ptr_map_hash_jewel;
+
 	cur_bin_handler * ptr_cbh;
 
 public:
@@ -67,8 +72,11 @@ public:
 	jewel();
 
 	void init(map<string, int> * map_hash_jewel_in);
+
+	void set_cbh(cur_bin_handler * cbh_in) { ptr_cbh = cbh_in; }
+
 	int create();
-	void set_cbh(cur_bin_handler * cbh_in) {ptr_cbh = cbh_in;}
+
 
 };
 

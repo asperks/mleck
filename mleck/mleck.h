@@ -1,4 +1,4 @@
-/*
+/* The Mleck object.  This is the unique holder
 
 
 
@@ -12,6 +12,8 @@
 using namespace std;
 
 #include "settings.h"
+#include "jewel_handler.h"
+#include "jewel.h"
 
 #include <iomanip>
 #include <string>
@@ -27,12 +29,22 @@ using namespace std;
 
 class mleck {
 private:
-	int id;
+	int id = 0;
 	int i_gen_birth;
-	int i_jewels;
 
 	// The total amount of position points.  + = in profit.
 	double d_score = 0.0;
+
+	// This really isn't used in processing.  It's really more just for working out what cumulative
+	// values would be.  Score is the evolutionary test, and it is additive.
+	double d_val = 100.0;
+
+	// The number of jewels, the vector of id's that is loaded from the settings, and pointers to
+	//	jewels themselves.  During runtime, the pointers will be loaded, and when the processing is
+	// undertaken, the values will be returned by the jewels by directly referencing the pointers.
+	int i_jewels;
+	vector<int> vec_id_jewel;
+	vector<jewel *> vec_jewel;
 
 	string str_path_farm;
 	string str_filepath_settings;
@@ -54,13 +66,17 @@ private:
 
 	*/
 
+	// When a new mleck is created, this is the range of min/max
+	tuple<int, int> mleck_jewel_range;
 
-
+	jewel_handler * ptr_jh;
 
 public:
 	mleck(int id_in
 		, string str_path_farm_in
 		, int i_gen_in
+		, tuple<int, int> mleck_jewel_range_in
+		, jewel_handler jh_in
 	);
 
 
@@ -70,23 +86,34 @@ public:
 	void init(int id_in
 				, string str_path_farm_in
 				, int i_gen_in
+				, tuple<int, int> mleck_jewel_range_in
+				, jewel_handler jh_in
+				
 	);
+
+	void set_jewel_handler(jewel_handler jh_in) { ptr_jh = &jh_in; }
 
 
 	void load_settings();
+	void save_settings();
 
 	// These are for runtime values.  The other values get set on creation and are for
 	//	administration.  These are for if you clone a mleck, this sets them 
 	void reset_settings();
 
+	void check_jewels();
+
+
+
 	// Still thinking about how I'm going to handle this one.
 	void process();
 
-
+	// reset the jewel pointer vector
 	void mutate();
 
 
 	// Create a new mleck settings file based upon the old mleck.
+	// reset the jewel pointer vector
 	void clone(mleck m
 					, int i_gen_in
 					);
