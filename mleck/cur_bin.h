@@ -33,12 +33,10 @@ using namespace std;
 struct Ticker {
 	double last = 0.0;
 	double high24hr = 0.0;
-	//double isfrozen;
 	double highestbid = 0.0;
 	double percentchange = 0.0;
 	double low24hr = 0.0;
 	double lowestask = 0.0;
-	//double basevolume;
 };
 
 struct Candle_line {
@@ -48,7 +46,6 @@ struct Candle_line {
 	double val3 = 0.0;
 	double val4 = 0.0;
 	double val5 = 0.0;
-	//double val6;
 	double vol = 0.0;
 };
 
@@ -56,8 +53,6 @@ struct History_line {
 	unsigned long unix_time = 0;
 	double priceusd = 0.0;
 	double amountusd = 0.0;
-	// Not used.  It really is just amountusd/priceusd
-	//double amountunit;
 	// +1 buy, -1 sell
 	long int action = 0;
 };

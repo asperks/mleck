@@ -42,15 +42,16 @@ using namespace std;
 
 class cur_bin_handler {
 private:
+
 	bool b_valid = false;
 	string str_path_bin;
 	string str_path_bin2;
 
 	// The id extents of the bins available for processing.
-	int i_cur_id_min = -1;
-	int i_cur_id_max = -1;
+	int id_cur_min = -1;
+	int id_cur_max = -1;
 
-	int i_cur_id_open = -1;
+	int id_cur_open = -1;
 	cur_bin cb_open;
 	cur_bin2 cb2_open;
 
@@ -88,7 +89,7 @@ public:
 	// Set this to 1 in order to randomize.  2 to do sequentially.  If random,
 	//	ignore the second parameter.  If sequential start sequence at that id.
 	// If that id is above max, it starts at min.
-	int load_cur_bin(int i_cur_step_type, int i_cur_id);
+	int load_cur_bin(int i_cur_step_type, int id_cur_in);
 
 
 };

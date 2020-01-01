@@ -3,7 +3,6 @@
 
 */
 
-
 #include "cur_bin_handler.h"
 
 cur_bin_handler::cur_bin_handler() {
@@ -18,31 +17,22 @@ cur_bin_handler::cur_bin_handler(string str_path_bin_in) {
 
 // Set this to 1 in order to randomize.  2 to do sequentially.  If random,
 //	ignore the second parameter.  If sequential start sequence at that id.
-int cur_bin_handler::load_cur_bin(int i_cur_step_type, int i_cur_id_in) {
-	int i_cur_id = i_cur_id_in;
+int cur_bin_handler::load_cur_bin(int i_cur_step_type, int id_cur_in) {
+	id_cur_open = id_cur_in;
 
 	if (i_cur_step_type == 1) {
-		i_cur_id = get_random_id();
+		id_cur_open = get_random_id();
 	} else if (i_cur_step_type == 2) {
-		if (!is_valid_id(i_cur_id)) {
-			i_cur_id = get_next_id(i_cur_id);
+		if (!is_valid_id(id_cur_open)) {
+			id_cur_open = get_next_id(id_cur_open);
 		}
 	}
 
-	
-	cb_open.import_bin(map_bin[i_cur_id]);
+	cb_open.import_bin(map_bin[id_cur_open]);
+	cb2_open.init(str_path_bin, id_cur_open, str_path_bin2 + "\\" + std::to_string(id_cur_open), cb_open);
 
-	string str_filepath_bin2 = str_path_bin2 + "\\" + std::to_string(i_cur_id);
-
-	cb2_open.init(str_path_bin, i_cur_id, str_filepath_bin2, cb_open);
-
-
-
-	return i_cur_id;
+	return id_cur_open;
 }
-
-
-
 
 
 bool cur_bin_handler::is_valid_id(int id_in) {
@@ -65,11 +55,11 @@ int cur_bin_handler::get_next_id(int id_in) {
 			// found
 			b_end = is_valid_id(id);
 		}
-		if (id > i_cur_id_max) {
+		if (id > id_cur_max) {
 			// start at the beginning element.  There will never a bin2 object for the 
 			//	first element, because mleck requires two sequential data points in order
 			//	to create bin2 files.
-			id = i_cur_id_min;
+			id = id_cur_min;
 		}
 	}
 	return id;
@@ -96,10 +86,9 @@ void cur_bin_handler::init(string str_path_bin_in) {
 
 	map_bin.clear();
 	map_bin2.clear();
-	i_cur_id_min = -1;
-	i_cur_id_max = -1;
-	i_cur_id_open = -1;
-
+	id_cur_min = -1;
+	id_cur_max = -1;
+	id_cur_open = -1;
 
 	// Read the name of all of the bin files in the bin folder, and index them in a map.
 	std::cout << "read bin folder\n";
@@ -114,25 +103,25 @@ void cur_bin_handler::init(string str_path_bin_in) {
 			} else {
 				// this validates that the file queried is a number ###, without the extension.
 				// I don't make a .bin test.  Not necessary.
-				int i_cur_id = atoi(fsp.stem().string().c_str());
+				int id_cur = atoi(fsp.stem().string().c_str());
 
-				if (i_cur_id_min == -1) {
-					i_cur_id_min = i_cur_id;
+				if (id_cur_min == -1) {
+					id_cur_min = id_cur;
 				} else {
-					if (i_cur_id < i_cur_id_min) {
-						i_cur_id_min = i_cur_id;
+					if (id_cur < id_cur_min) {
+						id_cur_min = id_cur;
 					}
 				}
 
-				if (i_cur_id_max == -1) {
-					i_cur_id_max = i_cur_id;
+				if (id_cur_max == -1) {
+					id_cur_max = id_cur;
 				} else {
-					if (i_cur_id > i_cur_id_max) {
-						i_cur_id_max = i_cur_id;
+					if (id_cur > id_cur_max) {
+						id_cur_max = id_cur;
 					}
 				}
 
-				map_bin.emplace(i_cur_id, std::move(p.path().string()));
+				map_bin.emplace(id_cur, std::move(p.path().string()));
 			}
 		}
 	}

@@ -1,0 +1,47 @@
+PT_VAL
+
+These are the raw data elements that can be used to be the LEFT side of a relationship.
+ALL of these values are VOLUME points.
+
+These elements are DIVIDED to compare them to other elements not ADDED.
+
+
+cur_bin
+	vector per instrument
+		map <string, vector<Candle_line>> map_vec_candle300;
+					vol
+		map <string, vector<Candle_line>> map_vec_candle14400;
+					vol
+		map <string, vector<History_line>> map_vec_history;
+					vol
+		map <string, vector<Orderbook_line>> map_vec_orderbook;
+					val2, val4
+
+
+cur_bin2
+
+   single struct per instrument:
+      map <string, Candle_line> map_cl_prev_300_avg;
+					vol
+      map <string, Candle_line> map_cl_prev_300_mid;
+					vol
+      map <string, Candle_line> map_cl_prev_300_tot;
+
+		
+      map <string, Candle_line> map_cl_prev_14400_avg;
+					vol
+      map <string, Candle_line> map_cl_prev_14400_mid;
+					vol
+		map <string, Candle_line> map_cl_prev_14400_tot;
+					vol
+		
+		
+      map <string, History_line> map_hl_prev_avg;
+               priceusd
+      map <string, History_line> map_hl_prev_mid;
+               priceusd
+
+      map <string, Orderbook_line> map_ol_prev_avg;
+               val1, val3
+      map <string, Orderbook_line> map_ol_prev_mid;
+               val1, val3

@@ -53,21 +53,25 @@ private:
 	// If the cur_bin data isn't available (no entries) the numbers will be zero'd
 
 	map <string, Candle_line> map_cl_prev_300_avg;
+	map <string, Candle_line> map_cl_prev_300_mid;
 	map <string, Candle_line> map_cl_prev_300_tot;
 	map <string, Candle_line> map_cl_prev_300_min;
 	map <string, Candle_line> map_cl_prev_300_max;
 
 	map <string, Candle_line> map_cl_prev_14400_avg;
+	map <string, Candle_line> map_cl_prev_14400_mid;
 	map <string, Candle_line> map_cl_prev_14400_tot;
 	map <string, Candle_line> map_cl_prev_14400_min;
 	map <string, Candle_line> map_cl_prev_14400_max;
 
 	map <string, History_line> map_hl_prev_avg;
+	map <string, History_line> map_hl_prev_mid;
 	map <string, History_line> map_hl_prev_tot;
 	map <string, History_line> map_hl_prev_min;
 	map <string, History_line> map_hl_prev_max;
 
 	map <string, Orderbook_line> map_ol_prev_avg;
+	map <string, Orderbook_line> map_ol_prev_mid;
 	map <string, Orderbook_line> map_ol_prev_tot;
 	map <string, Orderbook_line> map_ol_prev_min;
 	map <string, Orderbook_line> map_ol_prev_max;
@@ -100,6 +104,10 @@ public:
 
 	// Import BIN2 format.
 	void import_bin(string);
+
+	Candle_line get_mid_cl(vector<Candle_line> vec);
+	History_line get_mid_hl(vector<History_line> vec);
+	Orderbook_line get_mid_ol(vector<Orderbook_line> vec);
 
 };
 

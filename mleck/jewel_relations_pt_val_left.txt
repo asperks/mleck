@@ -1,0 +1,50 @@
+PT_VAL
+
+These are the raw data elements that can be used to be the LEFT side of a relationship.
+ALL of these values are currency values, whether they are spots, candles, orderbook entries,
+historical points, averages, etc.
+
+These elements are DIVIDED to compare them to other elements not ADDED.
+
+
+cur_bin
+	single struct per instrument
+	
+		map <string, Ticker> map_struct_ticker;
+					last, high24hr, highestbid, low24hr, lowestask
+		
+	vector per instrument
+	
+		map <string, vector<Candle_line>> map_vec_candle300;
+					val1-5
+		map <string, vector<Candle_line>> map_vec_candle14400;
+					val1-5
+		map <string, vector<History_line>> map_vec_history;
+					priceusd
+		map <string, vector<Orderbook_line>> map_vec_orderbook;
+					val1, val3
+
+
+cur_bin2
+
+   single struct per instrument:
+	
+      map <string, Candle_line> map_cl_prev_300_avg;
+               val1-5
+      map <string, Candle_line> map_cl_prev_300_mid;
+               val1-5
+
+      map <string, Candle_line> map_cl_prev_14400_avg;
+               val1-5
+      map <string, Candle_line> map_cl_prev_14400_mid;
+               val1-5
+
+      map <string, History_line> map_hl_prev_avg;
+               priceusd
+      map <string, History_line> map_hl_prev_mid;
+               priceusd
+
+      map <string, Orderbook_line> map_ol_prev_avg;
+               val1, val3
+      map <string, Orderbook_line> map_ol_prev_mid;
+               val1, val3

@@ -1,0 +1,61 @@
+PT_VOL
+
+
+These are the raw VOLUME elements that can be used to be the RIGHT side of a relationship.
+ALL of these values are VOLUME points.
+
+These elements are DIVIDED to compare them to other elements not ADDED.
+
+
+cur_bin
+	vector per instrument
+		map <string, vector<Candle_line>> map_vec_candle300;
+					vol
+		map <string, vector<Candle_line>> map_vec_candle14400;
+					vol
+		map <string, vector<History_line>> map_vec_history;
+					vol
+		map <string, vector<Orderbook_line>> map_vec_orderbook;
+					val2, val4
+
+
+cur_bin2
+
+   single records per instrument:
+   
+         map <string, Candle_line> map_cl_prev_300_avg;
+               val1-5
+         map <string, Candle_line> map_cl_prev_300_mid;
+               val1-5
+         map <string, Candle_line> map_cl_prev_300_min;
+               val1-5
+         map <string, Candle_line> map_cl_prev_300_max;
+               val1-5
+
+         map <string, Candle_line> map_cl_prev_14400_avg;
+               val1-5
+         map <string, Candle_line> map_cl_prev_14400_mid;
+               val1-5
+         map <string, Candle_line> map_cl_prev_14400_min;
+               val1-5
+         map <string, Candle_line> map_cl_prev_14400_max;
+               val1-5
+
+         map <string, History_line> map_hl_prev_avg;
+					priceusd
+         map <string, History_line> map_hl_prev_mid;
+					priceusd
+         map <string, History_line> map_hl_prev_min;
+					priceusd
+         map <string, History_line> map_hl_prev_max;
+					priceusd
+
+         map <string, Orderbook_line> map_ol_prev_avg;
+               val1, val3
+         map <string, Orderbook_line> map_ol_prev_mid;
+               val1, val3
+         map <string, Orderbook_line> map_ol_prev_min;
+               val1, val3
+         map <string, Orderbook_line> map_ol_prev_max;
+               val1, val3
+         
