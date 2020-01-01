@@ -9,42 +9,42 @@ These elements are DIVIDED to compare them to other elements not ADDED.
 
 cur_bin
 	single struct per instrument
-	
-		map <string, Ticker> map_struct_ticker;
-					last, high24hr, highestbid, low24hr, lowestask
+		map <string, Ticker> map_struct_ticker
+101-105			last, high24hr, highestbid, low24hr, lowestask
 		
 	vector per instrument
-	
 		map <string, vector<Candle_line>> map_vec_candle300;
-					val1-5
+201-205			val1-5
 		map <string, vector<Candle_line>> map_vec_candle14400;
-					val1-5
+210-214			val1-5
 		map <string, vector<History_line>> map_vec_history;
-					priceusd
+215				priceusd
 		map <string, vector<Orderbook_line>> map_vec_orderbook;
-					val1, val3
+216-217			val1, val3
 
 
-cur_bin2
+cur_bin2	
 
-   single struct per instrument:
-	
-      map <string, Candle_line> map_cl_prev_300_avg;
-               val1-5
-      map <string, Candle_line> map_cl_prev_300_mid;
-               val1-5
+	single struct per instrument:
+   
+         map <string, Candle_line> map_cl_prev_300_avg;
+301-305			val1-5
+         map <string, Candle_line> map_cl_prev_300_mid;
+311-315			val1-5
 
-      map <string, Candle_line> map_cl_prev_14400_avg;
-               val1-5
-      map <string, Candle_line> map_cl_prev_14400_mid;
-               val1-5
+         map <string, Candle_line> map_cl_prev_14400_avg;
+401-405			val1-5
+         map <string, Candle_line> map_cl_prev_14400_mid;
+411-415			val1-5
 
-      map <string, History_line> map_hl_prev_avg;
-               priceusd
-      map <string, History_line> map_hl_prev_mid;
-               priceusd
+         map <string, History_line> map_hl_prev_avg;
+501				priceusd
+         map <string, History_line> map_hl_prev_mid;
+511				priceusd
 
-      map <string, Orderbook_line> map_ol_prev_avg;
-               val1, val3
-      map <string, Orderbook_line> map_ol_prev_mid;
-               val1, val3
+         map <string, Orderbook_line> map_ol_prev_avg;
+601,603			val1, val3
+         map <string, Orderbook_line> map_ol_prev_mid;
+611,633			val1, val3
+
+         

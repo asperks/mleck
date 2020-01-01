@@ -13,6 +13,7 @@ using namespace std;
 #include "settings.h"
 #include "mleck.h"
 #include "cur_bin_handler.h"
+#include "jewel_handler.h"
 
 #include <iomanip>
 #include <iostream>
@@ -64,6 +65,7 @@ private:
 
 	vector<mleck> vec_m;
 	cur_bin_handler cbh;
+	jewel_handler jh;
 
 
 public:

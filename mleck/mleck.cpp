@@ -40,6 +40,13 @@ void mleck::load_settings() {
 		i_gen_birth = s.get_prop_int("gen_birth");
 	}
 
+	if (s.get_prop_int("i_jewels") != i_jewels) {
+		b_change = true;
+		s.set_prop_int("i_jewels", i_jewels);
+	} else {
+		i_jewels = s.get_prop_int("i_jewels");
+	}
+
 	if (b_change == true) {
 		// Make sure the settings file aligns with the id.
 		str_filepath_settings = str_path_farm + "\\" + std::to_string(id) + "_" + filename_settings;

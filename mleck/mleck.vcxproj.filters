@@ -27,9 +27,6 @@
     <ClCompile Include="farm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cur_bin_link.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mleck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cur_bin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="cur_bin_link.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mleck.h">

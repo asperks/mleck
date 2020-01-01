@@ -1,6 +1,6 @@
 PT_VAL
 
-These are the raw data elements that can be used to be the LEFT side of a relationship.
+These are the raw VOLUME elements that can be used to be the LEFT side of a relationship.
 ALL of these values are VOLUME points.
 
 These elements are DIVIDED to compare them to other elements not ADDED.
@@ -9,39 +9,60 @@ These elements are DIVIDED to compare them to other elements not ADDED.
 cur_bin
 	vector per instrument
 		map <string, vector<Candle_line>> map_vec_candle300;
-					vol
+206				vol
 		map <string, vector<Candle_line>> map_vec_candle14400;
-					vol
+216				vol
 		map <string, vector<History_line>> map_vec_history;
-					vol
+226				vol
 		map <string, vector<Orderbook_line>> map_vec_orderbook;
-					val2, val4
+232,234			val2, val4
 
 
 cur_bin2
 
    single struct per instrument:
-      map <string, Candle_line> map_cl_prev_300_avg;
-					vol
-      map <string, Candle_line> map_cl_prev_300_mid;
-					vol
-      map <string, Candle_line> map_cl_prev_300_tot;
+         map <string, Candle_line> map_cl_prev_300_avg;
+306				vol
+         map <string, Candle_line> map_cl_prev_300_mid;
+316				vol
+         map <string, Candle_line> map_cl_prev_300_min;
+326				vol
+         map <string, Candle_line> map_cl_prev_300_max;
+336				vol
+         map <string, Candle_line> map_cl_prev_300_tot;
+336				vol
+		
+			map <string, Candle_line> map_cl_prev_14400_avg;
+406				vol
+			map <string, Candle_line> map_cl_prev_14400_mid;
+416				vol
+         map <string, Candle_line> map_cl_prev_14400_min;
+426				vol
+         map <string, Candle_line> map_cl_prev_14400_max;
+436				vol
+			map <string, Candle_line> map_cl_prev_14400_tot;
+446				vol
+				
+			map <string, History_line> map_hl_prev_avg;
+512				priceusd
+			map <string, History_line> map_hl_prev_mid;
+522            priceusd
+         map <string, History_line> map_hl_prev_min;
+532				priceusd
+         map <string, History_line> map_hl_prev_max;
+542				priceusd
+         map <string, History_line> map_hl_prev_tot;
+552				priceusd
 
-		
-      map <string, Candle_line> map_cl_prev_14400_avg;
-					vol
-      map <string, Candle_line> map_cl_prev_14400_mid;
-					vol
-		map <string, Candle_line> map_cl_prev_14400_tot;
-					vol
-		
-		
-      map <string, History_line> map_hl_prev_avg;
-               priceusd
-      map <string, History_line> map_hl_prev_mid;
-               priceusd
+			map <string, Orderbook_line> map_ol_prev_avg;
+602,604			val2, val4
+			map <string, Orderbook_line> map_ol_prev_mid;
+612,614			val2, val4
+         map <string, Orderbook_line> map_ol_prev_min;
+622,624			val2, val4
+         map <string, Orderbook_line> map_ol_prev_max;
+632,634			val2, val4
+			map <string, Orderbook_line> map_ol_prev_tot;
+642,644			val2, val4
 
-      map <string, Orderbook_line> map_ol_prev_avg;
-               val1, val3
-      map <string, Orderbook_line> map_ol_prev_mid;
-               val1, val3
+

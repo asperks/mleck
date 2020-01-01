@@ -80,6 +80,11 @@ public:
 	// Constructor : Pass data loc.
 	cur_bin_handler(string str_path_bin_in);
 
+	// The question is whether I put this logic here or in the jewel/jewel_handler
+	// I'll probably end up moving it here.
+	cur_bin get_cur_bin_open() { return cb_open; }
+	cur_bin2 get_cur_bin2_open() { return cb2_open; }
+
 	// This reads in a map of bin and bin2 files, which are the read-only cur
 	// data, and the processing of that data at that point.  
 	// This utility creates the bin2 files the first time it reads them. The

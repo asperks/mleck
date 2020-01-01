@@ -29,6 +29,7 @@ class mleck {
 private:
 	int id;
 	int i_gen_birth;
+	int i_jewels;
 
 	// The total amount of position points.  + = in profit.
 	double d_score = 0.0;
@@ -44,7 +45,7 @@ private:
 
 	int	id
 	int	i_gen_birth
-
+	int	i_jewels
 
 	// Used for debugging.
 	int	test_int
@@ -52,6 +53,8 @@ private:
 	str	test_str
 
 	*/
+
+
 
 
 public:

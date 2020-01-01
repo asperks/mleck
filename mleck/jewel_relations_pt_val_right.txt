@@ -9,59 +9,56 @@ These elements are DIVIDED to compare them to other elements not ADDED.
 
 cur_bin
 	single struct per instrument
-	
-		map <string, Ticker> map_struct_ticker;
-					last, high24hr, highestbid, low24hr, lowestask
+		map <string, Ticker> map_struct_ticker
+101-105			last, high24hr, highestbid, low24hr, lowestask
 		
 	vector per instrument
-	
 		map <string, vector<Candle_line>> map_vec_candle300;
-					val1-5
+201-205			val1-5
 		map <string, vector<Candle_line>> map_vec_candle14400;
-					val1-5
+211-215			val1-5
 		map <string, vector<History_line>> map_vec_history;
-					priceusd
+221				priceusd
 		map <string, vector<Orderbook_line>> map_vec_orderbook;
-					val1, val3
+231,233			val1, val3
 
 
 cur_bin2
-
    single struct per instrument:
    
          map <string, Candle_line> map_cl_prev_300_avg;
-               val1-5
+301-305			val1-5
          map <string, Candle_line> map_cl_prev_300_mid;
-               val1-5
+311-315			val1-5
          map <string, Candle_line> map_cl_prev_300_min;
-               val1-5
+321-325			val1-5
          map <string, Candle_line> map_cl_prev_300_max;
-               val1-5
+331-335			val1-5
 
          map <string, Candle_line> map_cl_prev_14400_avg;
-               val1-5
+401-405			val1-5
          map <string, Candle_line> map_cl_prev_14400_mid;
-               val1-5
+411-415			val1-5
          map <string, Candle_line> map_cl_prev_14400_min;
-               val1-5
+421-425			val1-5
          map <string, Candle_line> map_cl_prev_14400_max;
-               val1-5
+431-435			val1-5
 
          map <string, History_line> map_hl_prev_avg;
-					priceusd
+501				priceusd
          map <string, History_line> map_hl_prev_mid;
-					priceusd
+511				priceusd
          map <string, History_line> map_hl_prev_min;
-					priceusd
+521				priceusd
          map <string, History_line> map_hl_prev_max;
-					priceusd
+531				priceusd
 
          map <string, Orderbook_line> map_ol_prev_avg;
-               val1, val3
+601,603			val1, val3
          map <string, Orderbook_line> map_ol_prev_mid;
-               val1, val3
+611,633			val1, val3
          map <string, Orderbook_line> map_ol_prev_min;
-               val1, val3
+621,633			val1, val3
          map <string, Orderbook_line> map_ol_prev_max;
-               val1, val3
+631,633			val1, val3
          

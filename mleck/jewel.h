@@ -2,14 +2,9 @@
 A class that parses currency data, and formats it so that it provides a
 unique view of the properties it is viewing.
 
-The cur_comparator enum defines the methods in which different data points are
-compared and then used for analysis.  Mleck always requires at least two points,
-and at a minimum compares the two points, and returns a value based upon their
-ratios.
-
-	pt2			-	return a ratio between two points as a double.
-
-
+Refer to the jewel_relations*.txt files for details of the relationships
+between values.  These items determine which items can match up with which
+items.
 
 */
 
@@ -38,23 +33,42 @@ using namespace std;
 class jewel {
 
 private:
-	enum cur_comparator { pt2, pt3, vec_comp1};
-	const int CUR_COMPARATOR_ITEMS = 3;
+
 
 	bool b_valid = false;
 	string str_path_bin;
 
+	// This forms the left and right hand side of ratios.  These are jewel_relations*
+	// ids as defined in the text files.
+	int i_jewel_type_count = 2;
+	enum Jewel_type { PT_VAL, PT_VOL };
+
+	int i_jewel_relation_lhs = -1;
+	int i_jewel_relation_rhs = -1;
+
+	double d_calc_return = 0.0;
+
 	vector<double> vec_dbl;
 
+	map<string, int> * ptr_map_hash_jewel;
 	cur_bin_handler * ptr_cbh;
 
 public:
+	//getter/setters 
+
+	// These will be necessary to parse into a binary file.
+	int get_jewel_relation_lhs() { return i_jewel_relation_lhs; }
+	int get_jewel_relation_rhs() { return i_jewel_relation_rhs; }
+
+	// This is used only at runtime.
+	double get_calc_return() { return d_calc_return; }
+
 
 	jewel();
 
-	void init();
-
-	void set_cbh(cur_bin_handler cbh_in) {ptr_cbh = &cbh_in;}
+	void init(map<string, int> * map_hash_jewel_in);
+	int create();
+	void set_cbh(cur_bin_handler * cbh_in) {ptr_cbh = cbh_in;}
 
 };
 
