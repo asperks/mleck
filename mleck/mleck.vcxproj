@@ -186,6 +186,7 @@
     <ClInclude Include="farm.h" />
     <ClInclude Include="jewel.h" />
     <ClInclude Include="jewel_handler.h" />
+    <ClInclude Include="jewel_pt_val.h" />
     <ClInclude Include="mleck.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>

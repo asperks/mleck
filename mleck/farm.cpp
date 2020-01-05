@@ -84,9 +84,6 @@ void farm::init(int i_farm_in
 	str_filepath_settings = str_path_farm_in + "\\" + filename_settings;
 	load_settings();
 
-	populate_mlecks();
-
-	// The mleck objects are ready.  Now it's time to prep the currency data available.
 
 	// initialize the cbh object, so that it has data to traverse
 	cbh.init(str_path_bin_in);
@@ -95,6 +92,10 @@ void farm::init(int i_farm_in
 	// be the last time it is directly accessed from here.  It should be accessed via
 	//	the jewel_handler and jewel objects as a pointer.
 	jh.init(cbh);
+
+	// Had this backward before.  The cur_bin_handler and more importantly jewel_handler,
+	//	need to be available, because they'll be used when populating the mlecks.
+	populate_mlecks();
 
 }
 void farm::run(int i_gen_count_in
