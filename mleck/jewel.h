@@ -71,6 +71,9 @@ public:
 
 	jewel();
 
+	jewel(const jewel &jewel_from) {}
+
+
 	void init(map<string, int> * map_hash_jewel_in);
 
 	void set_cbh(cur_bin_handler * cbh_in) { ptr_cbh = cbh_in; }

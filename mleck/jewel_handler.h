@@ -12,6 +12,7 @@ unique view of the properties it is viewing.
 using namespace std;
 
 #include "jewel.h"
+#include "jewel_pt_val.h"
 
 #include <iomanip>
 #include <string>
@@ -35,7 +36,7 @@ private:
 	// This is the map of the jewels.  When a new jewel is created, the id_jewel_max
 	// variable increases.  The mlecks store a vector of jewels that they use in order
 	// to arrive
-	map<int, jewel> map_jewel;
+	//map<int, std::unique_ptr<jewel>> map_up_jewel;
 
 
 	// When a new jewel is created, it will have a hash created of its core data;
@@ -56,7 +57,7 @@ public:
 
 	int create_jewel_link(int id_mleck);
 
-	jewel * get_ptr_jewel(int id);
+	std::unique_ptr<jewel> * get_ptr_jewel(int id);
 
 	void export_bin(string str_filepath_jewel);
 
