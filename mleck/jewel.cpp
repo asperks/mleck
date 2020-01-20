@@ -5,8 +5,6 @@
 
 #include "jewel.h"
 
-jewel::jewel() {
-}
 
 void jewel::init(map<string, int> * map_hash_jewel_in) {
 	b_valid = false;

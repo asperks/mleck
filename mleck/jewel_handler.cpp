@@ -5,10 +5,6 @@
 
 #include "jewel_handler.h"
 
-// Not used.
-jewel_handler::jewel_handler() {
-
-}
 
 void jewel_handler::init(cur_bin_handler cbh_in) {
 	b_valid = false;
