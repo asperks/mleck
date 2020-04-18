@@ -12,7 +12,7 @@ unique view of the properties it is viewing.
 using namespace std;
 
 #include "jewel.h"
-//#include "jewel_pt_val.h"
+#include "jewel_pt_val.h"
 
 #include <iomanip>
 #include <string>
@@ -56,10 +56,12 @@ public:
 	~jewel_handler() {};
 
 	// Load the existing jewels.
-	void init(cur_bin_handler cbh_in);
+	void init(cur_bin_handler * ptr_cbh_in);
 
-	void set_cbh(cur_bin_handler cbh_in) { ptr_cbh = & cbh_in; }
+	void set_cbh(cur_bin_handler * ptr_cbh_in) { ptr_cbh = ptr_cbh_in; }
 
+	// This either adds an existing jewel link to a mleck, or creates a new jewel,
+	//	and links the mleck to that jewel.
 	int create_jewel_link(int id_mleck);
 
 	std::unique_ptr<jewel> * get_ptr_jewel(int id);

@@ -68,7 +68,7 @@
     <ClInclude Include="cur_bin2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jewel_pt_val.h">
+    <ClInclude Include="jewel_pt_ratio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -39,30 +39,30 @@ private:
 	string str_path_bin;
 	string str_path_farm;
 	string str_filepath_settings;
+	string str_filepath_farm_alive;
 	string str_filepath_farm_dead;
 
-	settings s;
+	settings se;
 	const char * filename_settings = "mleck.settings";
 	/*	The settings file will allow me to flexibly add settings to the program,
 	store them in an external text file, and modify them if I want to change
 	them for different effects.
 	
-	int	gen						the current gen
+	int	gen								the current gen
 	int	mleck_count				the mleck cohort count
-	int	mleck_id_highest		record of the id of the last mleck created
+	int	mleck_id_highest	record of the id of the last mleck created
 	int	gen_proc					generations to process before quitting.
 
 	int	cur_id_last				The last cur_id that was processed.  Useful for
-										sequential stepping
+												sequential stepping
 	int	cur_id_step				1 = random.  2 = sequential.
-										If it meets the end of the sequence, it quits
+												If it meets the end of the sequence, it quits
 
 	dbl	mleck_random_PC		the percentage of replacement
 
-	str	mlecks					'~' delimited string of mlecks to load
-
 	*/
 
+	// The farm object owns the vector of mlecks, and the currency and jewel handlers.
 	vector<mleck> vec_m;
 	cur_bin_handler cbh;
 	jewel_handler jh;

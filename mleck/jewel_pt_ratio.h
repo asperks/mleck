@@ -11,7 +11,7 @@ items.
 #pragma once
 
 #ifndef JEWEL_PT_VAL_H
-#define JEWEL_PT_VAL_H
+#define JEWEL_PT_RATIO_H
 
 using namespace std;
 
@@ -29,7 +29,7 @@ using namespace std;
 
 #include <boost/algorithm/string.hpp>
 
-class jewel_pt_val : public jewel {
+class jewel_pt_ratio : public jewel {
 
 private:
 	int i_jewel_relation_lhs = -1;
@@ -38,12 +38,6 @@ private:
 	double d_calc_return = 0.0;
 
 	vector<double> vec_dbl;
-
-	// This is used to ensure that new jewels created aren't duplicates of existing
-	// jewels.  By using this reference, the hash of any new jewel can be tested
-	// to find out whether another jewel should be pointed to instead of the one
-	// created.
-	map<string, int> * ptr_map_hash_jewel;
 
 public:
 	//getter/setters 
@@ -55,14 +49,15 @@ public:
 	// This is used only at runtime.
 	double get_calc_return() { return d_calc_return; }
 
+	double calc_return();
 
-	jewel_pt_val();
+	jewel_pt_ratio();
 
 	void init(map<string, int> * map_hash_jewel_in);
 
 	int create();
 
-
+	string to_string();
 };
 
 

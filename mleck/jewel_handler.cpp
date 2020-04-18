@@ -6,10 +6,10 @@
 #include "jewel_handler.h"
 
 
-void jewel_handler::init(cur_bin_handler cbh_in) {
+void jewel_handler::init(cur_bin_handler * ptr_cbh_in) {
 	b_valid = false;
 
-	set_cbh(cbh_in);
+	set_cbh(ptr_cbh_in);
 
 
 

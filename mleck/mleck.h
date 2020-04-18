@@ -49,8 +49,9 @@ private:
 	string str_path_farm;
 	string str_filepath_settings;
 
-	settings s;
-	const char * filename_settings = "id.settings";
+	settings se;
+	const char* filename_settings_prefix = "idmleck_";
+	const char * filename_settings_suffix = ".settings";
 	/*	The settings file will allow me to flexibly add settings to the program,
 	store them in an external text file, and modify them if I want to change
 	them for different effects.
@@ -72,11 +73,14 @@ private:
 	jewel_handler * ptr_jh;
 
 public:
+
+	mleck() {};
+
 	mleck(int id_in
 		, string str_path_farm_in
 		, int i_gen_in
 		, tuple<int, int> mleck_jewel_range_in
-		, jewel_handler jh_in
+		, jewel_handler * ptr_jh_in
 	);
 
 
@@ -87,11 +91,22 @@ public:
 				, string str_path_farm_in
 				, int i_gen_in
 				, tuple<int, int> mleck_jewel_range_in
-				, jewel_handler jh_in
+				, jewel_handler * ptr_jh_in
 				
 	);
 
-	void set_jewel_handler(jewel_handler jh_in) { ptr_jh = &jh_in; }
+	// init the mleck objet 
+	void init(string str_filepath_in
+		, string str_path_farm_in
+		, tuple<int, int> mleck_jewel_range_in
+		, jewel_handler * ptr_jh_in
+
+	);
+
+	int get_id() { return id; }
+
+
+	void set_jewel_handler(jewel_handler * ptr_jh_in) { ptr_jh = ptr_jh_in; }
 
 
 	void load_settings();

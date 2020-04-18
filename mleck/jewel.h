@@ -40,8 +40,17 @@ private:
 
 	// This forms the left and right hand side of ratios.  These are jewel_relations*
 	// ids as defined in the text files.
-	int i_jewel_type_count = 2;
-	enum Jewel_type { PT_VAL, PT_VOL };
+	//
+	//	All returned values are differences.
+	//
+	//	PT_RAND		:	random number between -10 and 10
+	//	PT_DIFF		:	sum of two ratios
+	//	PT_RATIO		:	ratio between two values returned as a PT_DIFF
+	//	PT_VOL			:	ratio between a value and a volume.
+	//	PT_JEWEL		:	the returned value of another jewel as a DIFF
+	int i_jewel_type_count = 5;
+
+	enum Jewel_type { PT_RAND, PT_DIFF, PT_RATIO, PT_VOL, PT_JEWEL };
 
 	int i_jewel_relation_lhs = -1;
 	int i_jewel_relation_rhs = -1;
@@ -50,12 +59,10 @@ private:
 
 	vector<double> vec_dbl;
 
-	// This is used to ensure that new jewels created aren't duplicates of existing
-	// jewels.  By using this reference, the hash of any new jewel can be tested
-	// to find out whether another jewel should be pointed to instead of the one
-	// created.
+	// This is used to access other jewel returns.
 	map<string, int> * ptr_map_hash_jewel;
 
+	// This is used to access the currency data.
 	cur_bin_handler * ptr_cbh;
 
 public:
@@ -74,16 +81,15 @@ public:
 	// This is used only at runtime.
 	double get_calc_return() { return d_calc_return; }
 
-
-
-
+	double calc_return();
 
 	void init(map<string, int> * map_hash_jewel_in);
 
-//	void set_cbh(cur_bin_handler * cbh_in) { ptr_cbh = cbh_in; }
+	void set_cbh(cur_bin_handler * ptr_cbh_in) { ptr_cbh = ptr_cbh_in; }
 
-	int create();
+	int create(int id_mleck_in);
 
+	string to_string();
 
 };
 

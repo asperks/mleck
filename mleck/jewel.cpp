@@ -14,7 +14,7 @@ void jewel::init(map<string, int> * map_hash_jewel_in) {
 }
 
 
-int jewel::create() {
+int jewel::create(int id_mleck_in) {
 	b_valid = false;
 	int id = -1;
 
