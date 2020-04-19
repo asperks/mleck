@@ -68,6 +68,8 @@ public:
 	//	and links the mleck to that jewel.
 	int create_jewel_link(int id_mleck);
 
+
+
 	std::unique_ptr<jewel> * get_ptr_jewel(int id);
 
 	void export_text(string str_filepath_jewel);

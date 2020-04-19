@@ -43,8 +43,8 @@ private:
 	//	jewels themselves.  During runtime, the pointers will be loaded, and when the processing is
 	// undertaken, the values will be returned by the jewels by directly referencing the pointers.
 	int i_jewels;
-	vector<int> vec_id_jewel;
-	vector<jewel *> vec_jewel;
+	vector<uint64_t> vec_id_jewel;
+	vector<std::unique_ptr<jewel> *> vec_up_jewel;
 
 	string str_path_farm;
 	string str_filepath_settings;

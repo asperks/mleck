@@ -63,7 +63,14 @@ void mleck::load_settings() {
 					string str_id = vec_str_jewel.at(i);
 					boost::algorithm::trim(str_id);
 					if (str_id != "") {
-						vec_id_jewel.push_back(stoi(str_id));
+						// Convert a string to a uint64_t
+						// https://stackoverflow.com/questions/42356939/c-convert-string-to-uint64-t/42357045#42357045
+						uint64_t u64_v;
+						std::istringstream iss(str_id);
+						iss >> u64_v;
+						// This populates the vector with the index of the jewel.  During the processing stage,
+						// this data will be matched with the jewel_handler so that it can be directly accessed.
+						vec_id_jewel.push_back(u64_v);
 					}
 				}
 			}
@@ -97,7 +104,6 @@ void mleck::reset_settings() {
 	// Save the settings file
 	se.export_text(str_filepath_settings);
 }
-
 
 
 void mleck::init(int id_in
@@ -138,6 +144,7 @@ void mleck::init(string str_filepath_in
 	check_jewels();
 }
 
+
 void mleck::check_jewels() {
 	bool b_change = false;
 	if (i_jewels == 0) {
@@ -161,7 +168,7 @@ void mleck::check_jewels() {
 	}
 
 	// Check the pointers
-	if (vec_id_jewel.size() != vec_jewel.size()) {
+	if (vec_id_jewel.size() != vec_up_jewel.size()) {
 
 	}
 }

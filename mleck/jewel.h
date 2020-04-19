@@ -30,29 +30,40 @@ items.
 
 using namespace std;
 
+// This forms the left and right hand side of ratios.  These are jewel_relations*
+// ids as defined in the text files.
+//
+//	All returned values are differences.
+//
+//	PT_RAND		:	random double between -10 and 10
+//	PT_DIFF		:	sum of two ratios in %
+//	PT_JEWEL		:	the returned value of another JEWEL as a DIFF
+//	PT_RATIO		:	ratio between two values returned as a PT_DIFF
+//								This value will always be a difference between the current point
+//								and the point previous.
+//	PT_VOL			:	ratio between a value and a volume.
+//								This value will always be a difference between the current point
+//								and the point previous.
+//
+//	 I'll move the MAX tag as I develop the subequent elements.
+enum class Jewel_type {
+	J_RAND
+	, J_DIFF
+	, MAX
+	, J_JEWEL
+	, J_RATIO
+	, J_VOL
+};
+
+
 class jewel {
 
 private:
 	string str_path_bin;
 
 protected:
-	// This forms the left and right hand side of ratios.  These are jewel_relations*
-	// ids as defined in the text files.
-	//
-	//	All returned values are differences.
-	//
-	//	PT_RAND		:	random double between -10 and 10
-	//	PT_DIFF		:	sum of two ratios in %
-	//	PT_JEWEL		:	the returned value of another JEWEL as a DIFF
-	//	PT_RATIO		:	ratio between two values returned as a PT_DIFF
-	//								This value will always be a difference between the current point
-	//								and the point previous.
-	//	PT_VOL			:	ratio between a value and a volume.
-	//								This value will always be a difference between the current point
-	//								and the point previous.
-	int i_jewel_type_count = 1;
 
-	enum Jewel_type { J_RAND, J_DIFF, J_JEWEL, J_RATIO, J_VOL };
+
 
 	// This is a unique string that defines the parameters of the jewel.
 	Jewel_type jt;

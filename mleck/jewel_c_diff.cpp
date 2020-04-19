@@ -1,15 +1,15 @@
-/* refer jewel_c_rand.h for details.
+/* refer jewel_c_diff.h for details.
 
 
 */
 
-#include "jewel_c_rand.h"
+#include "jewel_c_diff.h"
 
-string jewel_c_rand::create(int id_mleck_in) {
+string jewel_c_diff::create(int id_mleck_in) {
 	jewel::b_valid = false;
 	string str_id = "";
 
-	jewel::jt = Jewel_type::J_RAND;
+	jewel::jt = Jewel_type::J_DIFF;
 
 
 	jewel::str_id = str_id;
@@ -17,7 +17,7 @@ string jewel_c_rand::create(int id_mleck_in) {
 }
 
 
-void jewel_c_rand::calc_return() {
+void jewel_c_diff::calc_return() {
 
 	jewel::vec_calc_return.clear();
 

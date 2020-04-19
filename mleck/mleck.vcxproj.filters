@@ -45,6 +45,9 @@
     <ClCompile Include="jewel_c_rand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="jewel_c_diff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="settings.h">
