@@ -10,12 +10,8 @@ items.
 
 #pragma once
 
-#ifndef JEWEL_PT_VAL_H
-#define JEWEL_PT_RATIO_H
-
-using namespace std;
-
-#include "jewel.h"
+#ifndef JEWEL_C_RATIO_H
+#define JEWEL_C_RATIO_H
 
 #include <iomanip>
 #include <string>
@@ -29,35 +25,31 @@ using namespace std;
 
 #include <boost/algorithm/string.hpp>
 
-class jewel_pt_ratio : public jewel {
+#include "jewel.h"
+
+using namespace std;
+
+class jewel_c_ratio : public jewel {
 
 private:
 	int i_jewel_relation_lhs = -1;
 	int i_jewel_relation_rhs = -1;
-
-	double d_calc_return = 0.0;
 
 	vector<double> vec_dbl;
 
 public:
 	//getter/setters 
 
+	jewel_c_ratio() {};
+
 	// These will be necessary to parse into a binary file.
 	int get_jewel_relation_lhs() { return i_jewel_relation_lhs; }
 	int get_jewel_relation_rhs() { return i_jewel_relation_rhs; }
 
-	// This is used only at runtime.
-	double get_calc_return() { return d_calc_return; }
+	void calc_return();
 
-	double calc_return();
+	string create(int id_mleck_in);
 
-	jewel_pt_ratio();
-
-	void init(map<string, int> * map_hash_jewel_in);
-
-	int create();
-
-	string to_string();
 };
 
 

@@ -8,8 +8,6 @@
 #ifndef FARM_H
 #define FARM_H
 
-using namespace std;
-
 #include "settings.h"
 #include "mleck.h"
 #include "cur_bin_handler.h"
@@ -24,6 +22,8 @@ using namespace std;
 #include <vector>
 
 #include <experimental/filesystem>
+
+using namespace std;
 
 
 class farm {

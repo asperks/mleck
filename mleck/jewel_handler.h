@@ -9,10 +9,10 @@ unique view of the properties it is viewing.
 #ifndef JEWEL_HANDLER_H
 #define JEWEL_HANDLER_H
 
-using namespace std;
+class jewel;
 
-#include "jewel.h"
-#include "jewel_pt_val.h"
+#include "cur_bin_handler.h"
+//#include "jewel.h"
 
 #include <iomanip>
 #include <string>
@@ -27,6 +27,8 @@ using namespace std;
 
 #include <boost/algorithm/string.hpp>
 
+using namespace std;
+
 class jewel_handler {
 private:
 	bool b_valid = false;
@@ -37,14 +39,16 @@ private:
 	// This is the map of the jewels.  When a new jewel is created, the id_jewel_max
 	// variable increases.  The mlecks store a vector of jewels that they use in order
 	// to arrive
-	// NO idea why this didn't work.  But the using command changed it.
+	// This will be populated by objects inherited from the jewel class.
+	// NO idea why this didn't work without 'using'.  But the using command changed it.
 	// https://stackoverflow.com/questions/34770359/compile-error-trying-to-put-a-unique-ptr-into-a-map/34770634#34770634
 	using map_up_jewel = std::unordered_map<uint64_t, std::unique_ptr<jewel>>;
 
 
-	// When a new jewel is created, it will have a hash created of its core data;
 	// If a new mutation is created of a jewel hash that already exists, instead
 	// of creating a new jewel, it will adopt the jewel it finds.
+	// The string is the list of jewel id strings and their corresponding key in the 
+	// the map.
 	using map_hash_jewel = map<string, int>;
 
 	cur_bin_handler * ptr_cbh;
@@ -65,6 +69,8 @@ public:
 	int create_jewel_link(int id_mleck);
 
 	std::unique_ptr<jewel> * get_ptr_jewel(int id);
+
+	void export_text(string str_filepath_jewel);
 
 	//void export_bin(string str_filepath_jewel);
 

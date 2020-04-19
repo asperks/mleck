@@ -175,6 +175,7 @@
     <ClCompile Include="farm.cpp" />
     <ClCompile Include="jewel.cpp" />
     <ClCompile Include="jewel_handler.cpp" />
+    <ClCompile Include="jewel_c_rand.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mleck.cpp" />
     <ClCompile Include="settings.cpp" />
@@ -186,7 +187,10 @@
     <ClInclude Include="farm.h" />
     <ClInclude Include="jewel.h" />
     <ClInclude Include="jewel_handler.h" />
-    <ClInclude Include="jewel_pt_ratio.h" />
+    <ClInclude Include="jewel_c_diff.h" />
+    <ClInclude Include="jewel_c_rand.h" />
+    <ClInclude Include="jewel_c_ratio.h" />
+    <ClInclude Include="jewel_c_vol.h" />
     <ClInclude Include="mleck.h" />
     <ClInclude Include="settings.h" />
   </ItemGroup>

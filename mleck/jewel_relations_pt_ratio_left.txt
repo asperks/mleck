@@ -1,6 +1,6 @@
 PT_VAL
 
-These are the raw data elements that can be used to be the LEFT side of a relationship.
+These are the raw data elements that can be used to be the LEFT side of a RATIO relationship.
 ALL of these values are currency values, whether they are spots, candles, orderbook entries,
 historical points, averages, etc.
 

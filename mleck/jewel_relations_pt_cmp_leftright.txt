@@ -1,6 +1,6 @@
 PT_CMP
 
-These are the raw comparative elements that can be used to be the LEFT side of a relationship.
+These are the raw comparative elements that can be used to be the LEFT and RIGHT side of a DIFF relationship.
 ALL of these values are % changes.  
 
 These elements are ADDED to compare them to other elements not DIVIDED.

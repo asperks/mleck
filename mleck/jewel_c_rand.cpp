@@ -1,22 +1,23 @@
-/* refer jewel.h for details.
+/* refer jewel_c_rand.h for details.
 
 
 */
 
-#include "jewel.h"
+#include "jewel_c_rand.h"
+
+string jewel_c_rand::create(int id_mleck_in) {
+	jewel::b_valid = false;
+	string str_id = "";
+
+	jewel::jt = J_RAND;
 
 
-void jewel::init(jewel_handler* ptr_jh_in, cur_bin_handler* ptr_cbh_in) {
-	b_valid = false;
-
-	set_jh(ptr_jh_in);
-	set_cbh(ptr_cbh_in);
-
-	b_valid = true;
+	jewel::str_id = str_id;
+	return str_id;
 }
 
 
-void jewel::calc_return() {
+void jewel_c_rand::calc_return() {
 
 	jewel::vec_calc_return.clear();
 

@@ -13,11 +13,6 @@ items.
 #ifndef JEWEL_H
 #define JEWEL_H
 
-using namespace std;
-
-
-#include "cur_bin_handler.h"
-
 #include <iomanip>
 #include <string>
 #include <iostream>
@@ -30,40 +25,52 @@ using namespace std;
 
 #include <boost/algorithm/string.hpp>
 
+#include "cur_bin_handler.h"
+#include "jewel_handler.h"
+
+using namespace std;
+
 class jewel {
 
 private:
-
-
-	bool b_valid = false;
 	string str_path_bin;
 
+protected:
 	// This forms the left and right hand side of ratios.  These are jewel_relations*
 	// ids as defined in the text files.
 	//
 	//	All returned values are differences.
 	//
-	//	PT_RAND		:	random number between -10 and 10
-	//	PT_DIFF		:	sum of two ratios
+	//	PT_RAND		:	random double between -10 and 10
+	//	PT_DIFF		:	sum of two ratios in %
+	//	PT_JEWEL		:	the returned value of another JEWEL as a DIFF
 	//	PT_RATIO		:	ratio between two values returned as a PT_DIFF
+	//								This value will always be a difference between the current point
+	//								and the point previous.
 	//	PT_VOL			:	ratio between a value and a volume.
-	//	PT_JEWEL		:	the returned value of another jewel as a DIFF
-	int i_jewel_type_count = 5;
+	//								This value will always be a difference between the current point
+	//								and the point previous.
+	int i_jewel_type_count = 1;
 
-	enum Jewel_type { PT_RAND, PT_DIFF, PT_RATIO, PT_VOL, PT_JEWEL };
+	enum Jewel_type { J_RAND, J_DIFF, J_JEWEL, J_RATIO, J_VOL };
 
-	int i_jewel_relation_lhs = -1;
-	int i_jewel_relation_rhs = -1;
+	// This is a unique string that defines the parameters of the jewel.
+	Jewel_type jt;
+	string str_id = "";
+
+	bool b_valid = false;
+
+	// A double value for every instrument.
+	vector<double> vec_calc_return;
 
 	double d_calc_return = 0.0;
 
-	vector<double> vec_dbl;
-
 	// This is used to access other jewel returns.
-	map<string, int> * ptr_map_hash_jewel;
+	jewel_handler * ptr_jh;
 
 	// This is used to access the currency data.
 	cur_bin_handler * ptr_cbh;
+
 
 public:
 	jewel() {}
@@ -74,22 +81,24 @@ public:
 
 	//getter/setters 
 
-	// These will be necessary to parse into a binary file.
-	int get_jewel_relation_lhs() { return i_jewel_relation_lhs; }
-	int get_jewel_relation_rhs() { return i_jewel_relation_rhs; }
-
 	// This is used only at runtime.
-	double get_calc_return() { return d_calc_return; }
+	vector<double> * get_calc_return() { return & vec_calc_return; }
 
-	double calc_return();
+	void init(jewel_handler * ptr_jh_in, cur_bin_handler* ptr_cbh_in);
 
-	void init(map<string, int> * map_hash_jewel_in);
+	void set_jh(jewel_handler * ptr_jh_in) { ptr_jh = ptr_jh_in; }
 
 	void set_cbh(cur_bin_handler * ptr_cbh_in) { ptr_cbh = ptr_cbh_in; }
 
-	int create(int id_mleck_in);
+	string to_string() { return str_id; }
 
-	string to_string();
+	// These functions are implemented in the inherited classes.
+	void calc_return() {};
+
+	string create(int id_mleck_in) { return ""; };
+
+
+
 
 };
 
