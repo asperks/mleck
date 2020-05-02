@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
 	int i_gen_iterations = 10;
 	int i_mleck_count = 0;
 
+
 	// Add arguments to a settings class for access later on.
 	settings se;
 	for (int i = 0; i < vec_args.size(); ++i) {

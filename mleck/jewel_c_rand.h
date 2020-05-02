@@ -13,17 +13,6 @@ items.
 #ifndef JEWEL_C_RAND_H
 #define JEWEL_C_RAND_H
 
-#include <iomanip>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <map>
-#include <vector>
-
-#include <experimental/filesystem>
-
-#include <boost/algorithm/string.hpp>
 
 #include "jewel.h"
 
@@ -32,16 +21,22 @@ using namespace std;
 class jewel_c_rand : public jewel {
 
 private:
-	// there aren't any in this implementation.
+	const double d_rand_max = 10.0;
 
 public:
 	//getter/setters 
 
-	jewel_c_rand();
+	jewel_c_rand() { jewel::ptr_cbh = nullptr; }
+	jewel_c_rand(cur_bin_handler* ptr_cbh_in) { jewel::ptr_cbh = ptr_cbh_in; }
+	~jewel_c_rand() { delete jewel::ptr_cbh; }
 
 	void calc_return();
 
-	string create(int id_mleck_in);
+	string create();
+
+	// read the string id, and populate the parameters for the object from
+	// those parameters.
+	void load();
 
 };
 

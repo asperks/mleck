@@ -6,10 +6,9 @@
 #include "jewel.h"
 
 
-void jewel::init(jewel_handler* ptr_jh_in, cur_bin_handler* ptr_cbh_in) {
+void jewel::init(cur_bin_handler* ptr_cbh_in) {
 	b_valid = false;
 
-	set_jh(ptr_jh_in);
 	set_cbh(ptr_cbh_in);
 
 	b_valid = true;

@@ -82,6 +82,8 @@ void farm::init(int i_farm_in
 	str_filepath_settings = str_path_farm_in + "\\" + filename_settings;
 	load_settings();
 
+	// Seed the random number generator
+	srand((unsigned)time(NULL));
 
 	// Make sure there is a folder for the dead mlecks.  Files are copied from 
 	str_filepath_farm_alive = str_path_farm_in + "\\alive";

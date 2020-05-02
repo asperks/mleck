@@ -9,10 +9,11 @@ unique view of the properties it is viewing.
 #ifndef JEWEL_HANDLER_H
 #define JEWEL_HANDLER_H
 
-class jewel;
-
 #include "cur_bin_handler.h"
-//#include "jewel.h"
+#include "jewel.h"
+#include "jewel_c_rand.h"
+#include "jewel_c_diff.h"
+
 
 #include <iomanip>
 #include <string>
@@ -20,6 +21,7 @@ class jewel;
 #include <fstream>
 #include <string>
 #include <map>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -40,37 +42,29 @@ private:
 	// variable increases.  The mlecks store a vector of jewels that they use in order
 	// to arrive
 	// This will be populated by objects inherited from the jewel class.
-	// NO idea why this didn't work without 'using'.  But the using command changed it.
-	// https://stackoverflow.com/questions/34770359/compile-error-trying-to-put-a-unique-ptr-into-a-map/34770634#34770634
-	using map_up_jewel = std::unordered_map<uint64_t, std::unique_ptr<jewel>>;
+	std::map<string, std::unique_ptr<jewel>>  map_up_jewel;
 
-
-	// If a new mutation is created of a jewel hash that already exists, instead
-	// of creating a new jewel, it will adopt the jewel it finds.
-	// The string is the list of jewel id strings and their corresponding key in the 
-	// the map.
-	using map_hash_jewel = map<string, int>;
-
-	cur_bin_handler * ptr_cbh;
+	cur_bin_handler * ptr_cbh = nullptr;
 
 public:
 
 	jewel_handler() {};
 
-	~jewel_handler() {};
+	~jewel_handler() {
+		delete ptr_cbh; 
+	};
 
 	// Load the existing jewels.
 	void init(cur_bin_handler * ptr_cbh_in);
 
 	void set_cbh(cur_bin_handler * ptr_cbh_in) { ptr_cbh = ptr_cbh_in; }
 
-	// This either adds an existing jewel link to a mleck, or creates a new jewel,
-	//	and links the mleck to that jewel.
-	int create_jewel_link(int id_mleck);
+	// This either either accesses a unique ptr of a jewel in the map, or if it doesn't exist
+	//	 creates the element, and then returns it.  Either way, it returns a pointer to the 
+	// instantiated jewl in memory for speedy access.
+	std::unique_ptr<jewel> * jewel_link(string str_jewel_id);
 
-
-
-	std::unique_ptr<jewel> * get_ptr_jewel(int id);
+	std::unique_ptr<jewel> * get_jewel_ptr(string str_id);
 
 	void export_text(string str_filepath_jewel);
 

@@ -15,10 +15,13 @@ using namespace std;
 #include "jewel_handler.h"
 #include "jewel.h"
 
+#include <stdlib.h>
 #include <iomanip>
-#include <string>
 #include <iostream>
+#include <iterator>
 #include <fstream>
+#include <memory>
+#include <random>
 #include <string>
 #include <map>
 #include <vector>
@@ -43,7 +46,7 @@ private:
 	//	jewels themselves.  During runtime, the pointers will be loaded, and when the processing is
 	// undertaken, the values will be returned by the jewels by directly referencing the pointers.
 	int i_jewels;
-	vector<uint64_t> vec_id_jewel;
+	vector<string> vec_id_jewel;
 	vector<std::unique_ptr<jewel> *> vec_up_jewel;
 
 	string str_path_farm;
@@ -70,7 +73,8 @@ private:
 	// When a new mleck is created, this is the range of min/max
 	tuple<int, int> mleck_jewel_range;
 
-	jewel_handler * ptr_jh;
+	jewel_handler * ptr_jh = nullptr;
+
 
 public:
 

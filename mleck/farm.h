@@ -13,13 +13,17 @@
 #include "cur_bin_handler.h"
 #include "jewel_handler.h"
 
+
+#include <stdlib.h>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <fstream>
+#include <random>
 #include <string>
 #include <map>
 #include <vector>
+
 
 #include <experimental/filesystem>
 
@@ -89,9 +93,11 @@ public:
 	void run(int i_gen_count_in
 				);
 
+	//https://stackoverflow.com/questions/1340729/how-do-you-generate-a-random-double-uniformly-distributed-between-0-and-1-from-c/26853142#26853142
+	double randZeroToOne() {
+		return rand() / (RAND_MAX + 1.);
+	}
 
 };
-
-
 
 #endif
