@@ -29,10 +29,10 @@ string jewel_c_diff::create() {
 	str_id = str_id + "`" + std::to_string(d_rand_min);
 	str_id = str_id + "`" + std::to_string(d_rand_max);
 
-	int64_t i_instrument_left = static_cast<int64_t>(randZeroToOne() * d_instrument_range) - (d_instrument_range / 2.0);
-	int64_t i_instrument_right = static_cast<int64_t>(randZeroToOne() * d_instrument_range) - (d_instrument_range / 2.0);
-	if (i_instrument_left < 0) { i_instrument_left = 0; }
-	if (i_instrument_right < 0) { i_instrument_right = 0; }
+	int64_t i_instrument_left = static_cast<int64_t>(randZeroToOne() * d_instrument_range) - (d_instrument_range / 3.0) -1;
+	int64_t i_instrument_right = static_cast<int64_t>(randZeroToOne() * d_instrument_range) - (d_instrument_range / 3.0) -1;
+	if (i_instrument_left < 0) { i_instrument_left = -1; }
+	if (i_instrument_right < 0) { i_instrument_right = -1; }
 	str_id = str_id + "!instrument";
 	str_id = str_id + "`" + std::to_string(i_instrument_left);
 	str_id = str_id + "`" + std::to_string(i_instrument_right);
@@ -51,8 +51,7 @@ cur_bin
 
 
 cur_bin2
-
-			map <string, History_line> map_hl_prev_avg;
+   		map <string, History_line> map_hl_prev_avg;
 2,0,0				action
 			map <string, History_line> map_hl_prev_mid;
 2,1,0				action
@@ -61,34 +60,35 @@ cur_bin2
 
 	*/
 
-	int i_opt_left1 = static_cast<int>(randMToN(0.0, 3.0));
-	int i_opt_left2 = 0;
-
-	if (i_opt_left1 >= 2) {
-		i_opt_left2 = static_cast<int>(randMToN(0.0, 3.0));
-	}
-
+	int64_t i_opt_left1 = static_cast<int64_t>(randMToN(0.0, 3.0));
+	int64_t i_opt_left2 = 0;
+	if (i_opt_left1 >= 2) {	i_opt_left2 = static_cast<int>(randMToN(0.0, 3.0));	}
 	int i_opt_left3 = 0;
-	double d_opt_left1 = 0.0;
+	double d_opt_left1 = sqrt(sqrt(randMToN(0.0, 16.0))) - 1.0;
+	if (d_opt_left1 < 0.0) { d_opt_left1 = 0.0; }
+	if (d_opt_left1 > 1.0) { d_opt_left1 = 1.0; }
 	str_id = str_id + "!opt_left";
 	str_id = str_id + "`" + std::to_string(i_opt_left1);
 	str_id = str_id + "`" + std::to_string(i_opt_left2);
 	str_id = str_id + "`" + std::to_string(i_opt_left3);
 	str_id = str_id + "`" + std::to_string(d_opt_left1);
 
-
-	int i_opt_right1 = static_cast<int>(randMToN(0.0, 3.0));
-	int i_opt_right2 = 0;
-	if (i_opt_right1 >= 2) {
-		i_opt_right2 = static_cast<int>(randMToN(0.0, 3.0));
-	}
-	int i_opt_right3 = 0;
-	double d_opt_right1 = randMToN(0.0, 2.0);
+	int64_t i_opt_right1 = static_cast<int64_t>(randMToN(0.0, 3.0));
+	int64_t i_opt_right2 = 0;
+	if (i_opt_right1 >= 2) {	i_opt_right2 = static_cast<int>(randMToN(0.0, 3.0));}
+	int64_t i_opt_right3 = 0;
+	double d_opt_right1 = sqrt(sqrt(randMToN(0.0, 16.0))) - 1.0;
+	if (d_opt_right1 < 0.0) {d_opt_right1 = 0.0; }
+	if (d_opt_right1 > 1.0) { d_opt_right1 = 1.0; }
 	str_id = str_id + "!opt_right";
 	str_id = str_id + "`" + std::to_string(i_opt_right1);
 	str_id = str_id + "`" + std::to_string(i_opt_right2);
 	str_id = str_id + "`" + std::to_string(i_opt_right3);
 	str_id = str_id + "`" + std::to_string(d_opt_right1);
+
+
+	vec_opt.push_back(tuple<int, int, int, double>(i_opt_left1, i_opt_left2, i_opt_left3, d_opt_left1));
+	vec_opt.push_back(tuple<int, int, int, double>(i_opt_right1, i_opt_right2, i_opt_right3, d_opt_right1));
 
 
 	jewel::str_id = str_id;
@@ -181,10 +181,23 @@ void jewel_c_diff::calc_return() {
 		// This steps through all of the valid instruments of this currency set.
 		double d_calc = 0.0;
 
-		 
+		int64_t nth_instrument_left = vec_instrument_source_nth.at(0);
+		if (nth_instrument_left >= 0) {
+			nth_instrument_left = ptr_cbh->get_cur_bin_open().get_map_ticker_count() % vec_instrument_source_nth.at(0);
+		}
+			
+		int64_t nth_instrument_right = vec_instrument_source_nth.at(1);
+		if (nth_instrument_right >= 0) {
+			nth_instrument_right = ptr_cbh->get_cur_bin_open().get_map_ticker_count() % vec_instrument_source_nth.at(1);
+		}
 
-		if (d_calc > jewel::vec_param1.at(2)) { d_calc = jewel::vec_param1.at(2); }
+			
+
+
+
+
 		if (d_calc < jewel::vec_param1.at(1)) { d_calc = jewel::vec_param1.at(1); }
+		if (d_calc > jewel::vec_param1.at(2)) { d_calc = jewel::vec_param1.at(2); }
 
 		// If that parameter is very low, it means the stochastic element will be very low.
 		// This means that ALL decisions have a stochastic element applied, and if it is not
