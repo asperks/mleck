@@ -20,8 +20,11 @@ using namespace std;
 class jewel_c_diff : public jewel {
 
 private:
-	// there aren't any in this implementation.
-	const double d_instrument_range = 150.0;
+	// This element is used so that if a random number in the first range is below
+	// the first value divided by the second, it is set as -1, and it refers to the CURRENT
+	// instrument.
+	const double D_INSTRUMENT_RANGE = 1000.0;
+	const double D_INSTRUMENT_THRESHOLD = 3.0;
 
 	//	The first element doesn't relate to the text elements.  If it is non-zero, it's a modulo
 	// allowing the instrument to use.  I'll set the value to a random number between 
@@ -61,6 +64,8 @@ public:
 	void load();
 
 
+	void set_id(string str_id_in) { jewel::set_id(str_id_in); };
+	string to_string() { return jewel::str_id; }
 };
 
 

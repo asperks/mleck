@@ -6,14 +6,33 @@
 #include "jewel.h"
 
 
-void jewel::init(cur_bin_handler* ptr_cbh_in) {
+void jewel::init() {
 	b_valid = false;
 
-	set_cbh(ptr_cbh_in);
+
+
 
 	b_valid = true;
 }
 
+
+
+void jewel::set_id(string str_id_in) { 
+	str_id = str_id_in;
+	b_valid = false;
+
+	vector<string> vec_line;
+	boost::split(vec_line, jewel::str_id, boost::is_any_of("!"));
+
+	if (vec_line.at(0).compare("J_RAND") == 0) {
+		jt = Jewel_type::J_RAND;
+		b_valid = true;
+	} else if (vec_line.at(0).compare("J_DIFF") == 0) {
+		jt = Jewel_type::J_DIFF;
+		b_valid = true;
+	}
+
+}
 
 // This is implemented in child classes.
 //void jewel::calc_return() {

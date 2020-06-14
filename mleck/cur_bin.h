@@ -97,6 +97,12 @@ public:
 
 	Ticker get_ticker(string str_ticker) { return map_struct_ticker[str_ticker]; };
 
+	Ticker * get_ticker_ptr(string str_ticker) { return &map_struct_ticker[str_ticker]; };
+
+	Ticker get_ticker(int64_t nth);
+
+	string get_instrument(int64_t nth);
+
 	void add_string_situation(string str_val) { vec_data_situation.push_back(str_val); };
 	void add_string_instrument(string str_val) { vec_data_instruments.push_back(str_val); };
 
@@ -117,6 +123,11 @@ public:
 	vector<Candle_line> get_struct_candle14400(string str_instrument) { return map_vec_candle14400[str_instrument]; }
 	vector<History_line> get_struct_history(string str_instrument) { return map_vec_history[str_instrument]; }
 	vector<Orderbook_line> get_struct_orderbook(string str_instrument) { return map_vec_orderbook[str_instrument]; }
+
+	vector<Candle_line> * get_struct_candle300_ptr(string str_instrument) { return &map_vec_candle300[str_instrument]; }
+	vector<Candle_line>* get_struct_candle14400_ptr(string str_instrument) { return &map_vec_candle14400[str_instrument]; }
+	vector<History_line>* get_struct_history_ptr(string str_instrument) { return &map_vec_history[str_instrument]; }
+	vector<Orderbook_line>* get_struct_orderbook_ptr(string str_instrument) { return &map_vec_orderbook[str_instrument]; }
 
 
 	// Clear all maps and vectors.

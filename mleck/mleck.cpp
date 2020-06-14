@@ -4,14 +4,11 @@
 */
 #include "mleck.h"
 
-mleck::mleck(int id_in
-	, string str_path_farm_in
-	, int i_gen_in
-	, tuple<int, int> mleck_jewel_range
-	, jewel_handler * ptr_jh_in
-	) {
-	init(id_in, str_path_farm_in, i_gen_in, mleck_jewel_range, ptr_jh_in);
+mleck::mleck(string str_path_farm_alive_in, string str_path_farm_dead_in) {
+	str_path_farm_alive = str_path_farm_alive_in;
+	str_path_farm_dead = str_path_farm_dead_in;
 }
+
 
 
 void mleck::load_settings() {
@@ -64,16 +61,9 @@ void mleck::load_settings() {
 					boost::algorithm::trim(str_id);
 					if (str_id != "") {
 						vec_id_jewel.push_back(str_id);
-
-
-						//// Convert a string to a uint64_t
-						//// https://stackoverflow.com/questions/42356939/c-convert-string-to-uint64-t/42357045#42357045
-						//uint64_t u64_v;
-						//std::istringstream iss(str_id);
-						//iss >> u64_v;
-						//// This populates the vector with the index of the jewel.  During the processing stage,
-						//// this data will be matched with the jewel_handler so that it can be directly accessed.
-						//vec_id_jewel.push_back(u64_v);
+						// Create the unique pointer to the jewel handler.
+						std::unique_ptr<jewel>* up_jewel_ptr = jh_ptr->jewel_link(str_id);
+						vec_up_jewel.push_back(std::move(up_jewel_ptr));
 					}
 				}
 			}
@@ -86,10 +76,23 @@ void mleck::load_settings() {
 	}
 }
 
-
+// Save the settings file.  Save settings only works for live mlecks.  
 void mleck::save_settings() {
-	str_filepath_settings = str_path_farm + "\\" + filename_settings_prefix + std::to_string(id) + filename_settings_suffix;
-	// Save the settings file
+	// create the jewel settings string.
+	bool b_first = true;
+	string str_jewels = "";
+	if (vec_id_jewel.size() > 0) {
+
+		for (size_t i = 0; i < vec_id_jewel.size(); ++i) {
+			if (b_first == false) {
+				str_jewels = str_jewels + "~";
+			}
+			str_jewels = str_jewels + vec_id_jewel.at(i);
+			b_first = false;
+		}
+	}
+	se.set_prop_str("delim_jewels", str_jewels);
+
 	se.export_text(str_filepath_settings);
 }
 
@@ -110,59 +113,80 @@ void mleck::reset_settings() {
 
 
 void mleck::init(int id_in
-	, string str_path_farm_in
 	, int i_gen_birth_in
-	, tuple<int, int> mleck_jewel_range_in
-	, jewel_handler * ptr_jh_in
-	) {
+	, jewel_handler* ptr_jh_in
+) {
 	set_jewel_handler(ptr_jh_in);
-	mleck_jewel_range = mleck_jewel_range_in;
-	str_path_farm = str_path_farm_in;
 	id = id_in;
 	i_gen_birth = i_gen_birth_in;
 
-	str_filepath_settings = str_path_farm + "\\" + std::to_string(id) + "_" + filename_settings_suffix;
+	str_filename_settings = filename_settings_prefix + std::to_string(id) + filename_settings_suffix;
+
+	// The assumption for now is that loading a mleck will always be from the alive section.
+	str_filepath_settings = str_path_farm_alive + "\\" + str_filename_settings;
 
 	load_settings();
 
-	check_jewels();
+	jewel_load();
 }
 
 
-void mleck::init(string str_filepath_in
-	, string str_path_farm_in
-	, tuple<int, int> mleck_jewel_range_in
-	, jewel_handler * ptr_jh_in
-	) {
+void mleck::init(string str_filename_in
+	, jewel_handler* ptr_jh_in
+) {
+	str_filename_settings = str_filename_in;
 
 	set_jewel_handler(ptr_jh_in);
-	mleck_jewel_range = mleck_jewel_range_in;
-	str_path_farm = str_path_farm_in;
-	str_filepath_settings = str_filepath_in;
+
+	// The assumption for now is that loading a mleck will always be from the alive section.
+	str_filepath_settings = str_path_farm_alive + "\\" + str_filename_settings;
+
 	load_settings();
 
 	id = se.get_prop_int("id");
 	i_gen_birth = se.get_prop_int("gen_birth");
 
-	check_jewels();
+
+
 }
 
 
-void mleck::check_jewels() {
+void mleck::jewel_load() {
+	std::cout << "mleck::jewel_load \t: \t" << get_id() << "\n";
+
+	if (vec_id_jewel.size() > 0) {
+		vec_up_jewel.clear();
+		for (int i = 0; i < vec_id_jewel.size(); ++i) {
+			unique_ptr<jewel>* up_j_ptr = jh_ptr->jewel_link(vec_id_jewel.at(i));
+			//std::cout << "jewel_load \t: \t" << up_j_ptr->get()->get_id()  << "\n";
+			vec_up_jewel.push_back(std::move(up_j_ptr));
+		}
+	}
+	std::cout << "mleck::jewel_load \t: END" << "\n";
+}
+
+
+
+void mleck::jewel_check(tuple<int, int> tup_jewel_range, int i_new_threshold) {
+	std::cout << "mleck::jewel_check \t: \t" << get_id() << "\n";
 	bool b_change = false;
+
 	if (i_jewels == 0) {
 		b_change = true;
 		// set a random number between the tuple min max extents.
-		i_jewels = std::get<0>(mleck_jewel_range) + (std::rand() % (std::get<1>(mleck_jewel_range) - std::get<0>(mleck_jewel_range) + 1));
+		i_jewels = std::get<0>(tup_jewel_range) + (std::rand() % (std::get<1>(tup_jewel_range) - std::get<0>(tup_jewel_range) + 1));
 		se.set_prop_int("i_jewel_count", i_jewels);
 	}
 
+	std::cout << "mleck::jewel_check \t: jewels = " << i_jewels << "\n";
+
 	if (vec_id_jewel.size() < i_jewels) {
+		// This means the jewel count of the mleck is less than the number it should have.
 		b_change = true;
 		// Create/Link to jewels.
 		for (int i = 0; i < (i_jewels - vec_id_jewel.size()); ++i) {
 			// This passes the jewel id string (a string of characters that defines the jewel.
-			//vec_up_jewel.push_back(ptr_jh->get_jewel_ptr(vec_id_jewel.at(i)));
+			vec_id_jewel.push_back(jh_ptr->get_jewel_id(i_new_threshold));
 		}
 	}
 
@@ -170,8 +194,6 @@ void mleck::check_jewels() {
 		save_settings();
 	}
 
-	// Check the pointers
-	if (vec_id_jewel.size() != vec_up_jewel.size()) {
-
-	}
+	jewel_load();
+	std::cout << "mleck::jewel_check \t: END" << "\n";
 }

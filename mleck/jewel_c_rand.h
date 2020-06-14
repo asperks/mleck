@@ -38,6 +38,9 @@ public:
 	// those parameters.
 	void load();
 
+	void set_id(string str_id_in) { jewel::set_id(str_id_in); };
+
+	string to_string() { return jewel::str_id; }
 };
 
 

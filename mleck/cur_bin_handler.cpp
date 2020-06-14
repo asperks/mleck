@@ -90,6 +90,8 @@ void cur_bin_handler::init(string str_path_bin_in) {
 	id_cur_max = -1;
 	id_cur_open = -1;
 
+	std::cout << "cur_bin_handler.init \t: \t" << str_path_bin << "\n";
+
 	// Read the name of all of the bin files in the bin folder, and index them in a map.
 	std::cout << "read bin folder\n";
 	if (boost::filesystem::is_directory(str_path_bin) == true) {
@@ -135,5 +137,7 @@ void cur_bin_handler::init(string str_path_bin_in) {
 	if (map_bin.size() > 0) {
 		b_valid = true;
 	}
+
+	std::cout << "cur_bin_handler.init \tEND\n";
 }
 

@@ -38,6 +38,8 @@ void settings::export_text(string str_filepath_settings) {
 	ofstream ofs;
 	ofs.open(str_filepath_settings);
 
+	ofs << "" << std::endl;  // blank line
+
 	if (map_int.size() > 0) {
 		for (auto const& x : map_int) {
 			ofs << "int|" << x.first  // string (key)
@@ -75,6 +77,12 @@ void settings::import_text(string str_filepath_settings) {
 	while (getline(ifs, str_line)) {
 		vector<string> vec_line;
 		boost::split(vec_line, str_line, boost::is_any_of("|"));
+
+		//// Convert a string to a uint64_t
+		//// https://stackoverflow.com/questions/42356939/c-convert-string-to-uint64-t/42357045#42357045
+		//uint64_t u64_v;
+		//std::istringstream iss(str_id);
+		//iss >> u64_v;
 
 		if (vec_line.size() >= 3) {
 			//https://www.techiedelight.com/convert-string-to-int-cpp/

@@ -52,29 +52,17 @@ private:
 	//		Total
 	// If the cur_bin data isn't available (no entries) the numbers will be zero'd
 
-	map <string, Candle_line> map_cl_prev_300_avg;
-	map <string, Candle_line> map_cl_prev_300_mid;
-	map <string, Candle_line> map_cl_prev_300_min;
-	map <string, Candle_line> map_cl_prev_300_max;
-	map <string, Candle_line> map_cl_prev_300_tot;
 
-	map <string, Candle_line> map_cl_prev_14400_avg;
-	map <string, Candle_line> map_cl_prev_14400_mid;
-	map <string, Candle_line> map_cl_prev_14400_min;
-	map <string, Candle_line> map_cl_prev_14400_max;
-	map <string, Candle_line> map_cl_prev_14400_tot;
+	//0 = min;
+	//1 = max;
+	//2 = avg;
+	//3 = mid;
+	//4 = tot;
+	map <string, vector<Candle_line>> map_cl_prev_300;
+	map <string, vector<Candle_line>> map_cl_prev_14400;
+	map <string, vector<History_line>> map_hl_prev;
+	map <string, vector<Orderbook_line>> map_ol_prev;
 
-	map <string, History_line> map_hl_prev_avg;
-	map <string, History_line> map_hl_prev_mid;
-	map <string, History_line> map_hl_prev_min;
-	map <string, History_line> map_hl_prev_max;
-	map <string, History_line> map_hl_prev_tot;
-
-	map <string, Orderbook_line> map_ol_prev_avg;
-	map <string, Orderbook_line> map_ol_prev_mid;
-	map <string, Orderbook_line> map_ol_prev_min;
-	map <string, Orderbook_line> map_ol_prev_max;
-	map <string, Orderbook_line> map_ol_prev_tot;
 
 	// This will have as many elements in it as the map_vec_dbl_prev_tot vector does.  
 	Candle_line cl_prev_300_tot;
@@ -104,6 +92,18 @@ public:
 
 	// Import BIN2 format.
 	void import_bin(string);
+
+
+	//0 = min;
+	//1 = max;
+	//2 = avg;
+	//3 = mid;
+	//4 = tot;
+	Candle_line get_cl_300_line(string str_instrument, int nth) { return map_cl_prev_300[str_instrument].at(nth); }
+	Candle_line get_cl_14400_line(string str_instrument, int nth) { return map_cl_prev_14400[str_instrument].at(nth); }
+	History_line get_hl_line(string str_instrument, int nth) { return map_hl_prev[str_instrument].at(nth); }
+	Orderbook_line get_ol_line(string str_instrument, int nth) { return map_ol_prev[str_instrument].at(nth); }
+
 
 	Candle_line get_mid_cl(vector<Candle_line> vec);
 	History_line get_mid_hl(vector<History_line> vec);

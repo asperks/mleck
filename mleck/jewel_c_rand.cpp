@@ -73,8 +73,8 @@ void jewel_c_rand::calc_return() {
 		// https://stackoverflow.com/questions/1340729/how-do-you-generate-a-random-double-uniformly-distributed-between-0-and-1-from-c/26853142#26853142
 		double d_calc = (randZeroToOne() * (d_rand_max * 2.0)) - d_rand_max;
 
-		if (d_calc > jewel::vec_param1.at(2)) { d_calc = jewel::vec_param1.at(2); }
 		if (d_calc < jewel::vec_param1.at(1)) { d_calc = jewel::vec_param1.at(1); }
+		if (d_calc > jewel::vec_param1.at(2)) { d_calc = jewel::vec_param1.at(2); }
 
 		// If that parameter is very low, it means the stochastic element will be very low.
 		// This means that ALL decisions have a stochastic element applied, and if it is not

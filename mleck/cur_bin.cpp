@@ -58,6 +58,15 @@ void cur_bin::set_ticker_double(string str_ticker, string str_key, double d_val)
 	}
 }
 
+Ticker cur_bin::get_ticker(int64_t nth) {
+	string str_ticker = vec_data_instruments.at((nth % vec_data_instruments.size()));
+	return map_struct_ticker[str_ticker];
+};
+
+string cur_bin::get_instrument(int64_t nth) {
+	return vec_data_instruments.at(nth % vec_data_instruments.size());
+};
+
 
 void cur_bin::set_struct_candle300(string str_ticker, vector<Candle_line> vec) {
 	map_vec_candle300.emplace(str_ticker, std::move(vec));

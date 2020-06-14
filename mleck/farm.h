@@ -76,6 +76,10 @@ public:
 
 	farm();
 
+	~farm() {
+		//vec_m.clear();
+	}
+
 	void init(int id_in
 				, string str_path_bin_in
 				, string str_path_farm_in
@@ -87,7 +91,7 @@ public:
 
 	// Ensure all of the available slots for mlecks are filled so the full 
 	//	cohort is available.
-	void populate_mlecks();
+	void validate_mlecks();
 
 
 	void run(int i_gen_count_in

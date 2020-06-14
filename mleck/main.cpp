@@ -97,6 +97,7 @@ int main(int argc, char** argv) {
 			fa.init(i_farm_id, se.get_prop_str("--path_bin"), str_filepath_farm_id);
 
 			fa.run(i_gen_iterations);
+
 		}
 
 	}

@@ -27,6 +27,8 @@ items.
 #include <experimental/filesystem>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+
 
 #include "cur_bin_handler.h"
 //#include "jewel_handler.h"
@@ -53,12 +55,12 @@ class jewel_handler;
 //
 //	 I'll move the MAX tag as I develop the subequent elements.
 enum class Jewel_type {
-	J_RAND
-	, J_DIFF
-	, MAX
-	, J_JEWEL
-	, J_RATIO
-	, J_VOL
+	J_RAND = 0
+	, J_DIFF = 1
+	, MAX = 2
+	, J_JEWEL = 3
+	, J_RATIO = 4
+	, J_VOL = 5
 };
 
 
@@ -92,17 +94,21 @@ protected:
 public:
 	jewel() {ptr_cbh = nullptr;}
 	jewel(cur_bin_handler* ptr_cbh_in) { ptr_cbh = ptr_cbh_in; }
-	~jewel() {delete ptr_cbh;	}
+	~jewel() {
+		//delete ptr_cbh;	
+	}
 
 	//getter/setters 
 	Jewel_type get_jewel_type() { return jt; }
-	void set_id(string str_id_in) { str_id = str_id_in; }
+	void set_id(string str_id_in);
+
+	string get_id() { return str_id; }
 	string to_string() { return str_id; }
 
 	// This is used only at runtime.
 	vector<double>* get_calc_return() { return &vec_calc_return; }
 
-	void init(cur_bin_handler* ptr_cbh_in);
+	void init();
 
 	void set_cbh(cur_bin_handler* ptr_cbh_in) { ptr_cbh = ptr_cbh_in; }
 
@@ -114,9 +120,8 @@ public:
 
 
 	//https://stackoverflow.com/questions/1340729/how-do-you-generate-a-random-double-uniformly-distributed-between-0-and-1-from-c/26853142#26853142
-	inline double randZeroToOne() { return rand() / (RAND_MAX + 1.); }
-
-	inline double randMToN(double M, double N) { return M + (rand() / (RAND_MAX / (N - M))); }
+	inline  double randZeroToOne() { return rand() / (RAND_MAX + 1.); }
+	inline  double randMToN(double M, double N) { return M + (rand() / (RAND_MAX / (N - M))); }
 
 };
 

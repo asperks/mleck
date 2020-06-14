@@ -35,6 +35,11 @@ private:
 	int id = 0;
 	int i_gen_birth;
 
+	string str_filename_settings;
+	string str_path_farm_alive;
+	string str_path_farm_dead;
+	string str_filepath_settings;
+
 	// The total amount of position points.  + = in profit.
 	double d_score = 0.0;
 
@@ -49,8 +54,7 @@ private:
 	vector<string> vec_id_jewel;
 	vector<std::unique_ptr<jewel> *> vec_up_jewel;
 
-	string str_path_farm;
-	string str_filepath_settings;
+
 
 	settings se;
 	const char* filename_settings_prefix = "idmleck_";
@@ -70,47 +74,38 @@ private:
 
 	*/
 
-	// When a new mleck is created, this is the range of min/max
-	tuple<int, int> mleck_jewel_range;
-
-	jewel_handler * ptr_jh = nullptr;
+	jewel_handler * jh_ptr = nullptr;
 
 
 public:
 
-	mleck() {};
+	mleck(string str_path_farm_alive_in, string str_path_farm_dead_in);
 
-	mleck(int id_in
-		, string str_path_farm_in
-		, int i_gen_in
-		, tuple<int, int> mleck_jewel_range_in
-		, jewel_handler * ptr_jh_in
-	);
-
-
+	~mleck() {
+		//vec_up_jewel.clear();
+		//vec_id_jewel.clear();
+		//delete jh_ptr;
+	}
 
 	// init will open an existing mleck if one exists, or create a randomized one
 	//	if one doesn't.
 	void init(int id_in
-				, string str_path_farm_in
 				, int i_gen_in
-				, tuple<int, int> mleck_jewel_range_in
 				, jewel_handler * ptr_jh_in
 				
 	);
 
-	// init the mleck objet 
+	// init the mleck object 
 	void init(string str_filepath_in
-		, string str_path_farm_in
-		, tuple<int, int> mleck_jewel_range_in
 		, jewel_handler * ptr_jh_in
-
 	);
+
+	
 
 	int get_id() { return id; }
 
 
-	void set_jewel_handler(jewel_handler * ptr_jh_in) { ptr_jh = ptr_jh_in; }
+	void set_jewel_handler(jewel_handler * ptr_jh_in) { jh_ptr = ptr_jh_in; }
 
 
 	void load_settings();
@@ -120,7 +115,11 @@ public:
 	//	administration.  These are for if you clone a mleck, this sets them 
 	void reset_settings();
 
-	void check_jewels();
+	// This function reads the mleck jewels, and updates the jewel_handler
+	void jewel_load();
+
+	// This function ensures a mleck has the valid number of jewls, and if not, creates/links more.
+	void jewel_check(tuple<int, int> jewel_range, int i_new_threshold);
 
 
 

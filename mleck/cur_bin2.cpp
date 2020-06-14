@@ -142,11 +142,13 @@ void cur_bin2::init(string str_path_bin_in, int id_cur, string str_filepath_bin2
 
 					cl_prev_300_tot.vol = cl_prev_300_tot.vol + cl300_instrument_tot.vol;
 				}
-				map_cl_prev_300_avg.emplace(str_instrument, std::move(cl300_instrument_avg));
-				map_cl_prev_300_mid.emplace(str_instrument, std::move(get_mid_cl(vec_candle300)));
-				map_cl_prev_300_tot.emplace(str_instrument, std::move(cl300_instrument_tot));
-				map_cl_prev_300_min.emplace(str_instrument, std::move(cl300_instrument_min));
-				map_cl_prev_300_max.emplace(str_instrument, std::move(cl300_instrument_max));
+
+				map_cl_prev_300[str_instrument].push_back(cl300_instrument_min);
+				map_cl_prev_300[str_instrument].push_back(cl300_instrument_max);
+				map_cl_prev_300[str_instrument].push_back(cl300_instrument_avg);
+				map_cl_prev_300[str_instrument].push_back(get_mid_cl(vec_candle300));
+				map_cl_prev_300[str_instrument].push_back(cl300_instrument_tot);
+
 
 				// Extract data from the candle14400
 				//	from USDT_BTC
@@ -210,11 +212,13 @@ void cur_bin2::init(string str_path_bin_in, int id_cur, string str_filepath_bin2
 
 					cl_prev_14400_tot.vol = cl_prev_14400_tot.vol + cl14400_instrument_tot.vol;
 				}
-				map_cl_prev_14400_avg.emplace(str_instrument, std::move(cl14400_instrument_avg));
-				map_cl_prev_14400_mid.emplace(str_instrument, std::move(get_mid_cl(vec_candle14400)));
-				map_cl_prev_14400_tot.emplace(str_instrument, std::move(cl14400_instrument_tot));
-				map_cl_prev_14400_min.emplace(str_instrument, std::move(cl14400_instrument_min));
-				map_cl_prev_14400_max.emplace(str_instrument, std::move(cl14400_instrument_max));
+
+				map_cl_prev_14400[str_instrument].push_back(cl14400_instrument_min);
+				map_cl_prev_14400[str_instrument].push_back(cl14400_instrument_max);
+				map_cl_prev_14400[str_instrument].push_back(cl14400_instrument_avg);
+				map_cl_prev_14400[str_instrument].push_back(get_mid_cl(vec_candle14400));
+				map_cl_prev_14400[str_instrument].push_back(cl14400_instrument_tot);
+
 
 				// Extract data from the history
 				// from USDT_LTC
@@ -269,11 +273,12 @@ void cur_bin2::init(string str_path_bin_in, int id_cur, string str_filepath_bin2
 					hl_prev_history_tot.amountusd = hl_prev_history_tot.amountusd + hl_instrument_tot.amountusd;
 					hl_prev_history_tot.action = hl_prev_history_tot.action + hl_instrument_tot.action;
 				}
-				map_hl_prev_avg.emplace(str_instrument, std::move(hl_instrument_avg));
-				map_hl_prev_mid.emplace(str_instrument, std::move(get_mid_hl(vec_history)));
-				map_hl_prev_tot.emplace(str_instrument, std::move(hl_instrument_tot));
-				map_hl_prev_min.emplace(str_instrument, std::move(hl_instrument_min));
-				map_hl_prev_max.emplace(str_instrument, std::move(hl_instrument_max));
+
+				map_hl_prev[str_instrument].push_back(hl_instrument_min);
+				map_hl_prev[str_instrument].push_back(hl_instrument_max);
+				map_hl_prev[str_instrument].push_back(hl_instrument_avg);
+				map_hl_prev[str_instrument].push_back(get_mid_hl(vec_history));
+				map_hl_prev[str_instrument].push_back(hl_instrument_tot);
 
 
 				// Extract data from the orderbook
@@ -331,11 +336,12 @@ void cur_bin2::init(string str_path_bin_in, int id_cur, string str_filepath_bin2
 					ol_prev_orderbook_totcalc.val2 = ol_prev_orderbook_totcalc.val2 + (ol_instrument_tot.val2 * ol_instrument_avg.val1);
 					ol_prev_orderbook_totcalc.val4 = ol_prev_orderbook_totcalc.val4 + (ol_instrument_tot.val4 * ol_instrument_avg.val3);
 				}
-				map_ol_prev_avg.emplace(str_instrument, std::move(ol_instrument_avg));
-				map_ol_prev_mid.emplace(str_instrument, std::move(get_mid_ol(vec_orderbook)));
-				map_ol_prev_tot.emplace(str_instrument, std::move(ol_instrument_tot));
-				map_ol_prev_min.emplace(str_instrument, std::move(ol_instrument_min));
-				map_ol_prev_max.emplace(str_instrument, std::move(ol_instrument_max));
+
+				map_ol_prev[str_instrument].push_back(ol_instrument_min);
+				map_ol_prev[str_instrument].push_back(ol_instrument_max);
+				map_ol_prev[str_instrument].push_back(ol_instrument_avg);
+				map_ol_prev[str_instrument].push_back(get_mid_ol(vec_orderbook));
+				map_ol_prev[str_instrument].push_back(ol_instrument_tot);
 			}
 		}
 
@@ -441,36 +447,36 @@ void cur_bin2::export_text(string str_filepath) {
 				ofs << "\t" << std::left << std::setw(18) << "     vol";
 				ofs << std::endl;
 
-				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_min[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_min[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_min[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_min[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_min[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_min[str_instrument].vol;
+				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(0).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(0).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(0).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(0).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(0).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(0).vol;
 				ofs << std::endl;
 
-				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_max[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_max[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_max[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_max[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_max[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_max[str_instrument].vol;
+				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(1).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(1).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(1).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(1).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(1).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(1).vol;
 				ofs << std::endl;
 
-				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_avg[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_avg[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_avg[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_avg[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_avg[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_avg[str_instrument].vol;
+				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(2).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(2).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(2).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(2).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(2).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(2).vol;
 				ofs << std::endl;
 
-				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_mid[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_mid[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_mid[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_mid[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_mid[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_mid[str_instrument].vol;
+				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(3).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(3).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(3).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(3).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(3).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(3).vol;
 				ofs << std::endl;
 
 				ofs << "\ttot\t" << std::right << std::setw(18) << " ";
@@ -478,7 +484,7 @@ void cur_bin2::export_text(string str_filepath) {
 				ofs << "\t" << std::right << std::setw(18) << " ";
 				ofs << "\t" << std::right << std::setw(18) << " ";
 				ofs << "\t" << std::right << std::setw(18) << " ";
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300_tot[str_instrument].vol;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_300[str_instrument].at(4).vol;
 				ofs << std::endl;
 
 
@@ -488,39 +494,39 @@ void cur_bin2::export_text(string str_filepath) {
 				ofs << "\t" << std::left << std::setw(18) << "     val3";
 				ofs << "\t" << std::left << std::setw(18) << "     val4";
 				ofs << "\t" << std::left << std::setw(18) << "     val5";
-				ofs << "\t" << std::left << std::setw(18) << "      vol";
+				ofs << "\t" << std::left << std::setw(18) << "     vol";
 				ofs << std::endl;
 
-				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_min[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_min[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_min[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_min[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_min[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_min[str_instrument].vol;
+				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(0).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(0).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(0).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(0).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(0).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(0).vol;
 				ofs << std::endl;
 
-				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_max[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_max[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_max[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_max[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_max[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_max[str_instrument].vol;
+				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(1).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(1).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(1).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(1).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(1).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(1).vol;
 				ofs << std::endl;
 
-				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_avg[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_avg[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_avg[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_avg[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_avg[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_avg[str_instrument].vol;
+				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(2).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(2).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(2).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(2).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(2).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(2).vol;
 				ofs << std::endl;
 
-				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_mid[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_mid[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_mid[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_mid[str_instrument].val4;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_mid[str_instrument].val5;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_mid[str_instrument].vol;
+				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(3).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(3).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(3).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(3).val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(3).val5;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(3).vol;
 				ofs << std::endl;
 
 				ofs << "\ttot\t" << std::right << std::setw(18) << " ";
@@ -528,8 +534,9 @@ void cur_bin2::export_text(string str_filepath) {
 				ofs << "\t" << std::right << std::setw(18) << " ";
 				ofs << "\t" << std::right << std::setw(18) << " ";
 				ofs << "\t" << std::right << std::setw(18) << " ";
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400_tot[str_instrument].vol;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_cl_prev_14400[str_instrument].at(4).vol;
 				ofs << std::endl;
+
 
 				// Extract data from the history
 				// from USDT_LTC
@@ -546,31 +553,32 @@ void cur_bin2::export_text(string str_filepath) {
 				ofs << "\t" << std::left << std::setw(18) << "action";
 				ofs << std::endl;
 
-				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_min[str_instrument].priceusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_min[str_instrument].amountusd;
+				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(0).priceusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(0).amountusd;
 				ofs << "\t" << std::right << std::setw(18) << " ";
 
 				ofs << std::endl;
 
-				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_max[str_instrument].priceusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_max[str_instrument].amountusd;
+				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(1).priceusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(1).amountusd;
 				ofs << "\t" << std::right << std::setw(18) << " ";
 				ofs << std::endl;
 
-				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_avg[str_instrument].priceusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_avg[str_instrument].amountusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_avg[str_instrument].action;
+				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(2).priceusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(2).amountusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(2).action;
 				ofs << std::endl;
 
-				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_mid[str_instrument].priceusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_mid[str_instrument].amountusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_mid[str_instrument].action;
+				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(3).priceusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(3).amountusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(3).action;
 				ofs << std::endl;
 
 				ofs << "\ttot\t" << std::right << std::setw(18) << " ";
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_tot[str_instrument].amountusd;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev_tot[str_instrument].action;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(4).amountusd;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_hl_prev[str_instrument].at(4).action;
 				ofs << std::endl;
+
 
 				// Extract data from the orderbook
 				// from USDT_XMR
@@ -589,34 +597,34 @@ void cur_bin2::export_text(string str_filepath) {
 
 				ofs << std::endl;
 
-				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_min[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_min[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_min[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_min[str_instrument].val4;
+				ofs << "\tmin\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(0).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(0).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(0).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(0).val4;
 				ofs << std::endl;
 
-				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_max[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_max[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_max[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_max[str_instrument].val4;
+				ofs << "\tmax\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(1).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(1).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(1).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(1).val4;
 				ofs << std::endl;
 
-				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_avg[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_avg[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_avg[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_avg[str_instrument].val4;
+				ofs << "\tavg\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(2).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(2).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(2).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(2).val4;
 				ofs << std::endl;
 
-				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_mid[str_instrument].val1;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_mid[str_instrument].val2;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_mid[str_instrument].val3;
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_mid[str_instrument].val4;
+				ofs << "\tmid\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(3).val1;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(3).val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(3).val3;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(3).val4;
 				ofs << std::endl;
 
 				ofs << "\ttot\t" << std::right << std::setw(18) << " ";
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_avg[str_instrument].val2;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(4).val2;
 				ofs << "\t" << std::right << std::setw(18) << " ";
-				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev_avg[str_instrument].val4;
+				ofs << "\t" << std::right << std::setw(18) << fixed << setprecision(8) << map_ol_prev[str_instrument].at(4).val4;
 				ofs << std::endl;
 
 				ofs << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
@@ -637,25 +645,11 @@ void cur_bin2::clear() {
 	map_struct_ticker_next.clear();
 	map_struct_ticker_prev.clear();
 
-	map_cl_prev_300_avg.clear();
-	map_cl_prev_300_tot.clear();
-	map_cl_prev_300_min.clear();
-	map_cl_prev_300_max.clear();
+	map_cl_prev_300.clear();
+	map_cl_prev_14400.clear();
+	map_hl_prev.clear();
+	map_ol_prev.clear();
 
-	map_cl_prev_14400_avg.clear();
-	map_cl_prev_14400_tot.clear();
-	map_cl_prev_14400_min.clear();
-	map_cl_prev_14400_max.clear();
-
-	map_hl_prev_avg.clear();
-	map_hl_prev_tot.clear();
-	map_hl_prev_min.clear();
-	map_hl_prev_max.clear();
-
-	map_ol_prev_avg.clear();
-	map_ol_prev_tot.clear();
-	map_ol_prev_min.clear();
-	map_ol_prev_max.clear();
 }
 
 
@@ -685,29 +679,29 @@ void cur_bin2::export_bin(string str_filepath) {
 				fs.write((char*)&map_struct_ticker_next[str_instrument], sizeof(Ticker));
 				fs.write((char*)&map_struct_ticker_prev[str_instrument], sizeof(Ticker));
 
-				fs.write((char*)&map_cl_prev_300_avg[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_300_mid[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_300_tot[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_300_min[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_300_max[str_instrument], sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_300[str_instrument].at(0), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_300[str_instrument].at(1), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_300[str_instrument].at(2), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_300[str_instrument].at(3), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_300[str_instrument].at(4), sizeof(Candle_line));
 
-				fs.write((char*)&map_cl_prev_14400_avg[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_14400_mid[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_14400_tot[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_14400_min[str_instrument], sizeof(Candle_line));
-				fs.write((char*)&map_cl_prev_14400_max[str_instrument], sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_14400[str_instrument].at(0), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_14400[str_instrument].at(1), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_14400[str_instrument].at(2), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_14400[str_instrument].at(3), sizeof(Candle_line));
+				fs.write((char*)&map_cl_prev_14400[str_instrument].at(4), sizeof(Candle_line));
 
-				fs.write((char*)&map_hl_prev_avg[str_instrument], sizeof(History_line));
-				fs.write((char*)&map_hl_prev_mid[str_instrument], sizeof(History_line));
-				fs.write((char*)&map_hl_prev_tot[str_instrument], sizeof(History_line));
-				fs.write((char*)&map_hl_prev_min[str_instrument], sizeof(History_line));
-				fs.write((char*)&map_hl_prev_max[str_instrument], sizeof(History_line));
+				fs.write((char*)&map_hl_prev[str_instrument].at(0), sizeof(History_line));
+				fs.write((char*)&map_hl_prev[str_instrument].at(1), sizeof(History_line));
+				fs.write((char*)&map_hl_prev[str_instrument].at(2), sizeof(History_line));
+				fs.write((char*)&map_hl_prev[str_instrument].at(3), sizeof(History_line));
+				fs.write((char*)&map_hl_prev[str_instrument].at(4), sizeof(History_line));
 
-				fs.write((char*)&map_ol_prev_avg[str_instrument], sizeof(Orderbook_line));
-				fs.write((char*)&map_ol_prev_mid[str_instrument], sizeof(Orderbook_line));
-				fs.write((char*)&map_ol_prev_tot[str_instrument], sizeof(Orderbook_line));
-				fs.write((char*)&map_ol_prev_min[str_instrument], sizeof(Orderbook_line));
-				fs.write((char*)&map_ol_prev_max[str_instrument], sizeof(Orderbook_line));
+				fs.write((char*)&map_ol_prev[str_instrument].at(0), sizeof(Orderbook_line));
+				fs.write((char*)&map_ol_prev[str_instrument].at(1), sizeof(Orderbook_line));
+				fs.write((char*)&map_ol_prev[str_instrument].at(2), sizeof(Orderbook_line));
+				fs.write((char*)&map_ol_prev[str_instrument].at(3), sizeof(Orderbook_line));
+				fs.write((char*)&map_ol_prev[str_instrument].at(4), sizeof(Orderbook_line));
 			}
 		}
 		fs.close();
@@ -749,64 +743,72 @@ void cur_bin2::import_bin(string str_filepath) {
 				Candle_line cl_300_tot;
 				Candle_line cl_300_min;
 				Candle_line cl_300_max;
+				fs.read((char*)&cl_300_min, sizeof(Candle_line));
+				fs.read((char*)&cl_300_max, sizeof(Candle_line));
 				fs.read((char*)&cl_300_avg, sizeof(Candle_line));
 				fs.read((char*)&cl_300_mid, sizeof(Candle_line));
 				fs.read((char*)&cl_300_tot, sizeof(Candle_line));
-				fs.read((char*)&cl_300_min, sizeof(Candle_line));
-				fs.read((char*)&cl_300_max, sizeof(Candle_line));
-				map_cl_prev_300_avg.emplace(str_instrument, std::move(cl_300_avg));
-				map_cl_prev_300_avg.emplace(str_instrument, std::move(cl_300_mid));
-				map_cl_prev_300_tot.emplace(str_instrument, std::move(cl_300_tot));
-				map_cl_prev_300_min.emplace(str_instrument, std::move(cl_300_min));
-				map_cl_prev_300_max.emplace(str_instrument, std::move(cl_300_max));
+				vector<Candle_line> vec_cl_300;
+				//vec_cl_300.push_back(std::move(cl_300_min));
+				//vec_cl_300.push_back(std::move(cl_300_max));
+				//vec_cl_300.push_back(std::move(cl_300_avg));
+				//vec_cl_300.push_back(std::move(cl_300_mid));
+				//vec_cl_300.push_back(std::move(cl_300_tot));
+				//map_cl_prev_300.emplace(str_instrument, std::move(vec_cl_300));
 
 				Candle_line cl_14400_avg;
 				Candle_line cl_14400_mid;
 				Candle_line cl_14400_tot;
 				Candle_line cl_14400_min;
 				Candle_line cl_14400_max;
+				fs.read((char*)&cl_14400_min, sizeof(Candle_line));
+				fs.read((char*)&cl_14400_max, sizeof(Candle_line));
 				fs.read((char*)&cl_14400_avg, sizeof(Candle_line));
 				fs.read((char*)&cl_14400_mid, sizeof(Candle_line));
 				fs.read((char*)&cl_14400_tot, sizeof(Candle_line));
-				fs.read((char*)&cl_14400_min, sizeof(Candle_line));
-				fs.read((char*)&cl_14400_max, sizeof(Candle_line));
-				map_cl_prev_14400_avg.emplace(str_instrument, std::move(cl_14400_avg));
-				map_cl_prev_14400_avg.emplace(str_instrument, std::move(cl_14400_mid));
-				map_cl_prev_14400_tot.emplace(str_instrument, std::move(cl_14400_tot));
-				map_cl_prev_14400_min.emplace(str_instrument, std::move(cl_14400_min));
-				map_cl_prev_14400_max.emplace(str_instrument, std::move(cl_14400_max));
+				//vector<Candle_line> vec_cl_14400;
+				//vec_cl_14400.push_back(std::move(cl_14400_min));
+				//vec_cl_14400.push_back(std::move(cl_14400_max));
+				//vec_cl_14400.push_back(std::move(cl_14400_avg));
+				//vec_cl_14400.push_back(std::move(cl_14400_mid));
+				//vec_cl_14400.push_back(std::move(cl_14400_tot));
+				//map_cl_prev_300.emplace(str_instrument, std::move(vec_cl_14400));
 
 				History_line hl_avg;
 				History_line hl_mid;
 				History_line hl_tot;
 				History_line hl_min;
 				History_line hl_max;
+				fs.read((char*)&hl_min, sizeof(History_line));
+				fs.read((char*)&hl_max, sizeof(History_line));
 				fs.read((char*)&hl_avg, sizeof(History_line));
 				fs.read((char*)&hl_mid, sizeof(History_line));
 				fs.read((char*)&hl_tot, sizeof(History_line));
-				fs.read((char*)&hl_min, sizeof(History_line));
-				fs.read((char*)&hl_max, sizeof(History_line));
-				map_hl_prev_avg.emplace(str_instrument, std::move(hl_avg));
-				map_hl_prev_avg.emplace(str_instrument, std::move(hl_mid));
-				map_hl_prev_tot.emplace(str_instrument, std::move(hl_tot));
-				map_hl_prev_min.emplace(str_instrument, std::move(hl_min));
-				map_hl_prev_max.emplace(str_instrument, std::move(hl_max));
+				//vector<History_line> vec_hl;
+				//vec_hl.push_back(std::move(hl_min));
+				//vec_hl.push_back(std::move(hl_max));
+				//vec_hl.push_back(std::move(hl_avg));
+				//vec_hl.push_back(std::move(hl_mid));
+				//vec_hl.push_back(std::move(hl_tot));
+				//map_hl_prev.emplace(str_instrument, std::move(vec_hl));
 
 				Orderbook_line ol_avg;
 				Orderbook_line ol_mid;
 				Orderbook_line ol_tot;
 				Orderbook_line ol_min;
 				Orderbook_line ol_max;
+				fs.read((char*)&ol_min, sizeof(Orderbook_line));
+				fs.read((char*)&ol_max, sizeof(Orderbook_line));
 				fs.read((char*)&ol_avg, sizeof(Orderbook_line));
 				fs.read((char*)&ol_mid, sizeof(Orderbook_line));
 				fs.read((char*)&ol_tot, sizeof(Orderbook_line));
-				fs.read((char*)&ol_min, sizeof(Orderbook_line));
-				fs.read((char*)&ol_max, sizeof(Orderbook_line));
-				map_ol_prev_avg.emplace(str_instrument, std::move(ol_avg));
-				map_ol_prev_avg.emplace(str_instrument, std::move(ol_mid));
-				map_ol_prev_tot.emplace(str_instrument, std::move(ol_tot));
-				map_ol_prev_min.emplace(str_instrument, std::move(ol_min));
-				map_ol_prev_max.emplace(str_instrument, std::move(ol_max));
+				//vector<Orderbook_line> vec_ol;
+				//vec_ol.push_back(std::move(ol_min));
+				//vec_ol.push_back(std::move(ol_max));
+				//vec_ol.push_back(std::move(ol_avg));
+				//vec_ol.push_back(std::move(ol_mid));
+				//vec_ol.push_back(std::move(ol_tot));
+				//map_hl_prev.emplace(str_instrument, std::move(vec_ol));
 			}
 		}
 		fs.close();
